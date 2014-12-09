@@ -16,7 +16,7 @@ var config = require('server/config/environment');
 // Get list of things
 exports.index = function(req, res) {
   //testing config vars
-  console.log("dev couch config:" + config.couch.hostname);
+  console.log("dev couch config:" + config.couchuri);
   res.json([
   {
   name : 'Development Tools',
