@@ -9,10 +9,14 @@
 
 'use strict';
 
+require('rootpath')();
 var _ = require('lodash');
+var config = require('server/config/environment');
 
 // Get list of things
 exports.index = function(req, res) {
+  //testing config vars
+  console.log("dev couch config:" + config.couch.hostname);
   res.json([
   {
   name : 'Development Tools',
