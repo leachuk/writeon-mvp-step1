@@ -11,7 +11,7 @@ exports.index = function(req, res) {
   res.send("<p>text out</p>")
 };
 
-exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,userpassword,response){
+exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,userpassword,res){
 //When a user signs up, create a new database for them and grant them r/w access
 	var dbname = useremail;
 	//dbname is to be the email address with @ converted to $ (couchdb requirement)
@@ -29,7 +29,7 @@ exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,
 	_users.insert(json, "", function(error, body, headers){
 		if (error) {
 			console.log(error.message);
-			return response.status(error["status-code"]).send(error.message);
+			return res.status(error["status-code"]).send(error.message);
 			//response.send(error.message, error["status-code"]);			
 		}
 		console.log(body);		
@@ -39,11 +39,11 @@ exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,
 	couchnano.db.create(dbname, function(error, body, headers){
 		if (error) {
 			console.log(error.message);
-			return response.status(error["status-code"]).send(error.message);
+			return res.status(error["status-code"]).send(error.message);
 		}
 		console.log(body);
 		//response.send(body, 200);
-		response.status(200).send(body);
+		res.status(200).send(body);
 	});
 
 	//update the db security object
@@ -60,4 +60,19 @@ exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,
 		console.log(body);
 			
 	});	
+};
+
+exports.getUser = function (req, res){
+  var username = req.body.username;
+  console.log(username);
+  var _users = couchnano.db.use('_users');
+  _users.get('org.couchdb.user:' +  username, function(err, body) {
+    if (!err) {
+      console.log(body);
+      return res.status(200).send(body);
+    }else{
+      console.log(err);
+      return res.status(404).send('user name not found');
+    }
+  });  
 };

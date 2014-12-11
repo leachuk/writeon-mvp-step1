@@ -18,3 +18,8 @@ exports.signup = function(req, res) {
   res.send("Signup with email["+ useremail +"], password["+ userpassword +"]");
 };
 
+//testing authentication endpoint
+exports.testgetuser = function(req, res){
+  console.log("in testgetuser");
+  couchDbHandlers.getUser(req, res);
+};
