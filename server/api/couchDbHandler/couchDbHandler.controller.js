@@ -76,3 +76,24 @@ exports.getUser = function (req, res){
     }
   });  
 };
+
+exports.authenticate = function(req, res){
+  var username = req.body.username;
+  var password = req.body.password;
+  
+  couchnano.auth(username, password, function (err, body, headers) {
+    if (!err) {
+      console.log(headers);
+    }else{
+      console.log(err);
+      return res.status(404).send(err.message);
+    }
+  
+    if (headers && headers['set-cookie']) {
+      //cookies[user] = headers['set-cookie'];
+    }
+  
+    return res.status(200).send(body);
+  });
+  
+};

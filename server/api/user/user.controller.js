@@ -23,3 +23,9 @@ exports.testgetuser = function(req, res){
   console.log("in testgetuser");
   couchDbHandlers.getUser(req, res);
 };
+
+//testing authentication endpoint
+exports.authenticate = function(req, res){
+  console.log("in authenticate");
+  couchDbHandlers.authenticate(req, res);
+};
