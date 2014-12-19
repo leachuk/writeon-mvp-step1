@@ -77,23 +77,63 @@ exports.getUser = function (req, res){
   });  
 };
 
-exports.authenticate = function(req, res){
+// exports.authenticate = function(req, res){
+//   var username = req.body.username;
+//   var password = req.body.password;
+  
+//   couchnano.auth(username, password, function (err, body, headers) {
+//   	console.log("in couchnana.auth");
+//   	console.log(body);
+//     if (!err) {
+//       console.log(headers);
+//     }else{
+//       console.log(err);
+//       return err.message;
+//     }
+  
+//     if (headers && headers['set-cookie']) {
+//       //cookies[user] = headers['set-cookie'];
+//     }
+  
+//     return res(body);
+//   });
+  
+// };
+
+function CouchDBService(){};
+CouchDBService.prototype.authenticate = function(req){
   var username = req.body.username;
   var password = req.body.password;
   
   couchnano.auth(username, password, function (err, body, headers) {
-    if (!err) {
-      console.log(headers);
-    }else{
-      console.log(err);
-      return res.status(404).send(err.message);
-    }
+  	console.log("in couchnano.auth");
+  // 	//console.log(body);
+  //   if (!err) {
+  //     console.log(headers);
+  //   }else{
+  //     console.log(err);
+  //     return err.message;
+  //   }
   
-    if (headers && headers['set-cookie']) {
-      //cookies[user] = headers['set-cookie'];
-    }
+  //   if (headers && headers['set-cookie']) {
+  //     //cookies[user] = headers['set-cookie'];
+  //   }
   
-    return res.status(200).send(body);
-  });
-  
+  //   return "foo body";
+       return "foo";
+	});
 };
+exports.CouchDBService = new CouchDBService;
+
+function ServiceTest() {	
+
+};
+ServiceTest.prototype.testService = function(text) {
+    return "hello" + text;
+};
+exports.ServiceTest = new ServiceTest;
+
+
+
+
+

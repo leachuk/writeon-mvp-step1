@@ -3,7 +3,7 @@
 require('rootpath')();
 var _ = require('lodash');
 
-var couchDbHandlers = require('server/api/couchDbHandler/couchDbHandler.controller');
+var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {
@@ -27,5 +27,13 @@ exports.testgetuser = function(req, res){
 //testing authentication endpoint
 exports.authenticate = function(req, res){
   console.log("in authenticate");
-  couchDbHandlers.authenticate(req, res);
+  // couchDbHandlers.authenticate(function(req, res){
+  //   console.log(res);
+  // });
+  var couchService = couchDbHandlers.CouchDBService;
+  //console.log(couchService.authenticate(req));
+  couchService.authenticate(req);
+  console.log("out authenticate");
+  //var test = couchDbHandlers.ServiceTest;
+  //console.log(test.testService("tetteet"));
 };

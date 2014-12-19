@@ -29,7 +29,12 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
   
-  //app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/auths','/api/things','/api/auths/signup']}));
+  //Set secured routes which require authentication
+  app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/users/authenticate',
+                                                                   '/api/users/signup',
+                                                                   '/api/auths/checktoken',
+                                                                   '/api/auths/getuser',
+                                                                   '/services/couchDbHandler']}));
   
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
