@@ -27,20 +27,18 @@ exports.testgetuser = function(req, res){
 //testing authentication endpoint
 exports.authenticate = function(req, res){
   console.log("in authenticate");
-  // couchDbHandlers.authenticate(function(req, res){
-  //   console.log(res);
-  // });
-  var couchService = couchDbHandlers.CouchDBService;
-  //console.log(couchService.authenticate(req));
   var username = req.body.username;
   var password = req.body.password;
-  
-  couchService.authenticate(username, password, function(data){
-    console.log(data);
+  var couchService = couchDbHandlers.CouchDBService;
+
+  couchService.authenticate(username, password, function(err, result){
+    if (!err){
+      console.log("success");
+      res.send(result);
+    }else{
+      console.log("error:" + err);
+      res.status(401).send(err.message);
+    }
   });
-  
-  console.log("out authenticate");
-  res.send("temp testout");
-  //var test = couchDbHandlers.ServiceTest;
-  //console.log(test.testService("tetteet"));
+
 };
