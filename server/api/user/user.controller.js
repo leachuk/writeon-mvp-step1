@@ -32,8 +32,15 @@ exports.authenticate = function(req, res){
   // });
   var couchService = couchDbHandlers.CouchDBService;
   //console.log(couchService.authenticate(req));
-  couchService.authenticate(req);
+  var username = req.body.username;
+  var password = req.body.password;
+  
+  couchService.authenticate(username, password, function(data){
+    console.log(data);
+  });
+  
   console.log("out authenticate");
+  res.send("temp testout");
   //var test = couchDbHandlers.ServiceTest;
   //console.log(test.testService("tetteet"));
 };

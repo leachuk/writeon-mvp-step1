@@ -101,26 +101,25 @@ exports.getUser = function (req, res){
 // };
 
 function CouchDBService(){};
-CouchDBService.prototype.authenticate = function(req){
-  var username = req.body.username;
-  var password = req.body.password;
-  
-  couchnano.auth(username, password, function (err, body, headers) {
-  	console.log("in couchnano.auth");
-  // 	//console.log(body);
-  //   if (!err) {
-  //     console.log(headers);
-  //   }else{
-  //     console.log(err);
-  //     return err.message;
-  //   }
-  
-  //   if (headers && headers['set-cookie']) {
-  //     //cookies[user] = headers['set-cookie'];
-  //   }
-  
-  //   return "foo body";
-       return "foo";
+CouchDBService.prototype.authenticate = function(username, password, callback){
+	var username = username;
+	var password = password;
+	console.log("username:" + username);
+	couchnano.auth(username, password, function (err, body, headers) {
+		console.log("in couchnano.auth");
+		//console.log(body);
+		if (!err) {
+		console.log(headers);
+		}else{
+		console.log(err);
+		return err.message;
+		}
+
+		if (headers && headers['set-cookie']) {
+		//cookies[user] = headers['set-cookie'];
+		}
+
+		callback(body);
 	});
 };
 exports.CouchDBService = new CouchDBService;
