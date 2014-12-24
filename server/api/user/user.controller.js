@@ -28,13 +28,12 @@ exports.testgetuser = function(req, res){
 };
 
 
-exports.authenticate = function(req, res){
+exports.authenticate = function(req, res, next){
   console.log("in users.authenticate");
   var token = null;
   var parts = req.headers.authorization.split(' ');
   var authService = authHandlers.AuthService;
-  
-  //todo refactor to extract token from header
+  var clientip = req.ip;
  
   if (parts.length == 2) {
     var scheme = parts[0];
@@ -44,12 +43,29 @@ exports.authenticate = function(req, res){
         token = credentials;
         
         authService.decodetoken(req, token, function(result){
-          res.json(result);
+          //only successfully authenticate from the same IP address. Stops token sharing/spoofing.
+          if (result == null){
+            console.log("Invalid token");
+            return next(new Error("Bad token. Permission denied."));
+          } else if (clientip == result.ip){
+            res.json(result);
+          } else {
+            // return next(new UnauthorizedError('credentials_bad_format', {
+            //   message : 'Authorization origin declined'
+            // }));
+            console.log("Authorization origin declined");
+            return next(new Error("Permission denied."));
+          }
+
         });
+    } else {
+      console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
+      return next(new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]'));
     }
   } else {
+    console.log("Format is Authorization: Bearer [token]");
     return next(new UnauthorizedError('credentials_bad_format', {
-            message : 'Format is Authorization: Bearer [token]'
+      message : 'Format is Authorization: Bearer [token]'
     }));
   }
 }
