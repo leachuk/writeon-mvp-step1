@@ -6,6 +6,7 @@ var controller = require('./user.controller');
 var router = express.Router();
 
 router.post('/signup', controller.signup);
+router.post('/signin', controller.signin);
 router.post('/getuser', controller.testgetuser);
 router.post('/authenticate', controller.authenticate);
 

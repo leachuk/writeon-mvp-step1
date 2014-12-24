@@ -32,6 +32,7 @@ module.exports = function(app) {
   //Set secured routes which require authentication
   app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/users/authenticate',
                                                                    '/api/users/signup',
+                                                                   '/api/users/signin',
                                                                    '/api/auths/checktoken',
                                                                    '/api/auths/getuser',
                                                                    '/services/couchDbHandler']}));
