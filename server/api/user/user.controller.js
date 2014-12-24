@@ -31,7 +31,14 @@ exports.signup = function(req, res) {
 //testing authentication endpoint
 exports.testgetuser = function(req, res){
   console.log("in testgetuser");
-  couchDbHandlers.getUser(req, res);
+  var couchService = couchDbHandlers.CouchDBService;
+  couchService.getUser(req, res, function(err, result){
+    if (!err){
+      res.send(result);
+    } else {
+      res.send(err);
+    }
+  });
 };
 
 
