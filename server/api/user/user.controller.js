@@ -30,21 +30,28 @@ exports.testgetuser = function(req, res){
 
 exports.authenticate = function(req, res){
   console.log("in users.authenticate");
-  var token = req.body.token;
-  console.log(token);
-  //var decodedToken = null;
-
+  var token = null;
+  var parts = req.headers.authorization.split(' ');
   var authService = authHandlers.AuthService;
-  authService.decodetoken(req, token, function(result){
-    res.json(result);
-  });
+  
   //todo refactor to extract token from header
+ 
+  if (parts.length == 2) {
+    var scheme = parts[0];
+    var credentials = parts[1];
 
-
-  //var profile = {username: username,ip: clientip};
-  // We are encoding the profile inside the token
-  //var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
-
+    if (/^Bearer$/i.test(scheme)) {
+        token = credentials;
+        
+        authService.decodetoken(req, token, function(result){
+          res.json(result);
+        });
+    }
+  } else {
+    return next(new UnauthorizedError('credentials_bad_format', {
+            message : 'Format is Authorization: Bearer [token]'
+    }));
+  }
 }
 
 //sign in a user. differs from authenticate as this is a user driven action, i.e. via login form.
