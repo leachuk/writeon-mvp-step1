@@ -3,66 +3,113 @@
 require('rootpath')()
 var _ = require('lodash');
 var config = require('server/config/environment');
+var couchnano = require("nano")(config.couchuri);
+var async = require('async');
 
-var couchnano = require("nano")(config.couchuri)
+function CouchDBService(){};
 
-exports.index = function(req, res) {
-  //res.json([]);
-  res.send("<p>text out</p>")
+CouchDBService.prototype.asyncTest = function(value1, value2, func_callback){
+	console.log("in async test");
+	async.series({
+	    one: function(callback){
+	        setTimeout(function(){
+	            callback(null, 1);
+	        }, 200);
+	    },
+	    two: function(callback){
+	        setTimeout(function(){
+	            callback(null, 2);
+	        }, 100);
+	    }
+	},
+	function(err, results) {
+	    // results is now equal to: {one: 1, two: 2}
+	    console.log(results);
+	    func_callback(results);
+	});
 };
 
-exports.createNewUserDatabase = function createNewUserDatabase(dbname,useremail,userpassword,res){
+CouchDBService.prototype.createNewUserDatabase = function(dbname, useremail, userpassword, res, func_callback){
 //When a user signs up, create a new database for them and grant them r/w access
 	var dbname = useremail;
 	//dbname is to be the email address with @ converted to $ (couchdb requirement)
 	var dbname = dbname.replace("@","$"); 
 	//replace '.' with '+'
 	var dbname = dbname.replace(".","+");
+
+	//var returnMessage = {};
 	
 	console.log("createNewUserDatabase: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
 	
-	
-	
-	//create user in _users table
-	var _users = couchnano.use("_users");
-	var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
-	_users.insert(json, "", function(error, body, headers){
-		if (error) {
-			console.log(error.message);
-			return res.status(error["status-code"]).send(error.message);
-			//response.send(error.message, error["status-code"]);			
-		}
-		console.log(body);		
+	async.series({
+	    createUser: function(callback){
+	    	//create user in _users table
+	    	var returnMessage = {};
+			var _users = couchnano.use("_users");
+			var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
+			_users.insert(json, "", function(error, body, headers){
+				if (error) {
+					console.log(error.message);
+					returnMessage["ok"] = false;
+					returnMessage["createUserMessage"] = error.message;
+					//return res.status(error["status-code"]).send(error.message);
+					//response.send(error.message, error["status-code"]);			
+				} else {
+					returnMessage["ok"] = true;
+				}
+				console.log(body);	
+				callback(null,returnMessage);	
+			});
+	    },
+	    createUserDb: function(callback){
+	    	var returnMessage = {};
+			//create db for user
+			couchnano.db.create(dbname, function(error, body, headers){
+				if (error) {
+					console.log(error.message);
+					//return res.status(error["status-code"]).send(error.message);
+					returnMessage["ok"] = false;
+					returnMessage["userDbCreatedMessage"] = error.message;
+				} else {
+					returnMessage["ok"] = true;
+				}
+				console.log(body);
+				callback(null,returnMessage);
+				//response.send(body, 200);
+				//res.status(200).send(body);
+
+			});
+	    },
+	    createUserSecurity: function(callback){
+	    	var returnMessage = {};
+			//update the db security object
+			var usersecurity = couchnano.use(dbname);
+			var json = {"admins":{"names":[],"roles":[]},"members":{"names":[useremail],"roles":[]}};
+			usersecurity.insert(json, "_security", function(error, body, headers){
+				if (error) {
+					console.log("create user error");
+					console.log(error.message);
+					//return response.status(error["status-code"]).send(error.message);
+					returnMessage["ok"] = false;
+					returnMessage["userSecurityCreatedMessage"] = error.message;
+					//response.send(error.message, error["status-code"]);
+				} else {
+					returnMessage["ok"] = true;
+				}
+				console.log(body);	
+				callback(null,returnMessage);	
+			});	
+	    }
+	},
+	function(err, results) {
+	    // results is now equal to: {one: 1, two: 2}
+	    console.log(results);
+	    func_callback(results);
 	});
 
-	//create db for user
-	couchnano.db.create(dbname, function(error, body, headers){
-		if (error) {
-			console.log(error.message);
-			return res.status(error["status-code"]).send(error.message);
-		}
-		console.log(body);
-		//response.send(body, 200);
-		res.status(200).send(body);
-	});
-
-	//update the db security object
-	var usersecurity = couchnano.use(dbname);
-	var json = {"admins":{"names":[],"roles":[]},"members":{"names":[useremail],"roles":[]}};
-	usersecurity.insert(json, "_security", function(error, body, headers){
-		if (error) {
-			console.log("create user error");
-			console.log(error.message);
-			return response.status(error["status-code"]).send(error.message);
-			//response.send(error.message, error["status-code"]);
-		}
-		console.log("no create error");
-		console.log(body);
-			
-	});	
 };
 
-exports.getUser = function (req, res){
+CouchDBService.prototype.getUser = function(req, res){
   var username = req.body.username;
   console.log(username);
   var _users = couchnano.db.use('_users');
@@ -77,7 +124,6 @@ exports.getUser = function (req, res){
   });  
 };
 
-function CouchDBService(){};//to go at top of file
 CouchDBService.prototype.authenticate = function(username, password, callback){
 	var username = username;
 	var password = password;
@@ -86,10 +132,10 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 		console.log("in couchnano.auth");
 		//console.log(body);
 		if (!err) {
-		console.log(headers);
+			console.log(headers);
 		}else{
-		console.log(err);
-		//return err.message;
+			console.log(err);
+			//return err.message;
 		}
 
 		if (headers && headers['set-cookie']) {
@@ -101,13 +147,6 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 };
 exports.CouchDBService = new CouchDBService;
 
-function ServiceTest() {	
-
-};
-ServiceTest.prototype.testService = function(text) {
-    return "hello" + text;
-};
-exports.ServiceTest = new ServiceTest;
 
 
 

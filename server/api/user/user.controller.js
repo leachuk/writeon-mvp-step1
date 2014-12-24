@@ -13,12 +13,19 @@ exports.signup = function(req, res) {
   var userpassword = req.body.password;
   var databasename = useremail;
 
+  var couchService = couchDbHandlers.CouchDBService;
   console.log("Signup with email["+ useremail +"], password["+ userpassword +"]");
   
-  //refactor into servive. Include use-case where user already exists.
-  couchDbHandlers.createNewUserDatabase(databasename,useremail,userpassword, res);
+  //Include use-case where user already exists.
+  couchService.createNewUserDatabase(databasename,useremail,userpassword, res, function(result){
+    res.send(result);
+  });
+
+  // couchService.asyncTest("test 1", "test 2", function(result){
+  //   res.send(result);
+  // });
   
-  res.send("Signup with email["+ useremail +"], password["+ userpassword +"]");
+  //res.send("Signup with email["+ useremail +"], password["+ userpassword +"]");
 };
 
 //testing authentication endpoint
