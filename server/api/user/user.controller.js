@@ -69,6 +69,8 @@ exports.authenticate = function(req, res, next){
             //   message : 'Authorization origin declined'
             // }));
             console.log("Authorization origin declined");
+            //return next(new Error("Permission denied."));
+            res.status(401);
             return next(new Error("Permission denied."));
           }
 
