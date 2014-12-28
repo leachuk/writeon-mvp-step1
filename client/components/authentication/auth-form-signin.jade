@@ -1,0 +1,6 @@
+div.auth-signin(ng-controller='SigninCtrl')
+	p signin form
+	form(ng-submit='submit()')
+		input(ng-model='signin.username', id='username',type='text',value='',placeholder='@email',name='username')
+		input(ng-model='signin.password', id='password',type='password',value='',placeholder='',name='password')
+		input(type='submit',value='Sign In')

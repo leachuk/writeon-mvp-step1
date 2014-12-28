@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
-var authHandlers = require('server/api/auth/auth.controller');
+var authHandlers = require('server/services/auth/auth.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {

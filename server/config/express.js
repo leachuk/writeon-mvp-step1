@@ -30,7 +30,8 @@ module.exports = function(app) {
   app.use(cookieParser());
   
   //Set secured routes which require authentication
-  app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/users/authenticate',
+  app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/things',
+                                                                   '/api/users/authenticate',
                                                                    '/api/users/signup',
                                                                    '/api/users/signin',
                                                                    '/api/auths/checktoken',
