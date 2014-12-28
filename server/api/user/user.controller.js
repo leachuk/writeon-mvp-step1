@@ -29,6 +29,7 @@ exports.signup = function(req, res) {
 };
 
 //testing authentication endpoint
+//not secured to the same ip
 exports.testgetuser = function(req, res){
   console.log("in testgetuser");
   var couchService = couchDbHandlers.CouchDBService;
