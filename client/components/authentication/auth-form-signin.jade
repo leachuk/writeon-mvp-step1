@@ -1,6 +1,12 @@
 div.auth-signin(ng-controller='SigninCtrl')
 	p signin form
-	form(ng-submit='submit()')
-		input(ng-model='signin.username', id='username',type='text',value='',placeholder='@email',name='username')
-		input(ng-model='signin.password', id='password',type='password',value='',placeholder='',name='password')
-		input(type='submit',value='Sign In')
+	form(name='signinForm' novalidate)
+		div.validation(ng-show='signinForm.$submitted') 
+			span(ng-show='signinForm.username.$error.required') email address is required
+			span(ng-show='signinForm.username.$error.email') email address is not valid
+			span(ng-show='signinForm.password.$error.required') password is required
+			span(ng-show='signinForm.$error.unauthorised') incorrect username or password
+
+		input(ng-model='user.name', id='username', type='email', value='', placeholder='@email', name='username', required)
+		input(ng-model='user.password', id='password', type='password', value='', placeholder='password', name='password', required)
+		input(ng-click='submit()', type='submit', value='Sign In')

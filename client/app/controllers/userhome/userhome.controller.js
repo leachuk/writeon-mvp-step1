@@ -14,7 +14,8 @@ angular.module('writeonMvpStep1App')
 				//new redirect to users home page, where token is checked for
 			})
 			.error(function(data, status, headers, config) {
-				console.log(data);
+				console.log('Authorization error');
+				//may want to redirect to login or index page here
 				//console.log(data);
 			});
 	} else {
