@@ -10,7 +10,7 @@ angular.module('writeonMvpStep1App')
       })
       .state('userhome', {
         url: '/home',
-        templateUrl: 'app/templates/userHome.html',
+        templateUrl: 'app/views/userHome.html',
         controller: 'UserHomeCtrl'
       });
   });

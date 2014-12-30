@@ -12,6 +12,7 @@ angular.module('writeonMvpStep1App')
 			data.password = $scope.user.password;
 			//console.log(data);
 
+			//abstract to an auth API service
 			$http.post('/api/users/signin', data).
 			success(function(outdata, status, headers, config) {
 				//console.log(outdata);
