@@ -7,7 +7,7 @@ angular.module('writeonMvpStep1App')
 
     service.Article = {};
     service.Article.getArticle = function(doctype,accountId) {
-      var r=$resource('/api/article/:type/:id', {},
+      var r=$resource('/api/articles/:type/:id', {},
                       {
                           getArticle: { method: 'GET', params: { type: 'DefaultArticle', id: '12344' }}
                       });
