@@ -18,6 +18,21 @@ angular.module('writeonMvpStep1App')
       });
     };
 
+    service.Article.saveArticle = function(usermodel, jsondata) {
+      var dataModel = {};
+      dataModel.Article = jsondata.Article;
+      dataModel.User = usermodel;
+      console.log(dataModel);
+      var r=$resource('/api/articles/saveArticle', {},
+                      {
+                          saveArticle: { method: 'POST', params: {}}
+                      });
+
+      return r.saveArticle(dataModel).$promise.then(function(data) {
+        return data; 
+      });
+    };
+
     //User Service
     service.User = {};
     service.User.getUser = function(userid) {

@@ -21,14 +21,16 @@ exports.getArticle = function(req, res) {
 
 exports.saveArticle = function(req, res) {
 	console.log("Article controller, saveArticle");
-	var title = req.body.title;
-	var bodyText = req.body.bodyText;
+
+	var articleData = req.body.Article;
+	var title = req.body.Article.Title;
+	var dbTable = req.body.User.Name; //todo: change to email when configured
 
 	var couchService = couchDbHandlers.CouchDBService;
 
-	var articleData = {Title: title, BodyText: bodyText};
+	console.log(articleData);
 
-	couchService.saveArticle(articleData, title, function(err, result){
+	couchService.saveArticle(dbTable, articleData, title, function(err, result){
 	    if (!err){
 	      console.log(result);
 	      res.send(result);
@@ -38,6 +40,6 @@ exports.saveArticle = function(req, res) {
 	    }
 	});
 
-	return res.send({Title: title, BodyText: bodyText});
+	//return res.send({Title: title, BodyText: bodyText});
 };
 

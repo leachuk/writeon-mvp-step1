@@ -16,4 +16,18 @@ angular.module('writeonMvpStep1App')
         console.log(data);
     });
 
+    $scope.submitArticle = function(){
+        var title = $scope.article.title;
+        var bodyText = $scope.article.bodyText;
+        var jsondata = {}; 
+        jsondata.Article = {Title: title, BodyText: bodyText}; //Todo use article model
+        console.log(jsondata);
+        console.log($scope.usermodel);
+
+        API.Article.saveArticle($scope.usermodel, jsondata).then(function(data){
+            console.log(data);
+        });
+
+    };
+
   });

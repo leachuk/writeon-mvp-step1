@@ -6,6 +6,8 @@ var config = require('server/config/environment');
 var couchnano = require("nano")(config.couchuri);
 var async = require('async');
 var UserModel = require('server/models/User');
+var dbUtils = require('server/services/dbUtil/dbUtil.controller');
+var _dbUtils = dbUtils.DbUtils;
 
 function CouchDBService(){};
 
@@ -147,9 +149,16 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 };
 
 //Article and Content Services
-CouchDBService.prototype.saveArticle = function(jsondata, doctitle, callback){
-	var userDb = couchnano.use('writeonmvpstep1-1$test+com'); //todo replace with users dbname
-	userDb.insert(jsondata, doctitle, function(err, body){
+CouchDBService.prototype.saveArticle = function(tablename, jsondata, callback){
+	console.log("in CouchDBService, saveArticle");
+	console.log(jsondata);
+	console.log(tablename);
+
+	var dbtable = _dbUtils.convertToDbName(tablename);
+	var doctitle = jsondata.Title;
+
+	var _userDb = couchnano.use(dbtable); //todo replace with users dbname
+	_userDb.insert(jsondata, doctitle, function(err, body){
 		if(!err) {
 			console.log(body);
 		}else{

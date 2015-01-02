@@ -10,4 +10,4 @@ div.create-article(ng-controller='CreateArticleCtrl')
 		div		
 			textarea(ng-model='article.bodyText', id='bodyText', placeholder='body text', name='bodyText', rows='10', cols='60', required)
 		
-		input(ng-click='submit()', type='submit', value='Submit')
+		input(ng-click='submitArticle()', type='submit', value='Submit')
