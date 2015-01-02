@@ -11,7 +11,8 @@ angular.module('writeonMvpStep1App')
         console.log(data);
     });
 
-    API.User.getUser('writeonmvpstep1-2@test.com').then(function(data){
+    API.User.getUser('writeonmvpstep1-3@test.com').then(function(data){
+        $scope.usermodel = new User(data);
         console.log(data);
     });
 
