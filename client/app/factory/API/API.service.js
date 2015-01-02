@@ -27,7 +27,7 @@ angular.module('writeonMvpStep1App')
                       });
 
       return r.getUser({username: userid}).$promise.then(function(data) {
-        return new User(data); //do we want to tie the model to the service, or do this in the controller?
+        return new User(data);
       });
     };
 

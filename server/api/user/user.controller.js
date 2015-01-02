@@ -32,8 +32,9 @@ exports.signup = function(req, res) {
 //not secured to the same ip
 exports.getuser = function(req, res){
   console.log("in getuser");
+  var username = req.param("username");
   var couchService = couchDbHandlers.CouchDBService;
-  couchService.getUser(req, res, function(err, result){
+  couchService.getUser(username, function(err, result){
     if (!err){
       res.send(result);
     } else {

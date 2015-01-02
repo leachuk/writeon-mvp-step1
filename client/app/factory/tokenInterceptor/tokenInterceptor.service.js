@@ -11,7 +11,7 @@ angular.module('writeonMvpStep1App')
     return {
       request : function(config) {
         // do something on success
-        console.log('tokenInterceptor, request');
+        //console.log('tokenInterceptor, request');
         //console.log(config);
         config.headers = config.headers || {};
         //console.log($window.localStorage.getItem('writeon.authtoken'));
@@ -19,7 +19,7 @@ angular.module('writeonMvpStep1App')
           config.headers.Authorization = 'Bearer ' + $window.localStorage.getItem('writeon.authtoken')
         };
 
-        console.log(config);
+        //console.log(config);
         return config;
       },
 

@@ -110,19 +110,16 @@ CouchDBService.prototype.createNewUserDatabase = function(dbname, useremail, use
 
 };
 
-CouchDBService.prototype.getUser = function(req, res, callback){
-  var username = req.param('username');
+CouchDBService.prototype.getUser = function(username, callback){
   console.log("couchdb service getUser, username: " + username);
   var _users = couchnano.db.use('_users');
   _users.get('org.couchdb.user:' +  username, function(err, body) {
     if (!err) {
       console.log(new UserModel(body));
       callback(null, new UserModel(body));
-      //return res.status(200).send(body);
     }else{
       console.log(err);
       callback(err, null);
-      //return res.status(404).send('user name not found');
     }
   });  
 };
@@ -148,6 +145,20 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 		callback(err,body);
 	});
 };
+
+//Article and Content Services
+CouchDBService.prototype.saveArticle = function(jsondata, doctitle, callback){
+	var userDb = couchnano.use('writeonmvpstep1-1$test+com'); //todo replace with users dbname
+	userDb.insert(jsondata, doctitle, function(err, body){
+		if(!err) {
+			console.log(body);
+		}else{
+			console.log(err);
+		}
+
+	});
+};
+
 exports.CouchDBService = new CouchDBService;
 
 
