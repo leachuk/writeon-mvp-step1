@@ -5,6 +5,7 @@ var _ = require('lodash');
 var config = require('server/config/environment');
 var couchnano = require("nano")(config.couchuri);
 var async = require('async');
+var UserModel = require('server/models/User');
 
 function CouchDBService(){};
 
@@ -115,8 +116,8 @@ CouchDBService.prototype.getUser = function(req, res, callback){
   var _users = couchnano.db.use('_users');
   _users.get('org.couchdb.user:' +  username, function(err, body) {
     if (!err) {
-      console.log(body);
-      callback(null, body);
+      console.log(new UserModel(body));
+      callback(null, new UserModel(body));
       //return res.status(200).send(body);
     }else{
       console.log(err);
