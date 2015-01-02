@@ -11,4 +11,8 @@ angular.module('writeonMvpStep1App')
         console.log(data);
     });
 
+    API.User.getUser('writeonmvpstep1-2@test.com').then(function(data){
+        console.log(data);
+    });
+
   });

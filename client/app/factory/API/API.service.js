@@ -5,6 +5,7 @@ angular.module('writeonMvpStep1App')
     
     var service = {};
 
+    //Article Service
     service.Article = {};
     service.Article.getArticle = function(doctype,accountId) {
       var r=$resource('/api/articles/:type/:id', {},
@@ -14,6 +15,19 @@ angular.module('writeonMvpStep1App')
 
       return r.getArticle({type: doctype,id: accountId}).$promise.then(function(data) {
         return new Article(data); //do we want to tie the model to the service, or do this in the controller?
+      });
+    };
+
+    //User Service
+    service.User = {};
+    service.User.getUser = function(userid) {
+      var r=$resource('/api/users/getuser/:username', {},
+                      {
+                          getUser: { method: 'GET', params: {username: '' }}
+                      });
+
+      return r.getUser({username: userid}).$promise.then(function(data) {
+        return new User(data); //do we want to tie the model to the service, or do this in the controller?
       });
     };
 

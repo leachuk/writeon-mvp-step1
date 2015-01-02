@@ -36,6 +36,7 @@ module.exports = function(app) {
                                                                    '/api/users/signin',
                                                                    '/api/auths/checktoken',
                                                                    '/api/auths/getuser',
+                                                                   new RegExp('/api/users/getuser/.*'),
                                                                    new RegExp('/api/articles/.*'),
                                                                    '/services/couchDbHandler']}));
   

@@ -30,8 +30,8 @@ exports.signup = function(req, res) {
 
 //testing authentication endpoint
 //not secured to the same ip
-exports.testgetuser = function(req, res){
-  console.log("in testgetuser");
+exports.getuser = function(req, res){
+  console.log("in getuser");
   var couchService = couchDbHandlers.CouchDBService;
   couchService.getUser(req, res, function(err, result){
     if (!err){

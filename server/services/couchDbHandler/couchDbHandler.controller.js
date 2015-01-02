@@ -110,8 +110,8 @@ CouchDBService.prototype.createNewUserDatabase = function(dbname, useremail, use
 };
 
 CouchDBService.prototype.getUser = function(req, res, callback){
-  var username = req.body.username;
-  console.log(username);
+  var username = req.param('username');
+  console.log("couchdb service getUser, username: " + username);
   var _users = couchnano.db.use('_users');
   _users.get('org.couchdb.user:' +  username, function(err, body) {
     if (!err) {

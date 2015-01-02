@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.post('/signup', controller.signup);
 router.post('/signin', controller.signin);
-router.post('/getuser', controller.testgetuser);
+router.get('/getuser/:username', controller.getuser);
 router.post('/authenticate', controller.authenticate);
 
 module.exports = router;

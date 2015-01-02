@@ -8,6 +8,7 @@ var Article = function (obj) {
     self.CreatedDate = obj.CreatedDate ? obj.CreatedDate : null;
     self.LastUpdatedDate = obj.LastUpdatedDate ? obj.LastUpdatedDate : null;
     self.LastUpdatedDateFormatted = obj.LastUpdatedDateFormatted ? obj.LastUpdatedDateFormatted : null;
+    self.TitleImagePath = obj.TitleImagePath ? obj.TitleImagePath : null;
 
     return self;
 }
