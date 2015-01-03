@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .controller('CreateArticleCtrl', function ($scope, $rootScope, authenticationService, API) {
+  .controller('CreateArticleCtrl', function ($scope, $rootScope, $q, authenticationService, API) {
 
     $scope.article = {
     	bodyText :''
@@ -21,16 +21,18 @@ angular.module('writeonMvpStep1App')
                                         Title: title, 
                                         BodyText: bodyText
                                         });
-        
+
         console.log(articleModel);
 
-        API.User.getUser(rootscope.user.username).then(function(data){
-            $scope.usermodel = new User(data);
-            console.log(data);
-            API.Article.saveArticle($scope.usermodel, articleModel).then(function(data){
-                console.log(data);
+        //save article
+        API.User.getUser(rootscope.user.username)
+            .then( function( userdata ){
+                $scope.usermodel = new User(userdata);
+                console.log(userdata);
+                return API.Article.saveArticle($scope.usermodel, articleModel);
+            }).then( function( articledata ){
+                console.log(articledata);
             });
-        });
     };
 
   });
