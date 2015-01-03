@@ -4,6 +4,7 @@ function DbUtils(){};
 
 DbUtils.prototype.convertToDbName = function(inName){
 	console.log("in convertToDbName");
+	console.log(inName);
 
 	var dbName = inName;
 	//dbName is to be the email address with @ converted to $ (couchdb requirement)

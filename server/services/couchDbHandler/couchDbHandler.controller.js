@@ -149,22 +149,21 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 };
 
 //Article and Content Services
-CouchDBService.prototype.saveArticle = function(tablename, jsondata, callback){
+CouchDBService.prototype.saveArticle = function(tablename, jsondata, doctitle, callback){
 	console.log("in CouchDBService, saveArticle");
 	console.log(jsondata);
 	console.log(tablename);
 
 	var dbtable = _dbUtils.convertToDbName(tablename);
-	var doctitle = jsondata.Title;
-
 	var _userDb = couchnano.use(dbtable); //todo replace with users dbname
-	_userDb.insert(jsondata, doctitle, function(err, body){
+	_userDb.insert(jsondata, doctitle, function (err, body, headers){
 		if(!err) {
 			console.log(body);
 		}else{
 			console.log(err);
 		}
 
+		callback(err, body);
 	});
 };
 
