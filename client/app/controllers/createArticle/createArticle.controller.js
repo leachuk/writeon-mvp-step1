@@ -16,6 +16,10 @@ angular.module('writeonMvpStep1App')
         var rootscope = $rootScope;
         var title = $scope.article.title;
         var bodyText = $scope.article.bodyText;
+        var usermodel = {};
+        usermodel.Name = rootscope.user.username;
+
+        $scope.usermodel = usermodel; //for test display only
 
         var articleModel = new Article({
                                         Title: title, 
@@ -25,14 +29,9 @@ angular.module('writeonMvpStep1App')
         console.log(articleModel);
 
         //save article
-        API.User.getUser(rootscope.user.username)
-            .then( function( userdata ){
-                $scope.usermodel = new User(userdata);
-                console.log(userdata);
-                return API.Article.saveArticle($scope.usermodel, articleModel);
-            }).then( function( articledata ){
+        API.Article.saveArticle(usermodel, articleModel).then( function( articledata ){
                 console.log(articledata);
-            });
+        });
     };
 
   });
