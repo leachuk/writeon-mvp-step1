@@ -1,7 +1,10 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .controller('UserHomeCtrl', function ($scope, $http) {
+  .controller('UserHomeCtrl', function ($scope, $rootScope, $http) {
+  	var rootscope = $rootScope;
+  	rootscope.user = {};
+
     $scope.message = 'Hello user home';
     $scope.user = {};
     var data = {};
@@ -11,6 +14,7 @@ angular.module('writeonMvpStep1App')
 		    .success(function(data, status, headers, config) {
 				console.log(data);
 				$scope.user.details = data;
+				rootscope.user = data;
 				//new redirect to users home page, where token is checked for
 			})
 			.error(function(data, status, headers, config) {

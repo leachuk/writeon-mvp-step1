@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .controller('CreateArticleCtrl', function ($scope, authenticationService, API) {
+  .controller('CreateArticleCtrl', function ($scope, $rootScope, authenticationService, API) {
+
     $scope.article = {
     	bodyText :''
     };
@@ -11,23 +12,25 @@ angular.module('writeonMvpStep1App')
         console.log(data);
     });
 
-    API.User.getUser('writeonmvpstep1-3@test.com').then(function(data){
-        $scope.usermodel = new User(data);
-        console.log(data);
-    });
-
     $scope.submitArticle = function(){
+        var rootscope = $rootScope;
         var title = $scope.article.title;
         var bodyText = $scope.article.bodyText;
-        var jsondata = {}; 
-        jsondata.Article = {Title: title, BodyText: bodyText}; //Todo use article model
-        console.log(jsondata);
-        console.log($scope.usermodel);
 
-        API.Article.saveArticle($scope.usermodel, jsondata).then(function(data){
+        var articleModel = new Article({
+                                        Title: title, 
+                                        BodyText: bodyText
+                                        });
+        
+        console.log(articleModel);
+
+        API.User.getUser(rootscope.user.username).then(function(data){
+            $scope.usermodel = new User(data);
             console.log(data);
+            API.Article.saveArticle($scope.usermodel, articleModel).then(function(data){
+                console.log(data);
+            });
         });
-
     };
 
   });

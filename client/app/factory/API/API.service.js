@@ -18,9 +18,9 @@ angular.module('writeonMvpStep1App')
       });
     };
 
-    service.Article.saveArticle = function(usermodel, jsondata) {
+    service.Article.saveArticle = function(usermodel, articlemodel) {
       var dataModel = {};
-      dataModel.Article = jsondata.Article;
+      dataModel.Article = articlemodel;
       dataModel.User = usermodel;
       console.log(dataModel);
       var r=$resource('/api/articles/saveArticle', {},
