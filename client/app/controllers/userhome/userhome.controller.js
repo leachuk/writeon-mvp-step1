@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .controller('UserHomeCtrl', function ($scope, $rootScope, $http) {
+  .controller('UserHomeCtrl', function ($scope, $rootScope, $http, $location) {
   	var rootscope = $rootScope;
   	rootscope.user = {};
 
@@ -19,10 +19,12 @@ angular.module('writeonMvpStep1App')
 			})
 			.error(function(data, status, headers, config) {
 				console.log('Authorization error');
+				window.location = "/";
 				//may want to redirect to login or index page here
 				//console.log(data);
 			});
 	} else {
-		$scope.message = 'invalid username';
+		//$scope.message = 'invalid username';
+		$location.path("/");
 	}
   });

@@ -13,7 +13,7 @@ angular.module('writeonMvpStep1App')
     });
 
     $scope.submitArticle = function(){
-        var rootscope = $rootScope;
+        var rootscope = $rootScope; //rootscope contains the username decoded from the secure auth token
         var title = $scope.article.title;
         var bodyText = $scope.article.bodyText;
         var usermodel = {};
