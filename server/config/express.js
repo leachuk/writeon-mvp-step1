@@ -36,7 +36,7 @@ module.exports = function(app) {
                                                                    '/api/users/signin',
                                                                    '/api/auths/checktoken',
                                                                    '/api/auths/getuser',
-                                                                   //new RegExp('/api/articles/.*'),//temp non secured
+                                                                   new RegExp('/api/articles/.*'),//temp non secured
                                                                    '/services/couchDbHandler']}));
   
   if ('production' === env) {

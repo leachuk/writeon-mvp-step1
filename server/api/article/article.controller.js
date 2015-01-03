@@ -5,6 +5,10 @@ require('rootpath')();
 var _ = require('lodash');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 
+//remove once refactored to couchDbHandlers
+var config = require('server/config/environment');
+var couchnano = require("nano")(config.couchuri);
+
 // Get list of articles
 exports.index = function(req, res) {
   res.json([{articles: 'index test'}]);
@@ -47,6 +51,42 @@ exports.saveArticle = function(req, res) {
 	});
 
 	//res.send({result: "document created"});
+};
 
+exports.updateArticle = function(req,res){
+    var db = couchnano.use("db_app_document");
+    var docname = req.body.docname;
+    var fieldparam = req.body.field;
+    var valueparam = req.body.value;
+    console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
+    var returnbody = null;
+    db.atomic("example",
+        "in-place",
+        docname,
+        [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
+        function (error, response) {
+            if (error) {
+                console.log("update error");
+            }else{
+                returnbody = response;
+                console.log("update worked:");
+                console.log(response);
+            }
+        });
+    
+    res.send(returnbody);
+//    db.update = function(obj, key, callback) {
+//     var db = this;
+//     db.get(key, function (error, existing) { 
+//      if(!error) obj._rev = existing._rev;
+//      db.insert(obj, key, callback);
+//     });
+//    }
+//    
+//    db.update({title: 'The new one 3'}, docname, function(err, res) {
+//     if (err) return console.log('No update!');
+//     console.log('Updated!');
+//    });
+//    res.send("saved \n");
 };
 
