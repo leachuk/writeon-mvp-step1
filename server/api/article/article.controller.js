@@ -4,6 +4,7 @@ require('rootpath')();
 
 var _ = require('lodash');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchService = couchDbHandlers.CouchDBService;
 
 //remove once refactored to couchDbHandlers
 var config = require('server/config/environment');
@@ -17,10 +18,21 @@ exports.index = function(req, res) {
 exports.getArticle = function(req, res) {
 	var type = req.param("type");
 	var id = req.param("id");
+	var dbTable = req.param("dbtable"); //todo: change to email when configured
 	console.log("getArticle type: " + type);
 	console.log("getArticle id: " + id);
 	
-	res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
+	couchService.getArticle(dbTable, type, id, function(err, result){
+	    if (!err){
+	      console.log(result);
+	      res.send(result);
+	    } else {
+	      console.log(err);
+	      res.send(err);
+	    }
+	});
+
+	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
 };
 
 exports.saveArticle = function(req, res) {
@@ -35,8 +47,6 @@ exports.saveArticle = function(req, res) {
 	console.log("title: " + title);
 	console.log("dbTable: " + dbTable);
 
-	var couchService = couchDbHandlers.CouchDBService;
-
 	console.log(articleData);
 	console.log(dbTable);
 
@@ -49,45 +59,32 @@ exports.saveArticle = function(req, res) {
 	      res.send(err);
 	    }
 	});
-
-	//res.send({result: "document created"});
 };
 
-//refactor to service
 exports.updateArticle = function(req,res){
-    var db = couchnano.use("db_app_document");
     var docname = req.body.docname;
     var fieldparam = req.body.field;
     var valueparam = req.body.value;
-    console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
-    var returnbody = null;
-    db.atomic("example",
-        "in-place",
-        docname,
-        [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
-        function (error, response) {
-            if (error) {
-                console.log("update error");
-            }else{
-                returnbody = response;
-                console.log("update worked:");
-                console.log(response);
-            }
-        });
-    
-    res.send(returnbody);
+
+    couchService.updateArticle("username_example", docname, fieldparam, valueparam, function(err, result){
+    	if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}
+    });
 };
 
-//refactor to service
 exports.listAllUserArticles = function(req, res){
-	var db = couchnano.use("writeonmvpstep1-3$test+com");
-	db.list(function(err, body) {
-		if (!err) {
-			body.rows.forEach(function(doc) {
-			  console.log(doc);
-			});
+	var username = req.param("username");
+	console.log("username: " + username);
+
+	couchService.listAllUserArticles(username, function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
 		}
 	});
-	res.send({result: "ok"});
 };
 

@@ -167,6 +167,61 @@ CouchDBService.prototype.saveArticle = function(tablename, jsondata, doctitle, c
 	});
 };
 
+CouchDBService.prototype.getArticle = function(username, type, id, callback){
+	var dbtable = _dbUtils.convertToDbName(username);
+	var db = couchnano.use(dbtable);
+	db.get(id, { revs_info: true, revisions: true }, function(err, body) {
+	  if (!err) {
+	    console.log(body);
+	  }else{
+	  	console.log(err);
+	  }
+
+	  callback(err, body);
+	});
+};
+
+CouchDBService.prototype.listAllUserArticles = function(username, callback){
+	//var listResultJson = null;
+	//var listResultArray = [];
+	var dbtable = _dbUtils.convertToDbName(username);
+	var db = couchnano.use(dbtable);
+	db.list(function(err, body) {
+		if (!err) {
+			// body.rows.forEach(function(doc) {
+			//   listResultArray.push(doc);
+			//   console.log(doc);
+			// });
+			console.log(body);
+		}else{
+			console.log(err);
+		}
+
+    	callback(err, body);
+	});
+};
+
+CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
+//change to batch field/param update. looks like an array of json objects can be passed.
+	var db = couchnano.use("db_app_document");
+    console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
+    var returnbody = null;
+    db.atomic("example",
+        "in-place",
+        docname,
+        [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
+        function (err, body) {
+            if (!err) {
+                console.log(body);
+            }else{
+                console.log(err);
+            }
+
+            callback(err, body);
+        });
+    
+};
+
 exports.CouchDBService = new CouchDBService;
 
 
