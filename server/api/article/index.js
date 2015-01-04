@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.get('/', controller.index);
 router.get('/:type/:id', controller.getArticle);
+router.get('/listAllUserArticles', controller.listAllUserArticles);
 router.post('/saveArticle', controller.saveArticle);
 router.post('/updateArticle', controller.updateArticle);
 

@@ -53,6 +53,7 @@ exports.saveArticle = function(req, res) {
 	//res.send({result: "document created"});
 };
 
+//refactor to service
 exports.updateArticle = function(req,res){
     var db = couchnano.use("db_app_document");
     var docname = req.body.docname;
@@ -75,18 +76,18 @@ exports.updateArticle = function(req,res){
         });
     
     res.send(returnbody);
-//    db.update = function(obj, key, callback) {
-//     var db = this;
-//     db.get(key, function (error, existing) { 
-//      if(!error) obj._rev = existing._rev;
-//      db.insert(obj, key, callback);
-//     });
-//    }
-//    
-//    db.update({title: 'The new one 3'}, docname, function(err, res) {
-//     if (err) return console.log('No update!');
-//     console.log('Updated!');
-//    });
-//    res.send("saved \n");
+};
+
+//refactor to service
+exports.listAllUserArticles = function(req, res){
+	var db = couchnano.use("writeonmvpstep1-3$test+com");
+	db.list(function(err, body) {
+		if (!err) {
+			body.rows.forEach(function(doc) {
+			  console.log(doc);
+			});
+		}
+	});
+	res.send({result: "ok"});
 };
 
