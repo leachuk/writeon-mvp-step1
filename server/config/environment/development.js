@@ -19,5 +19,6 @@ module.exports = {
                       + "@" + _couch.hostname
                       + ":" + _couch.port,
 
-  seedDB: true
+  seedDB: true,
+  dbNameArticles: "article_documents"
 };

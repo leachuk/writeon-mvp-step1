@@ -17,7 +17,7 @@ exports.signup = function(req, res) {
   console.log("Signup with email["+ useremail +"], password["+ userpassword +"]");
   
   //Include use-case where user already exists.
-  couchService.createNewUserDatabase(databasename,useremail,userpassword, res, function(result){
+  couchService.createNewUserDatabase(useremail, userpassword, res, function(result){
     res.send(result);
   });
 

@@ -4,10 +4,10 @@ require('rootpath')()
 var _ = require('lodash');
 var config = require('server/config/environment');
 var couchnano = require("nano")(config.couchuri);
+var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 var UserModel = require('server/models/User');
-var dbUtils = require('server/services/dbUtil/dbUtil.controller');
-var _dbUtils = dbUtils.DbUtils;
+var _dbUtils = require('server/services/dbUtil/dbUtil.controller').DbUtils;
 
 function CouchDBService(){};
 
@@ -32,14 +32,9 @@ CouchDBService.prototype.asyncTest = function(value1, value2, func_callback){
 	});
 };
 
-CouchDBService.prototype.createNewUserDatabase = function(dbname, useremail, userpassword, res, func_callback){
+CouchDBService.prototype.createNewUserDatabase = function(useremail, userpassword, res, func_callback){
 //When a user signs up, create a new database for them and grant them r/w access
-	var dbname = useremail;
-	//dbname is to be the email address with @ converted to $ (couchdb requirement)
-	var dbname = dbname.replace("@","$"); 
-	//replace '.' with '+'
-	var dbname = dbname.replace(".","+");
-
+	var dbname = dbNameArticles;
 	//var returnMessage = {};
 	
 	console.log("createNewUserDatabase: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
@@ -64,25 +59,25 @@ CouchDBService.prototype.createNewUserDatabase = function(dbname, useremail, use
 				callback(null,returnMessage);	
 			});
 	    },
-	    createUserDb: function(callback){
-	    	var returnMessage = {};
-			//create db for user
-			couchnano.db.create(dbname, function(error, body, headers){
-				if (error) {
-					console.log(error.message);
-					//return res.status(error["status-code"]).send(error.message);
-					returnMessage["ok"] = false;
-					returnMessage["userDbCreatedMessage"] = error.message;
-				} else {
-					returnMessage["ok"] = true;
-				}
-				console.log(body);
-				callback(null,returnMessage);
-				//response.send(body, 200);
-				//res.status(200).send(body);
+	  //   createUserDb: function(callback){
+	  //   	var returnMessage = {};
+			// //create db for user
+			// couchnano.db.create(dbname, function(error, body, headers){
+			// 	if (error) {
+			// 		console.log(error.message);
+			// 		//return res.status(error["status-code"]).send(error.message);
+			// 		returnMessage["ok"] = false;
+			// 		returnMessage["userDbCreatedMessage"] = error.message;
+			// 	} else {
+			// 		returnMessage["ok"] = true;
+			// 	}
+			// 	console.log(body);
+			// 	callback(null,returnMessage);
+			// 	//response.send(body, 200);
+			// 	//res.status(200).send(body);
 
-			});
-	    },
+			// });
+	  //   },
 	    createUserSecurity: function(callback){
 	    	var returnMessage = {};
 			//update the db security object
@@ -154,7 +149,7 @@ CouchDBService.prototype.saveArticle = function(tablename, jsondata, doctitle, c
 	console.log(jsondata);
 	console.log(tablename);
 
-	var dbtable = _dbUtils.convertToDbName(tablename);
+	var dbtable = dbNameArticles;
 	var _userDb = couchnano.use(dbtable); //todo replace with users dbname
 	_userDb.insert(jsondata, doctitle, function (err, body, headers){
 		if(!err) {
@@ -168,7 +163,7 @@ CouchDBService.prototype.saveArticle = function(tablename, jsondata, doctitle, c
 };
 
 CouchDBService.prototype.getArticle = function(username, type, id, callback){
-	var dbtable = _dbUtils.convertToDbName(username);
+	var dbtable = dbNameArticles;
 	var db = couchnano.use(dbtable);
 	db.get(id, { revs_info: true, revisions: true }, function(err, body) {
 	  if (!err) {
@@ -184,7 +179,7 @@ CouchDBService.prototype.getArticle = function(username, type, id, callback){
 CouchDBService.prototype.listAllUserArticles = function(username, callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
-	var dbtable = _dbUtils.convertToDbName(username);
+	var dbtable = dbNameArticles;
 	var db = couchnano.use(dbtable);
 	db.list(function(err, body) {
 		if (!err) {
@@ -203,7 +198,8 @@ CouchDBService.prototype.listAllUserArticles = function(username, callback){
 
 CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
 //change to batch field/param update. looks like an array of json objects can be passed.
-	var db = couchnano.use("db_app_document");
+	var dbtable = dbNameArticles;
+	var db = couchnano.use(dbtable);
     console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
     var returnbody = null;
     db.atomic("example",
@@ -220,6 +216,29 @@ CouchDBService.prototype.updateArticle = function(username, docname, fieldparam,
             callback(err, body);
         });
     
+};
+
+CouchDBService.prototype.insertArticle = function(username, docname, field, value, callback) {
+	var dbtable = dbNameArticles;
+	var db = couchnano.use(dbtable);
+	var json = {fieldfoo: value};
+
+	db.insert(json, docname, function (err, body) {
+    if(!err) {
+    	console.log(body);
+    } else {
+		console.log(err);
+    }
+    // db.insert({foo: "bar", "_rev": body.rev}, "foobar", 
+    // function (error, response) {
+    //   if(!error) {
+    //     console.log("it worked");
+    //   } else {
+    //     console.log("sad panda");
+    //   }
+    // });
+    callback(err, body);
+  });
 };
 
 exports.CouchDBService = new CouchDBService;
