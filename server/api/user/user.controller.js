@@ -97,16 +97,20 @@ exports.signin = function(req, res){
   var clientip = req.ip;
   var couchService = couchDbHandlers.CouchDBService;
 
-  couchService.authenticate(username, password, function(err, result){
+  couchService.authenticate(username, password, function(err, result, headers){
     if (!err){
       console.log("success");
+      console.log(headers);
+        var cookieheader = headers['set-cookie'];
         var profile = { username: result.name,
+                        cookie: cookieheader[0],
                         ok: result.ok,
                         roles: result.roles,
                         ip: clientip };
         // We are encoding the profile inside the token
         var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
         res.json({ token: token });
+        //res.send(result);
     }else{
       console.log("error:" + err);
       res.status(401).send(err.message);

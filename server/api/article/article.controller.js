@@ -18,11 +18,11 @@ exports.index = function(req, res) {
 exports.getArticle = function(req, res) {
 	var type = req.param("type");
 	var id = req.param("id");
-	var dbTable = req.param("dbtable"); //todo: change to email when configured
+	//var dbTable = req.param("dbtable");
 	console.log("getArticle type: " + type);
 	console.log("getArticle id: " + id);
 	
-	couchService.getArticle(dbTable, type, id, function(err, result){
+	couchService.getArticle(type, id, function(err, result){
 	    if (!err){
 	      console.log(result);
 	      res.send(result);
@@ -103,4 +103,15 @@ exports.insertArticle = function(req, res){
 		}
 	});
 };
+
+exports.testCookie = function(req, res){
+
+	couchService.testCookie(req, res, function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}
+	});
+}
 
