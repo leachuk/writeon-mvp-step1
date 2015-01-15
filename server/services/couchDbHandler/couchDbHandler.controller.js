@@ -8,8 +8,7 @@ var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 var UserModel = require('server/models/User');
 var _dbUtils = require('server/services/dbUtil/dbUtil.controller').DbUtils;
-
-var authHandlers = require('server/services/auth/auth.controller');
+var _Utils = require('server/services/Util/util.controller').Utils;
 
 function CouchDBService(){};
 
@@ -247,49 +246,23 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 	console.log("In testCookie");
 	var token = null;
 	var parts = req.headers.authorization.split(' ');
-	var authService = authHandlers.AuthService;
+	var secret = req.app.secret;
 	var clientip = req.ip;
 	var returnSuccess = null;
 	var returnError = null;
 
 	async.series({
-	    authenticateToken: function(callback){
-			if (parts.length == 2) {
-				var scheme = parts[0];
-				var credentials = parts[1];
-
-				if (/^Bearer$/i.test(scheme)) {
-				    token = credentials;
-				    
-				    authService.decodetoken(req, token, function(result){
-				      if (result == null){
-				        console.log("Invalid token");
-				        return next(new Error("Bad token. Permission denied."));
-				        callback(new Error("Bad token. Permission denied."),null);
-				      } else {
-				        returnSuccess = result;
-				        callback(null,result);
-				      }
-				    });
-				} else {
-				  console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
-				  return next(new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]'));
-				  returnError = new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]');
-				  callback(returnError,null);
-				}
-				} else {
-				console.log("Format is Authorization: Bearer [token]");
-				return next(new UnauthorizedError('credentials_bad_format', {
-				  message : 'Format is Authorization: Bearer [token]'
-				}));
-				returnError = new UnauthorizedError('credentials_bad_format', {
-				  message : 'Format is Authorization: Bearer [token]'
-				});
-				callback(returnError,null);
-			}
-			console.log(returnSuccess.cookie);
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	console.log("authToken result:");
+		    	console.log(result);
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
 	    },
 	    getSessionWithCookie: function(callback){
+	    	console.log("getSessionWithCookie result:");
+	    	console.log(returnSuccess.cookie);
 			var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
 			var returnSuccess2 = null;
 			var returnError2 = null;
@@ -299,10 +272,11 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 					console.log(session);
 					console.log('user is %s and has these roles: %j',
 						session.userCtx.name, session.userCtx.roles);
+
+					callback(returnError2, returnSuccess2);
 				} else {
 					returnError2 = err;
 				}
-				callback(returnError2, returnSuccess2);
 			});	
 	    }
 	},

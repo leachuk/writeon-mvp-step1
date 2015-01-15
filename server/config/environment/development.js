@@ -14,11 +14,12 @@ module.exports = {
   mongo: {
     uri: 'mongodb://localhost/writeonmvpstep1-dev'
   },
-  couchuri: "http://" + _couch.adminusername
+  couchuriadmin: "http://" + _couch.adminusername
                       + ":" + _couch.adminpassword
                       + "@" + _couch.hostname
                       + ":" + _couch.port,
-
+  couchuri: "http://" + _couch.hostname
+                      + ":" + _couch.port,
   seedDB: true,
   dbNameArticles: "article_documents"
 };
