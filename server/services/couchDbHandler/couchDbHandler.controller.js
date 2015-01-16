@@ -145,21 +145,43 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 };
 
 //Article and Content Services
-CouchDBService.prototype.saveArticle = function(tablename, jsondata, doctitle, callback){
+CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
 	console.log("in CouchDBService, saveArticle");
 	console.log(jsondata);
-	console.log(tablename);
+
+	var returnSuccess = null;
+	var token = null;
+	var parts = req.headers.authorization.split(' ');
+	var secret = req.app.secret;
 
 	var dbtable = dbNameArticles;
-	var _userDb = couchnano.use(dbtable); //todo replace with users dbname
-	_userDb.insert(jsondata, doctitle, function (err, body, headers){
-		if(!err) {
-			console.log(body);
-		}else{
-			console.log(err);
-		}
 
-		callback(err, body);
+	async.series({
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	//console.log("authToken result:");
+		    	//console.log(result);
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
+	    },
+	    createArticle: function(callback){
+	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
+			var couchDb = couchsetup.use(dbtable);
+			couchDb.insert(jsondata, doctitle, function (err, body, headers){
+				if(!err) {
+					console.log(body);
+				}else{
+					console.log(err);
+				}
+
+				callback(err, body);
+			});
+	    }
+	},
+	function(err, results) {
+	    console.log(results);
+	    func_callback(err, results);
 	});
 };
 
@@ -254,8 +276,8 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 	async.series({
 	    authToken: function(callback){
 		    _Utils.authenticateToken(parts, secret, function(err, result){
-		    	console.log("authToken result:");
-		    	console.log(result);
+		    	//console.log("authToken result:");
+		    	//console.log(result);
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });

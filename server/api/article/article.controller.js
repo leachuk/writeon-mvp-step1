@@ -50,7 +50,7 @@ exports.saveArticle = function(req, res) {
 	console.log(articleData);
 	console.log(dbTable);
 
-	couchService.saveArticle(dbTable, articleData, title, function(err, result){
+	couchService.createArticle(req, articleData, title, function(err, result){
 	    if (!err){
 	      console.log(result);
 	      res.send(result);
