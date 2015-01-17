@@ -79,7 +79,7 @@ exports.listAllUserArticles = function(req, res){
 	var username = req.param("username");
 	console.log("username: " + username);
 
-	couchService.listAllUserArticles(username, function(err, result){
+	couchService.listAllUserArticles(req, username, function(err, result){
 		if(!err){
 			res.send(result);
 		}else{
