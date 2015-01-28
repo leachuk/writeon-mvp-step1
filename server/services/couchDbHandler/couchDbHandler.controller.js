@@ -251,7 +251,7 @@ CouchDBService.prototype.listAllUserArticles = function(req, username, func_call
 	    listArticles: function(callback){
 	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
 			var couchDb = couchsetup.use(dbtable);
-			couchDb.list(function(err, body) {
+			couchDb.list({key:"Test Title 1"},function(err, body) {
 				if (!err) {
 					// body.rows.forEach(function(doc) {
 					//   listResultArray.push(doc);
