@@ -10,6 +10,8 @@ var couchService = couchDbHandlers.CouchDBService;
 var config = require('server/config/environment');
 var couchnano = require("nano")(config.couchuri);
 
+var TestModel = require('server/models/JugglingModelTest');
+
 // Get list of articles
 exports.index = function(req, res) {
   res.json([{articles: 'index test'}]);
@@ -113,5 +115,24 @@ exports.testCookie = function(req, res){
 			res.send(err);
 		}
 	});
+}
+
+exports.testModel = function(req, res){
+
+	console.log("in testModel");
+
+	TestModel.create({title:'test title'}, function(err, result){
+		if(!err){
+			console.log("success");
+			console.log(result);
+			res.send(result);
+		}else{
+			console.log("error");
+			res.send(err);
+		}
+	});
+
+	//res.send("this:" + model);
+
 }
 
