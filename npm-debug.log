@@ -1,0 +1,29 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'uninstall',
+1 verbose cli   'jugglingdb-nano',
+1 verbose cli   '-save' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose node_modules/jugglingdb-nano unbuild
+5 info preuninstall jugglingdb-nano@0.0.1
+6 info uninstall jugglingdb-nano@0.0.1
+7 verbose true,/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules,/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules unbuild jugglingdb-nano@0.0.1
+8 info postuninstall jugglingdb-nano@0.0.1
+9 error Error: EACCES, unlink '/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules/jugglingdb-nano/node_modules/nano/node_modules/.bin/follow'
+9 error  { [Error: EACCES, unlink '/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules/jugglingdb-nano/node_modules/nano/node_modules/.bin/follow']
+9 error   errno: 3,
+9 error   code: 'EACCES',
+9 error   path: '/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules/jugglingdb-nano/node_modules/nano/node_modules/.bin/follow' }
+10 error Please try running this command again as root/Administrator.
+11 error System Darwin 14.0.0
+12 error command "/usr/local/bin/node" "/usr/local/bin/npm" "uninstall" "jugglingdb-nano" "-save"
+13 error cwd /Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1
+14 error node -v v0.10.32
+15 error npm -v 1.4.28
+16 error path /Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules/jugglingdb-nano/node_modules/nano/node_modules/.bin/follow
+17 error code EACCES
+18 error errno 3
+19 error stack Error: EACCES, unlink '/Users/stewartleach/projects/programming-projects/git/writeon-mvp-step1/node_modules/jugglingdb-nano/node_modules/nano/node_modules/.bin/follow'
+20 verbose exit [ 3, true ]
