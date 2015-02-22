@@ -14,5 +14,6 @@ router.post('/insertArticle', controller.insertArticle);
 
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);
+router.get('/testform', controller.testForm);
 
 module.exports = router;

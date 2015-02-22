@@ -11,6 +11,7 @@ var config = require('server/config/environment');
 var couchnano = require("nano")(config.couchuri);
 
 var TestModel = require('server/models/JugglingModelTest');
+var ArticleModel = require('server/models/Article');
 
 // Get list of articles
 exports.index = function(req, res) {
@@ -115,13 +116,13 @@ exports.testCookie = function(req, res){
 			res.send(err);
 		}
 	});
-}
+};
 
 exports.testModel = function(req, res){
 
 	console.log("in testModel");
 
-	TestModel.create({title:'test title'}, function(err, result){
+	ArticleModel.create(req.body, function(err, result){
 		if(!err){
 			console.log("success");
 			console.log(result);
@@ -133,6 +134,27 @@ exports.testModel = function(req, res){
 	});
 
 	//res.send("this:" + model);
+};
 
-}
+exports.testForm = function(req, res){
+	var forms = require('forms');
+	var fields = forms.fields;
+	var validators = forms.validators;
+
+	var reg_form = forms.create({
+	    username: fields.string({ required: true }),
+	    password: fields.password({ required: validators.required('You definitely want a password') }),
+	    confirm:  fields.password({
+	        required: validators.required('don\'t you know your own password?'),
+	        validators: [validators.matchField('password')]
+	    }),
+	    email: fields.email()
+	});
+
+	console.log(TestModel.schema.definitions.JugglingModelTest.properties.blaa);
+	var model_form = forms.create(TestModel);
+
+	res.send(model_form.toHTML());
+};
+
 
