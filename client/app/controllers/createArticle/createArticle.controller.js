@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .controller('CreateArticleCtrl', function ($scope, $rootScope, $q, authenticationService, API) {
+  .controller('CreateArticleCtrl', function ($scope, $rootScope, $q, $moment, authenticationService, API) {
 
     $scope.article = {
         title: '',
@@ -27,7 +27,8 @@ angular.module('writeonMvpStep1App')
             bodyText: bodyText,
             authorName: rootscope.user.username,
             authorEmail: rootscope.user.username,
-            createdDate: Date.now()
+            createdDate: Date.now(),
+            createdDateFormatted: $moment().format('MMMM Do YYYY, H:mm:ss')
         });
 
         console.log("In submitArticle: articleModel >");

@@ -7,6 +7,7 @@ var Article = function (obj) {
     self.authorName = obj.authorName ? obj.authorName : null;
     self.authorEmail = obj.authorEmail ? obj.authorEmail : null;
     self.createdDate = obj.createdDate ? obj.createdDate : null;
+    self.createdDateFormatted = obj.createdDateFormatted ? obj.createdDateFormatted : null;
     self.lastUpdatedDate = obj.lastUpdatedDate ? obj.lastUpdatedDate : null;
     self.lastUpdatedDateFormatted = obj.lastUpdatedDateFormatted ? obj.lastUpdatedDateFormatted : null;
     self.titleImagePath = obj.titleImagePath ? obj.titleImagePath : null;

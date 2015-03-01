@@ -9,7 +9,7 @@ var Article = schema.define('Article', {
     authorName: { type: String },
     authorEmail:{ type: String},
     createdDate:{ type: Number,  default: Date.now },
-    createdDateFormatted:{ type: Number},
+    createdDateFormatted:{ type: String},
     published: 	{ type: Boolean, default: false, index: true }
 });
 

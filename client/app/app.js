@@ -5,7 +5,8 @@ angular.module('writeonMvpStep1App', [
   'ngResource',
   'ngSanitize',
   'ui.router',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'angular-momentjs'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   $urlRouterProvider
