@@ -42,25 +42,37 @@ exports.saveArticle = function(req, res) {
 	console.log("Article controller, saveArticle");
 	console.log(req.body);
 	console.log("save article");
-	var articleData = req.body.Article;
-	var title = req.body.Article.Title;
-	var dbTable = req.body.User.Name; //todo: change to email when configured
+	// var articleData = req.body.Article;
+	// var title = req.body.Article.Title;
+	// var dbTable = req.body.User.Name; //todo: change to email when configured
 
-	console.log(req.body.Article.Title);
-	console.log("title: " + title);
-	console.log("dbTable: " + dbTable);
+	// console.log(req.body.Article.Title);
+	// console.log("title: " + title);
+	// console.log("dbTable: " + dbTable);
 
-	console.log(articleData);
-	console.log(dbTable);
+	// console.log(articleData);
+	// console.log(dbTable);
 
-	couchService.createArticle(req, articleData, title, function(err, result){
-	    if (!err){
-	      console.log(result);
-	      res.send(result);
-	    } else {
-	      console.log(err);
-	      res.send(err);
-	    }
+	// couchService.createArticle(req, articleData, title, function(err, result){
+	//     if (!err){
+	//       console.log(result);
+	//       res.send(result);
+	//     } else {
+	//       console.log(err);
+	//       res.send(err);
+	//     }
+	// });
+
+	//using JugglingDb Model
+	ArticleModel.create(req.body, function(err, result){
+		if(!err){
+			console.log("success");
+			console.log(result);
+			res.send(result);
+		}else{
+			console.log("error");
+			res.send(err);
+		}
 	});
 };
 

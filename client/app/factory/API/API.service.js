@@ -14,21 +14,18 @@ angular.module('writeonMvpStep1App')
                       });
 
       return r.getArticle({type: doctype,id: accountId}).$promise.then(function(data) {
-        return new Article(data); //do we want to tie the model to the service, or do this in the controller?
+        return new Article(data); //do we want to tie the model to the service, or do this in the controller? Should be decoupled. Do in controller.
       });
     };
 
-    service.Article.saveArticle = function(usermodel, articlemodel) {
-      var dataModel = {};
-      dataModel.Article = articlemodel;
-      dataModel.User = usermodel;
-      console.log(dataModel);
+    service.Article.saveArticle = function(model) {
+      console.log(model);
       var r=$resource('/api/articles/saveArticle', {},
                       {
                           saveArticle: { method: 'POST', params: {}}
                       });
 
-      return r.saveArticle(dataModel).$promise.then(function(data) {
+      return r.saveArticle(model).$promise.then(function(data) {
         return data; 
       });
     };

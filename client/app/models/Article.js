@@ -1,14 +1,15 @@
 var Article = function (obj) {
     var self = this;
-
-    self.Title = obj.Title ? obj.Title : null;
-    self.BodyText = obj.BodyText ? obj.BodyText : null;
-    self.AuthorName = obj.AuthorName ? obj.AuthorName : null;
-    self.AuthorEmail = obj.AuthorEmail ? obj.AuthorEmail : null;
-    self.CreatedDate = obj.CreatedDate ? obj.CreatedDate : null;
-    self.LastUpdatedDate = obj.LastUpdatedDate ? obj.LastUpdatedDate : null;
-    self.LastUpdatedDateFormatted = obj.LastUpdatedDateFormatted ? obj.LastUpdatedDateFormatted : null;
-    self.TitleImagePath = obj.TitleImagePath ? obj.TitleImagePath : null;
+    //frontend model needs to map to backend model
+    self._id =  obj.title ? obj.title : null; //set to title. Will eventually need to convert this to an url friendly format
+    self.title = obj.title ? obj.title : null;
+    self.bodyText = obj.bodyText ? obj.bodyText : null;
+    self.authorName = obj.authorName ? obj.authorName : null;
+    self.authorEmail = obj.authorEmail ? obj.authorEmail : null;
+    self.createdDate = obj.createdDate ? obj.createdDate : null;
+    self.lastUpdatedDate = obj.lastUpdatedDate ? obj.lastUpdatedDate : null;
+    self.lastUpdatedDateFormatted = obj.lastUpdatedDateFormatted ? obj.lastUpdatedDateFormatted : null;
+    self.titleImagePath = obj.titleImagePath ? obj.titleImagePath : null;
 
     return self;
 }

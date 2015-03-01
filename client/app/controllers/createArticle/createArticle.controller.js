@@ -4,6 +4,7 @@ angular.module('writeonMvpStep1App')
   .controller('CreateArticleCtrl', function ($scope, $rootScope, $q, authenticationService, API) {
 
     $scope.article = {
+        title: '',
     	bodyText :''
     };
 
@@ -22,14 +23,18 @@ angular.module('writeonMvpStep1App')
         $scope.usermodel = usermodel; //for test display only
 
         var articleModel = new Article({
-                                        Title: title, 
-                                        BodyText: bodyText
-                                        });
+            title: title, 
+            bodyText: bodyText,
+            authorName: rootscope.user.username,
+            authorEmail: rootscope.user.username,
+            createdDate: Date.now()
+        });
 
+        console.log("In submitArticle: articleModel >");
         console.log(articleModel);
 
         //save article
-        API.Article.saveArticle(usermodel, articleModel).then( function( articledata ){
+        API.Article.saveArticle(articleModel).then( function( articledata ){
                 console.log(articledata);
         });
     };
