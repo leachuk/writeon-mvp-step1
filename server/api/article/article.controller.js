@@ -115,6 +115,23 @@ exports.listAllArticles = function(req, res){
 	});
 }
 
+exports.listByAuthor = function(req, res){
+	console.log("article.controller listByAuthor");
+
+	var username = req.param("username");
+	console.log("username:" + username);
+
+	ArticleModel.all({where:{authorName: username}}, function(err, result){
+		if(!err){
+			console.log("success result");
+			console.log(result);
+			res.send(result);
+		}else{
+			res.send(err);
+		}		
+	});
+}
+
 exports.insertArticle = function(req, res){
 	console.log("in insertArticle");
 	var docname = req.body.docname;
