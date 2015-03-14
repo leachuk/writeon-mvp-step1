@@ -53,27 +53,27 @@ exports.saveArticle = function(req, res) {
 	// console.log(articleData);
 	// console.log(dbTable);
 
-	// couchService.createArticle(req, articleData, title, function(err, result){
-	//     if (!err){
-	//       console.log(result);
-	//       res.send(result);
-	//     } else {
-	//       console.log(err);
-	//       res.send(err);
-	//     }
-	// });
-
-	//using JugglingDb Model
-	ArticleModel.create(req.body, function(err, result){
-		if(!err){
-			console.log("success");
-			console.log(result);
-			res.send(result);
-		}else{
-			console.log("error");
-			res.send(err);
-		}
+	couchService.createArticle(req, {}, "", function(err, result){
+	    if (!err){
+	      console.log(result);
+	      res.send(result);
+	    } else {
+	      console.log(err);
+	      res.send(err);
+	    }
 	});
+
+	//using JugglingDb Model. Need to migrate JugDb model into CouchDBService.prototype.createArticle  so we can use token authentication.
+	// ArticleModel.create(req.body, function(err, result){
+	// 	if(!err){
+	// 		console.log("success");
+	// 		console.log(result);
+	// 		res.send(result);
+	// 	}else{
+	// 		console.log("error");
+	// 		res.send(err);
+	// 	}
+	// });
 };
 
 exports.updateArticle = function(req,res){
@@ -102,6 +102,18 @@ exports.listAllUserArticles = function(req, res){
 		}
 	});
 };
+
+exports.listAllArticles = function(req, res){
+	console.log("article.controller listAllArticels");
+
+	ArticleModel.all([], function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}		
+	});
+}
 
 exports.insertArticle = function(req, res){
 	console.log("in insertArticle");

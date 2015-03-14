@@ -3,7 +3,7 @@ var Article = function (obj) {
     //frontend model needs to map to backend model
     self._id =  obj.title ? obj.title : null; //set to title. Will eventually need to convert this to an url friendly format
     self.title = obj.title ? obj.title : null;
-    self.bodyText = obj.bodyText ? obj.bodyText : null;
+    //self.bodyText = obj.bodyText ? obj.bodyText : null;
     self.authorName = obj.authorName ? obj.authorName : null;
     self.authorEmail = obj.authorEmail ? obj.authorEmail : null;
     self.createdDate = obj.createdDate ? obj.createdDate : null;
