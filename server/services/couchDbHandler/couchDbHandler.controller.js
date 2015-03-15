@@ -297,6 +297,52 @@ CouchDBService.prototype.listAllUserArticles = function(req, username, func_call
 	});
 };
 
+CouchDBService.prototype.listMyArticles = function(req, func_callback){
+	//var listResultJson = null;
+	//var listResultArray = [];
+	var returnSuccess = null;
+	var token = null;
+	var parts = req.headers.authorization.split(' ');
+	var secret = req.app.secret;
+	var dbtable = dbNameArticles;
+
+	async.series({
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	//console.log("authToken result:");
+		    	//console.log(result);
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
+	    },
+	    listMyArticles: function(callback){
+	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
+	    	console.log("listMyArticles: returnSuccess");
+	    	console.log(returnSuccess.username);
+			var couchDb = couchsetup.use(dbtable);
+			//list can only return ALL documents or those with the key match. Cannot be queried, this requires a design doc.
+			//http://wiki.apache.org/couchdb/Formatting_with_Show_and_List
+			couchDb.list({include_docs: true, key:"Test Article 7"},function(err, body) {
+				if (!err) {
+					// body.rows.forEach(function(doc) {
+					//   listResultArray.push(doc);
+					//   console.log(doc);
+					// });
+					callback(null, body);
+					console.log(body);
+				}else{
+					callback(err, null);
+					console.log(err);
+				}
+			});
+	    }
+	},
+	function(err, results) {
+	    console.log(results);
+	    func_callback(err, results.listMyArticles);
+	});
+};
+
 CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
 //change to batch field/param update. looks like an array of json objects can be passed.
 	var dbtable = dbNameArticles;
