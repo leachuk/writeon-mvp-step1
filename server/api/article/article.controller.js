@@ -137,26 +137,26 @@ exports.listMyArticles = function(req, res){
 	console.log("article.controller listMyArticles");
 
 	//TODO. Pass cookie from header Authorisation Bearer header
-	var articleModelAuth = ArticleModel("AuthSession=d3JpdGVvbm12cHN0ZXAxLTJAdGVzdC5jb206NTUwNTVFMDA6-ltbJGf9ECKMeoPxSUXCXmnnMxE; Version=1; Expires=Mon, 16-Mar-2015 00:04:32 GMT; Max-Age=99999; Path=/; HttpOnly");
-	articleModelAuth.all({where:{authorName: "writeonmvpstep1-2@test.com"}}, function(err, result){
-		if(!err){
-			console.log("success result");
-			console.log(result);
-			res.send(result);
-		}else{
-			console.log("articleModelAuth error");
-			res.send(err);
-		}		
-	});
-
-	// TODO. Create a design doc to handle list document query
- 	// couchService.listMyArticles(req, function(err, result){
+	// var articleModelAuth = ArticleModel("AuthSession=d3JpdGVvbm12cHN0ZXAxLTJAdGVzdC5jb206NTUwNTVFMDA6-ltbJGf9ECKMeoPxSUXCXmnnMxE; Version=1; Expires=Mon, 16-Mar-2015 00:04:32 GMT; Max-Age=99999; Path=/; HttpOnly");
+	// articleModelAuth.all({where:{authorName: "writeonmvpstep1-2@test.com"}}, function(err, result){
 	// 	if(!err){
+	// 		console.log("success result");
+	// 		console.log(result);
 	// 		res.send(result);
 	// 	}else{
+	// 		console.log("articleModelAuth error");
 	// 		res.send(err);
-	// 	}
+	// 	}		
 	// });
+
+	// TODO. Create a design doc to handle list document query
+ 	couchService.listMyArticles(req, function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}
+	});
 }
 
 exports.insertArticle = function(req, res){

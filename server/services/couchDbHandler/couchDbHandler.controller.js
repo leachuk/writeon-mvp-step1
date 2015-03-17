@@ -316,24 +316,39 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 		    });
 	    },
 	    listMyArticles: function(callback){
-	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
-	    	console.log("listMyArticles: returnSuccess");
+	  //   	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
+	  //   	console.log("listMyArticles: returnSuccess");
+	  //   	console.log(returnSuccess.cookie);
+	  //   	console.log(returnSuccess.username);
+			// var couchDb = couchsetup.use(dbtable);
+			// //list can only return ALL documents or those with the key match. Cannot be queried, this requires a design doc.
+			// //http://wiki.apache.org/couchdb/Formatting_with_Show_and_List
+			// couchDb.list({include_docs: true, key:"Test Article 7"},function(err, body) {
+			// 	if (!err) {
+			// 		// body.rows.forEach(function(doc) {
+			// 		//   listResultArray.push(doc);
+			// 		//   console.log(doc);
+			// 		// });
+			// 		callback(null, body);
+			// 		console.log(body);
+			// 	}else{
+			// 		callback(err, null);
+			// 		console.log(err);
+			// 	}
+			// });
+	    	console.log("CouchDBService listMyArticles: returnSuccess");
+	    	console.log(returnSuccess.cookie);
 	    	console.log(returnSuccess.username);
-			var couchDb = couchsetup.use(dbtable);
-			//list can only return ALL documents or those with the key match. Cannot be queried, this requires a design doc.
-			//http://wiki.apache.org/couchdb/Formatting_with_Show_and_List
-			couchDb.list({include_docs: true, key:"Test Article 7"},function(err, body) {
-				if (!err) {
-					// body.rows.forEach(function(doc) {
-					//   listResultArray.push(doc);
-					//   console.log(doc);
-					// });
-					callback(null, body);
+			var articleModelAuth = ArticleModel(returnSuccess.cookie);
+			articleModelAuth.all({where:{authorName: "writeonmvpstep1-2@test.com"}}, function(err, body){
+				if(!err){
+					console.log("success result");
 					console.log(body);
+					callback(null, body);
 				}else{
+					console.log("articleModelAuth error");
 					callback(err, null);
-					console.log(err);
-				}
+				}		
 			});
 	    }
 	},
