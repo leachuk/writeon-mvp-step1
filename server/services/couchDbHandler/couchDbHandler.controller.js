@@ -340,7 +340,7 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	    	console.log(returnSuccess.cookie);
 	    	console.log(returnSuccess.username);
 			var articleModelAuth = ArticleModel(returnSuccess.cookie);
-			articleModelAuth.all({where:{authorName: "writeonmvpstep1-2@test.com"}}, function(err, body){
+			articleModelAuth.all({where:{authorName: returnSuccess.username}}, function(err, body){
 				if(!err){
 					console.log("success result");
 					console.log(body);
