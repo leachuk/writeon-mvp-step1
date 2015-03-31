@@ -1,3 +1,4 @@
 div.listall-article(ng-controller='ListAllArticleCtrl')
+	p count[{{articleCount}}]
 	li(ng-repeat="article in articles")
-		div {{article.name}}
+		div {{article.title}} | {{article.authorName}}
