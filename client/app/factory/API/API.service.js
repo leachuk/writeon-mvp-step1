@@ -30,6 +30,16 @@ angular.module('writeonMvpStep1App')
       });
     };
 
+    service.Article.listAllMyArticles = function() {
+      var r=$resource('/api/articles/listMyArticles', {}, 
+                      {
+                          listAllMyArticles: {method: 'GET', params: {}}
+                      });
+      return r.listAllMyArticles().$promise.then(function(data){
+        return data;
+      });
+    }
+
     //User Service
     service.User = {};
     service.User.getUser = function(userid) {
