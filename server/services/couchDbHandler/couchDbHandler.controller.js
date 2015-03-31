@@ -222,8 +222,9 @@ CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_
 			// 	callback(err, body);
 			// });
 
-			//need to find way of using cookie authentication in jugglingdb model schema connection
-			ArticleModel.create(req.body, function(err, result){
+			//need to find way of using cookie authentication in jugglingdb model schema connection - DONE, booyah
+			var articleModelAuth = ArticleModel(returnSuccess.cookie);
+			articleModelAuth.create(req.body, function(err, result){
 				if(!err){
 					console.log("CouchDBService createArticle: success");
 					console.log(result);
