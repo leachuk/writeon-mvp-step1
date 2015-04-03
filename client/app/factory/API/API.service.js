@@ -33,7 +33,7 @@ angular.module('writeonMvpStep1App')
     service.Article.listAllMyArticles = function() {
       var r=$resource('/api/articles/listMyArticles', {}, 
                       {
-                          listAllMyArticles: {method: 'GET', isArray: true, params: {}}
+                          listAllMyArticles: {method: 'GET', isArray: true, params: {getAllData: false}}
                       });
       return r.listAllMyArticles().$promise.then(function(data){
         return data;

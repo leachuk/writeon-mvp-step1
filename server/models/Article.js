@@ -19,14 +19,20 @@ console.log("In Article model");
 //     published: 	{ type: Boolean, default: false, index: true }
 // });
 
-var initCookie = function (setcookie) {
+var initCookie = function (setcookie, options) {
     // Initialize here
     cookie = setcookie;
     schema = new Schema('nano', {url: config.couchuri + '/article_documents', cookie: cookie});
     console.log("cookie:" + cookie);
-    
-    Article = schema.define('Article', {
-		_id: 		{ type: String}, 
+    console.log("options:");
+    console.log(options);
+
+    console.log("typeof options.returnAll" + typeof options.returnAll)
+
+    var returnAllData = options.returnAll === 'true' || typeof options.returnAll === 'undefined'; //to boolean
+    console.log("returnAllData:" + returnAllData);
+    var returnModelObj = returnAllData ? {
+		id: 		{ type: String}, 
 	    title:     	{ type: String, length: 255 },
 	    bodyText:   { type: Schema.Text }, //Text is used for large strings
 	    authorName: { type: String },
@@ -34,7 +40,18 @@ var initCookie = function (setcookie) {
 	    createdDate:{ type: Number,  default: Date.now },
 	    createdDateFormatted:{ type: String},
 	    published: 	{ type: Boolean, default: false, index: true }
-	});
+	} : {
+		id: 		{ type: String}, 
+	    title:     	{ type: String, length: 255 },
+	    authorName: { type: String },
+	    authorEmail:{ type: String},
+	    published: 	{ type: Boolean, default: false, index: true }
+	};
+
+	console.log("returnModelObj");
+	console.log(returnModelObj);
+
+    Article = schema.define('Article', returnModelObj);
     return Article;
 };
 //module.exports = Article;

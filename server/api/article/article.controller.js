@@ -19,13 +19,13 @@ exports.index = function(req, res) {
 };
 
 exports.getArticle = function(req, res) {
-	var type = req.param("type");
-	var id = req.param("id");
+	// var type = req.param("type");
+	// var id = req.param("id");
 	//var dbTable = req.param("dbtable");
-	console.log("getArticle type: " + type);
-	console.log("getArticle id: " + id);
+	// console.log("getArticle type: " + type);
+	// console.log("getArticle id: " + id);
 	
-	couchService.getArticle(type, id, function(err, result){
+	couchService.getArticle(req, function(err, result){
 	    if (!err){
 	      console.log(result);
 	      res.send(result);

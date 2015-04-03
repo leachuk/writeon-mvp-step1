@@ -242,17 +242,43 @@ CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_
 	});
 };
 
-CouchDBService.prototype.getArticle = function(type, id, callback){
+CouchDBService.prototype.getArticle = function(req, func_callback){
+	var returnSuccess = null;
+	var token = null;
+	var parts = req.headers.authorization.split(' ');
+	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
-	var db = couchnano.use(dbtable);
-	db.get(id, { revs_info: true, revisions: true }, function(err, body) {
-	  if (!err) {
-	    console.log(body);
-	  }else{
-	  	console.log(err);
-	  }
 
-	  callback(err, body);
+	var requestParams = req.query;
+	var getAllData = requestParams.getAllData;
+	console.log("getAllData:" + getAllData);
+	var id = req.param("id");
+	console.log("id:" + id);
+
+	async.series({
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
+	    },
+	    getArticle: function(callback){
+			var articleModelAuth = ArticleModel(returnSuccess.cookie, {returnAll: getAllData});
+			articleModelAuth.find(id, function(err, body){
+				if(!err){
+					console.log("success result");
+					console.log(body);
+					callback(null, body);
+				}else{
+					console.log("articleModelAuth error");
+					callback(err, null);
+				}		
+			});
+	    }
+	},
+	function(err, results) {
+	    console.log(results);
+	    func_callback(err, results);
 	});
 };
 
@@ -298,6 +324,7 @@ CouchDBService.prototype.listAllUserArticles = function(req, username, func_call
 	});
 };
 
+//params = getAllData(true|false)
 CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
@@ -306,6 +333,9 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	var parts = req.headers.authorization.split(' ');
 	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
+
+	var requestParams = req.query;
+	var getAllData = requestParams.getAllData;
 
 	async.series({
 	    authToken: function(callback){
@@ -340,7 +370,7 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	    	console.log("CouchDBService listMyArticles: returnSuccess");
 	    	console.log(returnSuccess.cookie);
 	    	console.log(returnSuccess.username);
-			var articleModelAuth = ArticleModel(returnSuccess.cookie);
+			var articleModelAuth = ArticleModel(returnSuccess.cookie, {returnAll: getAllData});
 			articleModelAuth.all({where:{authorName: returnSuccess.username}}, function(err, body){
 				if(!err){
 					console.log("success result");
