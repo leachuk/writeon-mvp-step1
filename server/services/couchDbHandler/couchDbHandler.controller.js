@@ -278,7 +278,7 @@ CouchDBService.prototype.getArticle = function(req, func_callback){
 	},
 	function(err, results) {
 	    console.log(results);
-	    func_callback(err, results);
+	    func_callback(err, results.getArticle);
 	});
 };
 

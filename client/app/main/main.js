@@ -12,5 +12,10 @@ angular.module('writeonMvpStep1App')
         url: '/home',
         templateUrl: 'app/views/userHome.html',
         controller: 'UserHomeCtrl'
-      });
+      })
+      .state('articleview', {
+        url: '/article/view/:id',
+        templateUrl: 'app/views/article.html',
+        controller: 'GetArticleCtrl'
+      });;
   });

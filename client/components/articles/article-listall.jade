@@ -2,4 +2,4 @@ div.listall-article(ng-controller='ListAllArticleCtrl')
 	p count[{{articleCount}}]
 	li(ng-repeat="article in articles")
 		div 
-			a(href="/api/articles/article/{{article.id}}") {{article.title}} | {{article.authorName}}
+			a(href="/article/view/{{article.id}}") {{article.title}} | {{article.authorName}}
