@@ -3,6 +3,7 @@
 angular.module('writeonMvpStep1App')
   .controller('ListAllArticleCtrl', function ($scope, API) {
     $scope.articles = [];
+    $scope.articleDeleteAll = false;
 
     API.Article.listAllMyArticles().then(function(data){
         //console.log(data);

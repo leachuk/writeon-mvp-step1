@@ -14,6 +14,7 @@ router.post('/insertArticle', controller.insertArticle);
 router.get('/listAllArticles', controller.listAllArticles);
 router.get('/listByAuthor/:username', controller.listByAuthor);
 router.get('/listMyArticles', controller.listMyArticles);
+router.post('/deleteArticle', controller.deleteArticle);
 
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);

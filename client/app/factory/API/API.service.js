@@ -38,7 +38,7 @@ angular.module('writeonMvpStep1App')
       return r.listAllMyArticles().$promise.then(function(data){
         return data;
       });
-    }
+    };
 
     //User Service
     service.User = {};

@@ -282,6 +282,45 @@ CouchDBService.prototype.getArticle = function(req, func_callback){
 	});
 };
 
+CouchDBService.prototype.deleteArticle = function(req, func_callback){
+	var returnSuccess = null;
+	var token = null;
+	var parts = req.headers.authorization.split(' ');
+	var secret = req.app.secret;
+	var dbtable = dbNameArticles;
+
+	var id = req.param("id");
+	var rev = req.param("rev");
+	console.log("id:" + id);
+
+	async.series({
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
+	    },
+	    deleteArticle: function(callback){
+	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
+			var couchDb = couchsetup.use(dbtable);
+			couchDb.destroy(id, rev, function(err, body) {
+				if(!err){
+					console.log("success result");
+					console.log(body);
+					callback(null, body);
+				}else{
+					console.log("couch nano error");
+					callback(err, null);
+				}		
+			});
+	    }
+	},
+	function(err, results) {
+	    console.log(results);
+	    func_callback(err, results.deleteArticle);
+	});
+};
+
 CouchDBService.prototype.listAllUserArticles = function(req, username, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];

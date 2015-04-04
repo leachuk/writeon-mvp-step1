@@ -1,5 +1,11 @@
 div.listall-article(ng-controller='ListAllArticleCtrl')
 	p count[{{articleCount}}]
-	li(ng-repeat="article in articles")
-		div 
-			a(href="/article/view/{{article.id}}") {{article.title}} | {{article.authorName}}
+	form#listall-form
+		p
+			input(ng-model="articleDeleteAll" type="checkbox" name="article-deleteall" value="true")
+			| Delete All Articles
+			li(ng-repeat="article in articles")
+				div 
+					input(ng-checked="articleDeleteAll" type="checkbox" name="article-{{$index}}" value="{{article.id}}") 
+					a(href="/article/view/{{article.id}}") {{article.title}} | {{article.authorName}}
+		input(type="submit" value="delete")

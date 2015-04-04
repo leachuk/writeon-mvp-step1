@@ -27,10 +27,13 @@ var initCookie = function (setcookie, options) {
     console.log("options:");
     console.log(options);
 
-    console.log("typeof options.returnAll" + typeof options.returnAll)
-
-    var returnAllData = options.returnAll === 'true' || typeof options.returnAll === 'undefined'; //to boolean
+    //console.log("typeof options.returnAll" + typeof options.returnAll)
+	var returnAllData = true;
+    if (typeof options != 'undefined') {
+    	returnAllData = options.returnAll === 'true' || typeof options.returnAll === 'undefined'; //to boolean
+    }
     console.log("returnAllData:" + returnAllData);
+    
     var returnModelObj = returnAllData ? {
 		id: 		{ type: String}, 
 	    title:     	{ type: String, length: 255 },

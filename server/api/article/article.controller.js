@@ -159,6 +159,18 @@ exports.listMyArticles = function(req, res){
 	});
 }
 
+exports.deleteArticle = function(req, res){
+	console.log("article.controller deleteArticle");
+
+ 	couchService.deleteArticle(req, function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}
+	});
+}
+
 exports.insertArticle = function(req, res){
 	console.log("in insertArticle");
 	var docname = req.body.docname;
