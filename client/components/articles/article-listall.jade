@@ -6,6 +6,6 @@ div.listall-article(ng-controller='ListAllArticleCtrl')
 			| Delete All Articles
 			li(ng-repeat="article in articles")
 				div 
-					input(ng-checked="articleDeleteAll" type="checkbox" name="article-{{$index}}" value="{{article.id}}") 
+					input(ng-checked="articleDeleteAll" ng-model="article.deletechecked" type="checkbox" name="article-{{$index}}" value="{{article.id}}") 
 					a(href="/article/view/{{article.id}}") {{article.title}} | {{article.authorName}}
-		input(type="submit" value="delete")
+		input(ng-click="deleteArticle()" type="submit" value="delete")

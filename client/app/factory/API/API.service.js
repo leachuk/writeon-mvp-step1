@@ -40,6 +40,17 @@ angular.module('writeonMvpStep1App')
       });
     };
 
+    service.Article.delete = function(id, rev) {
+      console.log("delete, id:" + id + ", rev:" + rev);
+      var r=$resource('/api/articles/deleteArticle', {}, 
+                      {
+                          deleteArticle: {method: 'POST', params: { id: id, rev: rev}}
+                      });
+      return r.deleteArticle().$promise.then(function(data){
+        return data;
+      });
+    };
+
     //User Service
     service.User = {};
     service.User.getUser = function(userid) {

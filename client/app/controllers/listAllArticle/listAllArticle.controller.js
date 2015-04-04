@@ -4,10 +4,19 @@ angular.module('writeonMvpStep1App')
   .controller('ListAllArticleCtrl', function ($scope, API) {
     $scope.articles = [];
     $scope.articleDeleteAll = false;
+    $scope.deleteChecked = {};
+
+    $scope.deleteArticle = function(){
+    	angular.forEach($scope.articles, function(value, key){
+    		if (value.deletechecked) {
+    			API.Article.delete(value.id, value._rev).then(function(data){
+    				console.log(data);
+    			});
+    		}
+    	});
+    };
 
     API.Article.listAllMyArticles().then(function(data){
-        //console.log(data);
-
         //convert to frontend UI Article model. Refactor to service
 	    angular.forEach(data,function(value,index){
 	        console.log(value);
@@ -16,7 +25,5 @@ angular.module('writeonMvpStep1App')
         $scope.articles = data;
         $scope.articleCount = data.length;
     });
-
-
 
   });
