@@ -428,26 +428,84 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	});
 };
 
-CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
-//change to batch field/param update. looks like an array of json objects can be passed.
-	var dbtable = dbNameArticles;
-	var db = couchnano.use(dbtable);
-    console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
-    var returnbody = null;
-    db.atomic("example",
-        "in-place",
-        docname,
-        [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
-        function (err, body) {
-            if (!err) {
-                console.log(body);
-            }else{
-                console.log(err);
-            }
+// CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
+// //change to batch field/param update. looks like an array of json objects can be passed.
+// 	var dbtable = dbNameArticles;
+// 	var db = couchnano.use(dbtable);
+//     console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
+//     var returnbody = null;
+//     db.atomic("example",
+//         "in-place",
+//         docname,
+//         [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
+//         function (err, body) {
+//             if (!err) {
+//                 console.log(body);
+//             }else{
+//                 console.log(err);
+//             }
 
-            callback(err, body);
-        });
+//             callback(err, body);
+//         });
     
+// };
+
+CouchDBService.prototype.updateArticle = function(req, func_callback) {
+	var returnSuccess = null;
+	var articleUpdateModel = null;
+	var token = null;
+	var parts = req.headers.authorization.split(' ');
+	var secret = req.app.secret;
+	var dbtable = dbNameArticles;
+
+	var id = req.param("id");
+	var updateData = JSON.parse(req.param("updateData"));
+	console.log("id:" + id);
+
+	async.series({
+	    authToken: function(callback){
+		    _Utils.authenticateToken(parts, secret, function(err, result){
+		    	returnSuccess = result;
+		    	callback(err, result);
+		    });
+	    },
+	    getArticle: function(callback){
+			var articleModelAuth = ArticleModel(returnSuccess.cookie, {returnAll: true});
+			articleModelAuth.find(id, function(err, body){
+				if(!err){
+					console.log("update get success result");
+					console.log(body);
+					articleUpdateModel = body;
+					callback(null, body);
+				}else{
+					console.log("update get error");
+					callback(err, null);
+				}		
+			});
+	    },
+	    updateArticle: function(callback){
+	    	console.log("update articleModel result");
+	    	console.log(articleUpdateModel);
+	    	console.log("updateData")
+	    	console.log(updateData);
+	    	console.log(typeof updateData);
+	    	articleUpdateModel.updateAttributes(updateData, function(err, body){
+				if(!err){
+					console.log("updateArticle success result");
+					console.log(body);
+					callback(null, body);
+				}else{
+					console.log("updateArticle get error");
+					callback(err, null);
+				}		
+			});
+
+	    }
+	},
+	function(err, results) {
+	    console.log(results);
+	    func_callback(err, results.updateArticle);
+	});
 };
 
 CouchDBService.prototype.insertArticle = function(username, docname, field, value, callback) {

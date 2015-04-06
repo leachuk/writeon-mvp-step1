@@ -187,6 +187,19 @@ exports.insertArticle = function(req, res){
 	});
 };
 
+exports.updateArticle = function(req, res){
+	console.log("in updateArticle");
+
+    couchService.updateArticle(req, function(err, result){
+		if(!err){
+			res.send(result);
+		}else{
+			res.send(err);
+		}
+	});
+};
+
+
 exports.testCookie = function(req, res){
 
 	couchService.testCookie(req, res, function(err, result){
