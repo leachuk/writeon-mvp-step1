@@ -36,7 +36,7 @@ var initCookie = function (setcookie, options) {
     }
     console.log("returnAllData:" + returnAllData);
 
-    var returnModelObj = returnAllData ? {
+    var returnModelObj = returnAllData ? { //full model
 		id: 		{ type: String}, 
 	    title:     	{ type: String, length: 255 },
 	    bodyText:   { type: Schema.Text }, //Text is used for large strings
@@ -44,8 +44,10 @@ var initCookie = function (setcookie, options) {
 	    authorEmail:{ type: String},
 	    createdDate:{ type: Number,  default: Date.now },
 	    createdDateFormatted:{ type: String},
+	    lastUpdatedDate:{ type: Number,  default: Date.now },
+	    lastUpdatedDateFormatted:{ type: String},
 	    published: 	{ type: Boolean, default: false, index: true }
-	} : {
+	} : { //partial model
 		id: 		{ type: String}, 
 	    title:     	{ type: String, length: 255 },
 	    authorName: { type: String },

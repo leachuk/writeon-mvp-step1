@@ -28,7 +28,9 @@ angular.module('writeonMvpStep1App')
             authorName: rootscope.user.username,
             authorEmail: rootscope.user.username,
             createdDate: Date.now(),
-            createdDateFormatted: $moment().format('MMMM Do YYYY, H:mm:ss')
+            createdDateFormatted: $moment().format('MMMM Do YYYY, H:mm:ss'),
+            lastUpdatedDate: Date.now(),
+            lastUpdatedDateFormatted: $moment().format('MMMM Do YYYY, H:mm:ss')
         });
 
         console.log("In submitArticle: articleModel >");
