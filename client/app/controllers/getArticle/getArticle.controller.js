@@ -8,4 +8,14 @@ angular.module('writeonMvpStep1App')
         console.log(data);
         $scope.article = data;
     });
+
+    $scope.updateArticle = function(docData){
+    	console.log("updateArticle function. docData:");
+    	console.log(docData);
+
+	   	API.Article.updateArticle(docData).then(function(data){
+	        console.log(data);
+	        $scope.article = data;
+	    });
+    }
   });

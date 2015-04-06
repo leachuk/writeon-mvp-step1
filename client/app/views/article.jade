@@ -4,5 +4,15 @@ div.article
 	p title[{{article.title}}]
 	p bodyText[{{article.bodyText}}]
 
+h2 Article Update
+div.update-article
+	form#update-article
+		div
+			input(ng-model='article.title', id='title', type='text', value='', placeholder='title', name='title', required)
+		div		
+			textarea(ng-model='article.bodyText', id='bodyText', placeholder='body text', name='bodyText', rows='10', cols='60', required)
+		
+		input(ng-click='updateArticle(article)', type='submit', value='Update')
+
 
 

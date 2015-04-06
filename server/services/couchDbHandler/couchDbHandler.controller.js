@@ -459,7 +459,10 @@ CouchDBService.prototype.updateArticle = function(req, func_callback) {
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
-	var updateData = JSON.parse(req.param("updateData"));
+	console.log("updateData");
+	console.log(req.param("updateData"));
+	console.log(typeof req.param("updateData"))
+	var updateData = req.param("updateData");
 	console.log("id:" + id);
 
 	async.series({

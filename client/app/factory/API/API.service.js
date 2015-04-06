@@ -51,6 +51,17 @@ angular.module('writeonMvpStep1App')
       });
     };
 
+    service.Article.updateArticle = function(docData) {
+      var r=$resource('/api/articles/updateArticle', {},
+                      {
+                          updateArticle: { method: 'Post', params: { updateData: docData }}
+                      });
+
+      return r.updateArticle({updateData: docData}).$promise.then(function(data) {
+        return data;
+      });
+    };
+
     //User Service
     service.User = {};
     service.User.getUser = function(userid) {
