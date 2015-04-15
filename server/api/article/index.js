@@ -1,16 +1,18 @@
 'use strict';
 
+require('rootpath')();
+
 var express = require('express');
 var controller = require('./article.controller');
 var router = express.Router();
 
-var acl = require('acl');
-acl = new acl(new acl.memoryBackend()); //TODO: Update to Redis backend
-acl.addUserRoles('testuser', 'guest')
-acl.allow('guest', 'articles', ['edit','view']);
+var aclService = require('server/services/auth/auth.controller').AuthService;
+aclService.initAuthorization();
+var acl = aclService.acl();
 
 router.get('/', controller.index);
 router.get('/getarticle/:id', function(req, res, next){
+
 	acl.isAllowed('testuser', 'articles', ['view'], function(err, res){
 	    if(res){
 	        console.log("User member is allowed to view articles");
@@ -20,13 +22,8 @@ router.get('/getarticle/:id', function(req, res, next){
 	    	console.log(err);
 	    }
 	});
-
-	//get permissions
-	acl.allowedPermissions('testuser', ['articles'], function(err, permissions){
-    	console.log(permissions)
-	});
-
 	next();
+
 }, controller.getArticle);
 router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
 router.post('/saveArticle', controller.saveArticle);
