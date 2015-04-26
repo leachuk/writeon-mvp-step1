@@ -59,6 +59,43 @@ AuthService.prototype.initAuthorization = function() {
 	acl.addUserRoles('writeonmvpstep1-3@test.com', 'article-viewer');
 };
 
+AuthService.prototype.checkUserIsAuthorised = function(){
+	var self = this;
+	var middleware = false;
+	return function(req, res, next){
+        // check if this is a middleware call
+        if(next){
+            // only middleware calls would have the "next" argument
+            middleware = true;  
+        }
+		var username = null;
+		var reqParts = req.url.split('/');
+		self.fulldecodetoken(req, res, function(err, result){
+			if(result){
+				console.log("fulldecodetoken result");
+				console.log(result);
+				username = result.username;
+			} else {
+				console.log("fulldecodetoken error");
+				console.log(err);
+			}
+		});
+
+		acl.isAllowed(username, reqParts[1], ['view'], function(err, res){
+		    if(res){
+		        console.log("User member is allowed to view articles");
+		        console.log(res);
+		        next();
+		    } else {
+		    	console.log("error");
+		    	console.log(err);
+		    	var error = new Error("Authorisation denied. Insufficient access privelages");
+		    	next(error);
+		    }
+		});
+	}
+};
+
 AuthService.prototype.acl = function() {
 	return acl;
 };

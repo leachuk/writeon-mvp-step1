@@ -11,31 +11,7 @@ authService.initAuthorization();
 var acl = authService.acl();
 
 router.get('/', controller.index);
-router.get('/getarticle/:id', function(req, res, next){
-	var username = null;
-	authService.fulldecodetoken(req, res, function(err, result){
-		if(result){
-			console.log("fulldecodetoken result");
-			console.log(result);
-			username = result.username;
-		} else {
-			console.log("fulldecodetoken error");
-			console.log(err);
-		}
-	});
-
-	acl.isAllowed(username, 'getarticle', ['view'], function(err, res){
-	    if(res){
-	        console.log("User member is allowed to view articles");
-	        console.log(res);
-	    } else {
-	    	console.log("error");
-	    	console.log(err);
-	    }
-	});
-	next();
-}, controller.getArticle);
-//router.get('/getarticle/:id', acl.middleware(), controller.getArticle);
+router.get('/getarticle/:id', authService.checkUserIsAuthorised(), controller.getArticle);
 router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
 router.post('/saveArticle', controller.saveArticle);
 router.post('/updateArticle', controller.updateArticle);
