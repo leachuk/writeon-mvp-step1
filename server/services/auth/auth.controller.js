@@ -6,6 +6,36 @@ var _ = require('lodash');
 var acl = require('acl');
 acl = new acl(new acl.memoryBackend()); //TODO: Update to Redis backend
 
+//private
+function parseUri (str) {
+	var	o   = parseUri.options,
+		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+		uri = {},
+		i   = 14;
+
+	while (i--) uri[o.key[i]] = m[i] || "";
+
+	uri[o.q.name] = {};
+	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+		if ($1) uri[o.q.name][$1] = $2;
+	});
+
+	return uri;
+};
+
+parseUri.options = {
+	strictMode: false,
+	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+	q:   {
+		name:   "queryKey",
+		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+	},
+	parser: {
+		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+	}
+};
+
 function AuthService(){};
 
 AuthService.prototype.decodetoken = function(secret, token, callback) {
@@ -51,15 +81,15 @@ AuthService.prototype.initAuthorization = function() {
 
 	//create roles
 	//TODO refactor this into a proper model/schema with jugglingDb
-	acl.allow('article-editor',['getarticle','article'],['edit', 'view', 'delete']);
-	acl.allow('article-viewer',['getarticle','article'],['view']);
+	acl.allow('article-editor',['getarticle', 'listmyarticles', 'article'],['edit', 'view', 'delete']);
+	acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
 	//assign users to roles
 	acl.addUserRoles('writeonmvpstep1-1@test.com', 'article-editor');
 	acl.addUserRoles('writeonmvpstep1-3@test.com', 'article-viewer');
 };
 
-AuthService.prototype.checkUserIsAuthorised = function(){
+AuthService.prototype.checkUserIsAuthorisedUrl = function(){
 	var self = this;
 	var middleware = false;
 	return function(req, res, next){
@@ -68,8 +98,11 @@ AuthService.prototype.checkUserIsAuthorised = function(){
             // only middleware calls would have the "next" argument
             middleware = true;  
         }
+        
 		var username = null;
-		var reqParts = req.url.split('/');
+		var reqUriPath = parseUri(req.url).path;
+		var reqParts = reqUriPath.split("/").map(function(n){return n.toLowerCase();});
+
 		self.fulldecodetoken(req, res, function(err, result){
 			if(result){
 				console.log("fulldecodetoken result");

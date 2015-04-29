@@ -18,7 +18,7 @@ router.post('/updateArticle', controller.updateArticle);
 router.post('/insertArticle', controller.insertArticle);
 router.get('/listAllArticles', controller.listAllArticles);
 router.get('/listByAuthor/:username', controller.listByAuthor);
-router.get('/listMyArticles', controller.listMyArticles);
+router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller.listMyArticles);
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle', controller.updateArticle);
 
