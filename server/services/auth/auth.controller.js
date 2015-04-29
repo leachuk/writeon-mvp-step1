@@ -118,16 +118,18 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
 			}
 		});
 
-		acl.isAllowed(username, reqModel, ['view'], function(err, res){
-		    if(res){
+		acl.isAllowed(username, reqModel, ['view'], function(err, result){
+		    if(result){
 		        console.log("User member is allowed to view articles");
-		        console.log(res);
-		        next();
+		        console.log(result);
+		        //next();
+		        res.send(req.result);
 		    } else {
 		    	console.log("error");
 		    	console.log(err);
 		    	var error = new Error("Authorisation denied. Insufficient access privelages");
-		    	next(error);
+		    	//next(error);
+		    	res.send(error);
 		    }
 		});
 	}
