@@ -98,7 +98,7 @@ AuthService.prototype.checkUserIsAuthorisedUrl = function(){
             // only middleware calls would have the "next" argument
             middleware = true;  
         }
-        
+
 		var username = null;
 		var reqUriPath = parseUri(req.url).path;
 		var reqParts = reqUriPath.split("/").map(function(n){return n.toLowerCase();});
@@ -162,7 +162,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
 		    	console.log(err);
 		    	var error = new Error("Authorisation denied. Insufficient access privelages");
 		    	//next(error);
-		    	res.send(error);
+		    	res.status(403).send(error);
 		    }
 		});
 	}
