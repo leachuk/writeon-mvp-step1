@@ -1,7 +1,9 @@
 'use strict';
 
+require('rootpath')();
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
+var _utils = require('server/services/utils/utils.controller').Utils;
 
 var acl = require('acl');
 acl = new acl(new acl.memoryBackend()); //TODO: Update to Redis backend
@@ -100,7 +102,7 @@ AuthService.prototype.checkUserIsAuthorisedUrl = function(){
         }
 
 		var username = null;
-		var reqUriPath = parseUri(req.url).path;
+		var reqUriPath = _utils.parseUri(req.url).path;
 		var reqParts = reqUriPath.split("/").map(function(n){return n.toLowerCase();});
 
 		self.fulldecodetoken(req, res, function(err, result){
