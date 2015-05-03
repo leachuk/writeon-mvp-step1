@@ -1,9 +1,10 @@
 'use strict';
+
 var _authService = require('server/services/auth/auth.controller').AuthService;;
 
-function Utils(){};
+function AuthUtils(){};
 
-Utils.prototype.authenticateToken = function(authHeader, secret, callback){
+AuthUtils.prototype.authenticateToken = function(authHeader, secret, callback){
 	console.log("in Util authenticateToken");
 	console.log("token");
 	console.log(authHeader);
@@ -37,4 +38,4 @@ Utils.prototype.authenticateToken = function(authHeader, secret, callback){
 	}
 };
 
-exports.Utils = new Utils;
+exports.AuthUtils = new AuthUtils;

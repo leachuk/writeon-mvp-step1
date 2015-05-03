@@ -18,23 +18,24 @@ exports.index = function(req, res) {
   res.json([{articles: 'index test'}]);
 };
 
-exports.getArticle = function(req, res) {
+exports.getArticle = function(req, res, next) {
 	// var type = req.param("type");
 	// var id = req.param("id");
 	//var dbTable = req.param("dbtable");
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
-	
 	couchService.getArticle(req, function(err, result){
 	    if (!err){
 	      console.log(result);
-	      res.send(result);
+	      //res.send(result);
+	      req.result = result;
+	      next();
 	    } else {
 	      console.log(err);
-	      res.send(err);
+	      //res.send(err);
+	      next(err);
 	    }
 	});
-
 	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
 };
 

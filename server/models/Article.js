@@ -37,7 +37,8 @@ var initCookie = function (setcookie, options) {
     console.log("returnAllData:" + returnAllData);
 
     var returnModelObj = returnAllData ? { //full model
-		id: 		{ type: String}, 
+		id: 		{ type: String},
+		model: 		{ type: String}, 
 	    title:     	{ type: String, length: 255 },
 	    bodyText:   { type: Schema.Text }, //Text is used for large strings
 	    authorName: { type: String },
@@ -48,7 +49,8 @@ var initCookie = function (setcookie, options) {
 	    lastUpdatedDateFormatted:{ type: String},
 	    published: 	{ type: Boolean, default: false, index: true }
 	} : { //partial model
-		id: 		{ type: String}, 
+		id: 		{ type: String},
+		model: 		{ type: String},  
 	    title:     	{ type: String, length: 255 },
 	    authorName: { type: String },
 	    authorEmail:{ type: String},

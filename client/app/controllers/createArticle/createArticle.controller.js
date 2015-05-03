@@ -8,11 +8,6 @@ angular.module('writeonMvpStep1App')
     	bodyText :''
     };
 
-    API.Article.getArticle('UserArticle','54321').then(function(data){
-        $scope.model = new Article(data);
-        console.log(data);
-    });
-
     $scope.submitArticle = function(){
         var rootscope = $rootScope; //rootscope contains the username decoded from the secure auth token
         var title = $scope.article.title;
