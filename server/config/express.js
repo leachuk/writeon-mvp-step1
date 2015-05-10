@@ -42,6 +42,8 @@ module.exports = function(app) {
   // Add headers to allow remote API calls
   app.use(function (req, res, next) {
       // Website you wish to allow to connect
+      //TODO: Add a whitelist array and check that req.headers.origin is in there before setting Access-Control-Allow-Origin.
+      //      This allows us to control who can access the API.
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
       // Request methods you wish to allow
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
