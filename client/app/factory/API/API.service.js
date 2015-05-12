@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('writeonMvpStep1App')
-  .factory('API', ['$resource', '$q', function ($resource, $q) {
+  .factory('API', ['$resource', function ($resource) {
     
     var service = {};
 
