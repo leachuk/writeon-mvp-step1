@@ -88,6 +88,7 @@ AuthService.prototype.initAuthorization = function() {
 
 	//assign users to roles
 	acl.addUserRoles('writeonmvpstep1-1@test.com', 'article-editor');
+	acl.addUserRoles('writeonmvpstep1-2@test.com', 'article-viewer');
 	acl.addUserRoles('writeonmvpstep1-3@test.com', 'article-viewer');
 };
 
