@@ -242,28 +242,6 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 	});
 };
 
-// CouchDBService.prototype.updateArticle = function(username, docname, fieldparam, valueparam, callback) {
-// //change to batch field/param update. looks like an array of json objects can be passed.
-// 	var dbtable = dbNameArticles;
-// 	var db = couchnano.use(dbtable);
-//     console.log("node params. docname["+ docname +"], field["+ fieldparam +"], value["+ valueparam +"]");
-//     var returnbody = null;
-//     db.atomic("example",
-//         "in-place",
-//         docname,
-//         [{field: fieldparam, value: valueparam},{field: "field2", value: "field2foo"}],
-//         function (err, body) {
-//             if (!err) {
-//                 console.log(body);
-//             }else{
-//                 console.log(err);
-//             }
-
-//             callback(err, body);
-//         });
-    
-// };
-
 SocialListArticleService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;

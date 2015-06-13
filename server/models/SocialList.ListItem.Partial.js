@@ -1,10 +1,10 @@
 var mapModel= function (model) {
     // Initialize here
 
-    newModel = [];
+    schema = [];
     for (var i=0;i<model.length;i++){
                 
-        newModel.push(
+        schema.push(
         {
             id : model[i].id,
             model : model[i].model,
@@ -13,10 +13,7 @@ var mapModel= function (model) {
         });
     }
 
-	console.log("return newModel");
-    console.log(newModel);
-
-    return newModel;
+    return schema;
 };
 
 module.exports = mapModel;
