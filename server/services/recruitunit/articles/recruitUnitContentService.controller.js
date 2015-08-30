@@ -9,7 +9,7 @@ var async = require('async');
 
 var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
-//var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js'); //not defined?
+var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
@@ -30,7 +30,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	var token = null;
 	var parts = req.headers.authorization.split(' ');
 	var secret = req.app.secret;
-	var dbtable = dbNameArticles;
+	var dbtable = dbNameArticles; //still required here?
 
 	async.series({
 	    authToken: function(callback){
@@ -214,7 +214,7 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 				if(!err){
 					console.log("success result");
 					//convert list of full article model to a partial model
-					var updatedBody = SocialListPartialModelConverter(body);
+					var updatedBody = ContentItemListPartialModelConverter(body);
 					//console.log(updatedBody);
 					callback(null, updatedBody);
 				}else{
