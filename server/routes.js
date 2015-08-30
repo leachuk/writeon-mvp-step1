@@ -12,6 +12,7 @@ module.exports = function(app) {
   //app.use('/services/utils', require('./api/dbUtil'));
   app.use('/api/articles', require('./api/article'));
   app.use('/api/sociallist', require('./api/sociallist'));
+  app.use('/api/recruitunit', require('./api/recruitunit'));
   //app.use('/api/auths', require('./api/auth'));
   app.use('/api/users', require('./api/user'));
   //app.use('/api/couchDbHandlers', require('./api/couchDbHandler'));//create as private server side util

@@ -17,5 +17,3 @@ var mapModel= function (model) {
 };
 
 module.exports = mapModel;
-
-

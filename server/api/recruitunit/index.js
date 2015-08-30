@@ -3,7 +3,7 @@
 require('rootpath')();
 
 var express = require('express');
-var controller = require('./sociallist.controller');
+var controller = require('./recruitunit.controller');
 var router = express.Router();
 
 var authService = require('server/services/auth/auth.controller').AuthService;

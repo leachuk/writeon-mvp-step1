@@ -8,13 +8,13 @@ var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
 var UserModel = require('server/models/User');
-var SocialListModel = require('server/models/SocialList.ListItem.All.js');
-var SocialListPartialModelConverter = require('server/models/SocialList.ListItem.Partial.js');
+var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
+//var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js'); //not defined?
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
 
-function SocialListArticleService(){};
+function RecruitUnitContentService(){};
 
 // ********************************************************************************************************************************** //
 //
@@ -22,8 +22,8 @@ function SocialListArticleService(){};
 //
 // ********************************************************************************************************************************** //
 
-SocialListArticleService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
-	console.log("in CouchDBService, saveArticle");
+RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
+	console.log("in RecruitUnitContentService, saveArticle");
 	console.log(req.body);
 
 	var returnSuccess = null;
@@ -42,23 +42,10 @@ SocialListArticleService.prototype.createArticle = function(req, jsondata, docti
 		    });
 	    },
 	    createArticle: function(callback){
-	    	//var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
-			//var couchDb = couchsetup.use(dbtable);
-			// couchDb.insert(jsondata, doctitle, function (err, body, headers){
-			// 	if(!err) {
-			// 		console.log(body);
-			// 	}else{
-			// 		console.log(err);
-			// 	}
-
-			// 	callback(err, body);
-			// });
-
-			//need to find way of using cookie authentication in jugglingdb model schema connection - DONE, booyah
-			var articleModelAuth = SocialListModel(returnSuccess.cookie);
+			var articleModelAuth = ContentItemModel(returnSuccess.cookie);
 			articleModelAuth.create(req.body, function(err, result){
 				if(!err){
-					console.log("SocialListArticleService createArticle: success");
+					console.log("RecruitUnitContentService createArticle: success");
 					console.log(result);
 					callback(result);
 				}else{
@@ -66,6 +53,7 @@ SocialListArticleService.prototype.createArticle = function(req, jsondata, docti
 					callback(err);
 				}
 			});
+
 	    }
 	},
 	function(err, results) {
@@ -74,7 +62,7 @@ SocialListArticleService.prototype.createArticle = function(req, jsondata, docti
 	});
 };
 
-SocialListArticleService.prototype.getArticle = function(req, func_callback){
+RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 	var returnSuccess = null;
 	var token = null;
 	var parts = req.headers.authorization.split(' ');
@@ -114,7 +102,7 @@ SocialListArticleService.prototype.getArticle = function(req, func_callback){
 	});
 };
 
-SocialListArticleService.prototype.deleteArticle = function(req, func_callback){
+RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback){
 	var returnSuccess = null;
 	var token = null;
 	var parts = req.headers.authorization.split(' ');
@@ -153,7 +141,7 @@ SocialListArticleService.prototype.deleteArticle = function(req, func_callback){
 	});
 };
 
-SocialListArticleService.prototype.listAllUserArticles = function(req, username, func_callback){
+RecruitUnitContentService.prototype.listAllUserArticles = function(req, username, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
@@ -196,7 +184,7 @@ SocialListArticleService.prototype.listAllUserArticles = function(req, username,
 };
 
 //params = getAllData(true|false)
-SocialListArticleService.prototype.listMyArticles = function(req, func_callback){
+RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
@@ -218,10 +206,10 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 		    });
 	    },
 	    listMyArticles: function(callback){
-	    	console.log("SocialListArticleService listMyArticles: returnSuccess");
+	    	console.log("RecruitUnitContentService listMyArticles: returnSuccess");
 	    	console.log(returnSuccess.cookie);
 	    	console.log(returnSuccess.username);
-			var articleModelAuth = SocialListModel(returnSuccess.cookie, {returnAll: getAllData});
+			var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
 			articleModelAuth.all({where:{authorName: returnSuccess.username}}, function(err, body){
 				if(!err){
 					console.log("success result");
@@ -242,7 +230,7 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 	});
 };
 
-SocialListArticleService.prototype.updateArticle = function(req, func_callback) {
+RecruitUnitContentService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
 	var token = null;
@@ -303,7 +291,7 @@ SocialListArticleService.prototype.updateArticle = function(req, func_callback) 
 	});
 };
 
-SocialListArticleService.prototype.insertArticle = function(username, docname, field, value, callback) {
+RecruitUnitContentService.prototype.insertArticle = function(username, docname, field, value, callback) {
 	var dbtable = dbNameArticles;
 	var db = couchnano.use(dbtable);
 	var json = {fieldfoo: value};
@@ -326,7 +314,7 @@ SocialListArticleService.prototype.insertArticle = function(username, docname, f
   });
 };
 
-exports.SocialListArticleService = new SocialListArticleService;
+exports.RecruitUnitContentService = new RecruitUnitContentService;
 
 
 

@@ -44,7 +44,10 @@ module.exports = function(app) {
       // Website you wish to allow to connect
       //TODO: Add a whitelist array and check that req.headers.origin is in there before setting Access-Control-Allow-Origin.
       //      This allows us to control who can access the API.
-      res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+      if (typeof req.headers.origin != 'undefined'){
+        //console.log("check ORIGIN:" + req.headers.origin);
+        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+      }
       // Request methods you wish to allow
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       // Request headers you wish to allow

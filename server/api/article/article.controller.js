@@ -114,7 +114,7 @@ exports.listAllArticles = function(req, res){
 			res.send(err);
 		}		
 	});
-}
+};
 
 exports.listByAuthor = function(req, res){
 	console.log("article.controller listByAuthor");
@@ -131,7 +131,7 @@ exports.listByAuthor = function(req, res){
 			res.send(err);
 		}		
 	});
-}
+};
 
 //get articles of the authenticated user
 exports.listMyArticles = function(req, res){
@@ -158,7 +158,7 @@ exports.listMyArticles = function(req, res){
 			res.send(err);
 		}
 	});
-}
+};
 
 exports.deleteArticle = function(req, res){
 	console.log("article.controller deleteArticle");
@@ -170,7 +170,7 @@ exports.deleteArticle = function(req, res){
 			res.send(err);
 		}
 	});
-}
+};
 
 exports.insertArticle = function(req, res){
 	console.log("in insertArticle");
