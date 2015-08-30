@@ -83,7 +83,7 @@ AuthService.prototype.initAuthorization = function() {
 
 	//create roles
 	//TODO refactor this into a proper model/schema with jugglingDb
-	acl.allow('article-editor',['getarticle', 'listmyarticles', 'article'],['edit', 'view', 'delete']);
+	acl.allow('article-editor',['getarticle', 'listmyarticles', 'savearticle', 'article'],['edit', 'view', 'delete']);
 	acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
 	//assign users to roles

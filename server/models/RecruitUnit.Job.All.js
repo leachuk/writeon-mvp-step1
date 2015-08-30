@@ -7,7 +7,7 @@ console.log("In RecruitUnitJobItem model");
 var initCookie = function (setcookie, options) {
     // Initialize here
     cookie = setcookie;
-    schema = new Schema('nano', {url: config.couchuri + '/recruitunit_documents', cookie: cookie}); //set couchdb documents directory
+    schema = new Schema('nano', {url: config.couchuri + '/article_documents', cookie: cookie}); //set couchdb documents directory
     console.log("cookie:" + cookie);
     console.log("options:");
     console.log(options);
