@@ -59,13 +59,13 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 				if (error) {
 					console.log("create user error");
 					console.log(error.message);
-					returnMessage["userCreated"] = false;
-					returnMessage["createUserError"] = error.message;
+					returnMessage["success"] = false;
+					returnMessage["message"] = error.message;
 					callback(returnMessage,null);
 					//return res.status(error["status-code"]).send(error.message);
 					//response.send(error.message, error["status-code"]);			
 				} else {
-					returnMessage["userCreated"] = true;
+					returnMessage["success"] = true;
 					callback(null,returnMessage);
 				}
 				console.log(returnMessage);		
