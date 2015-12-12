@@ -23,7 +23,7 @@ function RecruitUnitContentService(){};
 // ********************************************************************************************************************************** //
 
 RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
-	console.log("in RecruitUnitContentService, saveArticle");
+	console.log("in RecruitUnitContentService, createArticle");
 	console.log(req.body);
 
 	var returnSuccess = null;
@@ -92,7 +92,7 @@ RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -131,7 +131,7 @@ RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback)
 				}else{
 					console.log("couch nano error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -220,7 +220,7 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -263,7 +263,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 				}else{
 					console.log("update get error");
 					callback(err, null);
-				}		
+				}
 			});
 	    },
 	    updateArticle: function(callback){
@@ -280,7 +280,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 				}else{
 					console.log("updateArticle get error");
 					callback(err, null);
-				}		
+				}
 			});
 
 	    }
@@ -289,29 +289,6 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	    console.log(results);
 	    func_callback(err, results.updateArticle);
 	});
-};
-
-RecruitUnitContentService.prototype.insertArticle = function(username, docname, field, value, callback) {
-	var dbtable = dbNameArticles;
-	var db = couchnano.use(dbtable);
-	var json = {fieldfoo: value};
-
-	db.insert(json, docname, function (err, body) {
-    if(!err) {
-    	console.log(body);
-    } else {
-		console.log(err);
-    }
-    // db.insert({foo: "bar", "_rev": body.rev}, "foobar", 
-    // function (error, response) {
-    //   if(!error) {
-    //     console.log("it worked");
-    //   } else {
-    //     console.log("sad panda");
-    //   }
-    // });
-    callback(err, body);
-  });
 };
 
 exports.RecruitUnitContentService = new RecruitUnitContentService;

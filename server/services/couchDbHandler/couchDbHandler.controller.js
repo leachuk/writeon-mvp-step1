@@ -47,9 +47,9 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 	var couchadmin = require("nano")(config.couchuriadmin);
 	var dbname = dbNameArticles;
 	var returnMessage = {};
-	
+
 	console.log("createNewUserDatabase: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
-	
+
 	async.series({
 	    createUser: function(callback){
 	    	//create user in _users table
@@ -63,12 +63,12 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 					returnMessage["message"] = error.message;
 					callback(returnMessage,null);
 					//return res.status(error["status-code"]).send(error.message);
-					//response.send(error.message, error["status-code"]);			
+					//response.send(error.message, error["status-code"]);
 				} else {
 					returnMessage["success"] = true;
 					callback(null,returnMessage);
 				}
-				console.log(returnMessage);		
+				console.log(returnMessage);
 			});
 	    },
 	  //   createUserDb: function(callback){
@@ -106,9 +106,9 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 			// 	} else {
 			// 		returnMessage["ok"] = true;
 			// 	}
-			// 	console.log(body);	
-			// 	callback(null,returnMessage);	
-			// });	
+			// 	console.log(body);
+			// 	callback(null,returnMessage);
+			// });
 	  //   },
 	    enableDatabaseAccess: function(callback){
 	    	console.log("enableDatabaseAccess");
@@ -160,7 +160,7 @@ CouchDBService.prototype.getUser = function(username, callback){
       console.log(err);
       callback(err, null);
     }
-  });  
+  });
 };
 
 CouchDBService.prototype.authenticate = function(username, password, callback){
@@ -272,7 +272,7 @@ CouchDBService.prototype.getArticle = function(req, func_callback){
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -311,7 +311,7 @@ CouchDBService.prototype.deleteArticle = function(req, func_callback){
 				}else{
 					console.log("couch nano error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -418,7 +418,7 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -447,7 +447,7 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 
 //             callback(err, body);
 //         });
-    
+
 // };
 
 CouchDBService.prototype.updateArticle = function(req, func_callback) {
@@ -483,7 +483,7 @@ CouchDBService.prototype.updateArticle = function(req, func_callback) {
 				}else{
 					console.log("update get error");
 					callback(err, null);
-				}		
+				}
 			});
 	    },
 	    updateArticle: function(callback){
@@ -500,7 +500,7 @@ CouchDBService.prototype.updateArticle = function(req, func_callback) {
 				}else{
 					console.log("updateArticle get error");
 					callback(err, null);
-				}		
+				}
 			});
 
 	    }
@@ -522,7 +522,7 @@ CouchDBService.prototype.insertArticle = function(username, docname, field, valu
     } else {
 		console.log(err);
     }
-    // db.insert({foo: "bar", "_rev": body.rev}, "foobar", 
+    // db.insert({foo: "bar", "_rev": body.rev}, "foobar",
     // function (error, response) {
     //   if(!error) {
     //     console.log("it worked");
@@ -569,7 +569,7 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 				} else {
 					returnError2 = err;
 				}
-			});	
+			});
 	    }
 	},
 	function(err, results) {
