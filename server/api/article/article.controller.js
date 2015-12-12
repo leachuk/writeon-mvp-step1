@@ -42,17 +42,6 @@ exports.getArticle = function(req, res, next) {
 exports.saveArticle = function(req, res) {
 	console.log("Article controller, saveArticle");
 	console.log(req.body);
-	console.log("save article");
-	// var articleData = req.body.Article;
-	// var title = req.body.Article.Title;
-	// var dbTable = req.body.User.Name; //todo: change to email when configured
-
-	// console.log(req.body.Article.Title);
-	// console.log("title: " + title);
-	// console.log("dbTable: " + dbTable);
-
-	// console.log(articleData);
-	// console.log(dbTable);
 
 	couchService.createArticle(req, {}, "", function(err, result){
 	    if (!err){
@@ -104,52 +93,10 @@ exports.listAllUserArticles = function(req, res){
 	});
 };
 
-exports.listAllArticles = function(req, res){
-	console.log("article.controller listAllArticels");
-
-	ArticleModel.all([], function(err, result){
-		if(!err){
-			res.send(result);
-		}else{
-			res.send(err);
-		}		
-	});
-};
-
-exports.listByAuthor = function(req, res){
-	console.log("article.controller listByAuthor");
-
-	var username = req.param("username");
-	console.log("username:" + username);
-
-	ArticleModel.all({where:{authorName: username}}, function(err, result){
-		if(!err){
-			console.log("success result");
-			console.log(result);
-			res.send(result);
-		}else{
-			res.send(err);
-		}		
-	});
-};
 
 //get articles of the authenticated user
 exports.listMyArticles = function(req, res){
 	console.log("article.controller listMyArticles");
-
-	//TODO. Pass cookie from header Authorisation Bearer header
-	// var articleModelAuth = ArticleModel("AuthSession=d3JpdGVvbm12cHN0ZXAxLTJAdGVzdC5jb206NTUwNTVFMDA6-ltbJGf9ECKMeoPxSUXCXmnnMxE; Version=1; Expires=Mon, 16-Mar-2015 00:04:32 GMT; Max-Age=99999; Path=/; HttpOnly");
-	// articleModelAuth.all({where:{authorName: "writeonmvpstep1-2@test.com"}}, function(err, result){
-	// 	if(!err){
-	// 		console.log("success result");
-	// 		console.log(result);
-	// 		res.send(result);
-	// 	}else{
-	// 		console.log("articleModelAuth error");
-	// 		res.send(err);
-	// 	}		
-	// });
-
 	// TODO. Create a design doc to handle list document query
  	couchService.listMyArticles(req, function(err, result){
 		if(!err){
@@ -158,6 +105,11 @@ exports.listMyArticles = function(req, res){
 			res.send(err);
 		}
 	});
+};
+
+exports.listByAuthor = function(req, res){
+	console.log("article.controller listByAuthor");
+
 };
 
 exports.deleteArticle = function(req, res){
@@ -172,6 +124,7 @@ exports.deleteArticle = function(req, res){
 	});
 };
 
+//Is this redundant? Remove.
 exports.insertArticle = function(req, res){
 	console.log("in insertArticle");
 	var docname = req.body.docname;
@@ -188,6 +141,7 @@ exports.insertArticle = function(req, res){
 	});
 };
 
+//******** Testing Enpoints *************//
 exports.updateArticle = function(req, res){
 	console.log("in updateArticle");
 
