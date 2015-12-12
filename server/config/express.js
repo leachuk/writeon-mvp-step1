@@ -28,7 +28,7 @@ module.exports = function(app) {
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
-  
+
   //Set secured routes which require authentication
   app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/things',
                                                                    '/api/users/authenticate',
@@ -38,7 +38,7 @@ module.exports = function(app) {
                                                                    '/api/auths/getuser',
                                                                    new RegExp('/api/articles/.*'),//temp non secured
                                                                    '/services/couchDbHandler']}));
-  
+
   // Add headers to allow remote API calls
   app.use(function (req, res, next) {
       // Website you wish to allow to connect
@@ -51,7 +51,7 @@ module.exports = function(app) {
       // Request methods you wish to allow
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
       // Request headers you wish to allow
-      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
       // Set to true if you need the website to include cookies in the requests sent
       // to the API (e.g. in case you use sessions)
       res.setHeader('Access-Control-Allow-Credentials', true);
