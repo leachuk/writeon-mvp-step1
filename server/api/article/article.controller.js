@@ -45,25 +45,13 @@ exports.saveArticle = function(req, res) {
 
 	couchService.createArticle(req, {}, "", function(err, result){
 	    if (!err){
-	      console.log(result);
+	      //console.log(result);
 	      res.send(result);
 	    } else {
 	      console.log(err);
 	      res.send(err);
 	    }
 	});
-
-	//using JugglingDb Model. Need to migrate JugDb model into CouchDBService.prototype.createArticle  so we can use token authentication.
-	// ArticleModel.create(req.body, function(err, result){
-	// 	if(!err){
-	// 		console.log("success");
-	// 		console.log(result);
-	// 		res.send(result);
-	// 	}else{
-	// 		console.log("error");
-	// 		res.send(err);
-	// 	}
-	// });
 };
 
 exports.updateArticle = function(req,res){

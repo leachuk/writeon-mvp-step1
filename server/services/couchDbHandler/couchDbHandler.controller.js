@@ -210,35 +210,26 @@ CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_
 		    });
 	    },
 	    createArticle: function(callback){
-	    	//var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
-			//var couchDb = couchsetup.use(dbtable);
-			// couchDb.insert(jsondata, doctitle, function (err, body, headers){
-			// 	if(!err) {
-			// 		console.log(body);
-			// 	}else{
-			// 		console.log(err);
-			// 	}
-
-			// 	callback(err, body);
-			// });
-
-			//need to find way of using cookie authentication in jugglingdb model schema connection - DONE, booyah
-			var articleModelAuth = ArticleModel(returnSuccess.cookie);
-			articleModelAuth.create(req.body, function(err, result){
-				if(!err){
-					console.log("CouchDBService createArticle: success");
-					console.log(result);
-					callback(result);
-				}else{
-					console.log("error");
-					callback(err);
-				}
-			});
+        var articleModelAuth = ArticleModel(returnSuccess.cookie);
+        articleModelAuth.create(req.body, function(err, result){
+          if(!err){
+            console.log("CouchDBService createArticle: success");
+            console.log(result);
+            var successReturn = { //ensure succees param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, successReturn);
+          }else{
+            console.log("error");
+            callback(err, null);
+          }
+        });
 	    }
 	},
 	function(err, results) {
 	    console.log(results);
-	    func_callback(err, results);
+	    func_callback(err, results.createArticle);
 	});
 };
 
