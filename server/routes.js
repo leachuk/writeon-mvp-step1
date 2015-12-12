@@ -11,13 +11,11 @@ module.exports = function(app) {
   // Insert routes below
   //app.use('/services/utils', require('./api/dbUtil'));
   app.use('/api/articles', require('./api/article'));
-  app.use('/api/sociallist', require('./api/sociallist'));
-  app.use('/api/recruitunit', require('./api/recruitunit'));
   //app.use('/api/auths', require('./api/auth'));
   app.use('/api/users', require('./api/user'));
   //app.use('/api/couchDbHandlers', require('./api/couchDbHandler'));//create as private server side util
   app.use('/api/things', require('./api/thing'));
-  
+
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
