@@ -6,10 +6,6 @@ var _ = require('lodash');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.CouchDBService;
 
-//remove once refactored to couchDbHandlers
-var config = require('server/config/environment');
-var couchnano = require("nano")(config.couchuri);
-
 var TestModel = require('server/models/JugglingModelTest');
 var ArticleModel = require('server/models/Article');
 
@@ -113,21 +109,21 @@ exports.deleteArticle = function(req, res){
 };
 
 //Is this redundant? Remove.
-exports.insertArticle = function(req, res){
-	console.log("in insertArticle");
-	var docname = req.body.docname;
-    var fieldparam = req.body.field;
-    var valueparam = req.body.value;
-    var dbTable = req.body.tablename; //req.body.User.Name; //todo: change to email when configured
-
-    couchService.insertArticle(dbTable, docname, fieldparam, valueparam, function(err, result){
-		if(!err){
-			res.send(result);
-		}else{
-			res.send(err);
-		}
-	});
-};
+//exports.insertArticle = function(req, res){
+//	console.log("in insertArticle");
+//	var docname = req.body.docname;
+//    var fieldparam = req.body.field;
+//    var valueparam = req.body.value;
+//    var dbTable = req.body.tablename; //req.body.User.Name; //todo: change to email when configured
+//
+//    couchService.insertArticle(dbTable, docname, fieldparam, valueparam, function(err, result){
+//		if(!err){
+//			res.send(result);
+//		}else{
+//			res.send(err);
+//		}
+//	});
+//};
 
 //******** Testing Enpoints *************//
 exports.updateArticle = function(req, res){
