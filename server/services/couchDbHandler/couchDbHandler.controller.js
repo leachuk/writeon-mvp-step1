@@ -1,5 +1,7 @@
 'use strict';
 
+// ******* This is the sample handler, which uses the 'Article' model. ******** //
+// ******* Each application will have it's own, which in turn calls the specific app model ****** //
 require('rootpath')()
 var _ = require('lodash');
 var config = require('server/config/environment');
@@ -571,7 +573,7 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 
 };
 
-exports.CouchDBService = new CouchDBService;
+exports.Service = new CouchDBService;
 
 
 

@@ -39,6 +39,11 @@ exports.saveArticle = function(req, res) {
 	console.log("Article controller, saveArticle");
 	console.log(req.body);
 
+  // Get this shit to work. Pass require path from client in req.query.modelId
+  // for now make it the literal path, to be an id with a lookup.
+  var couchDbHandlers = require(req.query.modelId);
+  var couchService = couchDbHandlers.Service;
+
 	couchService.createArticle(req, {}, "", function(err, result){
 	    if (!err){
 	      //console.log(result);

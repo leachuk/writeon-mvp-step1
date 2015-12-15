@@ -44,21 +44,25 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	    createArticle: function(callback){
 			var articleModelAuth = ContentItemModel(returnSuccess.cookie);
 			articleModelAuth.create(req.body, function(err, result){
-				if(!err){
-					console.log("RecruitUnitContentService createArticle: success");
-					console.log(result);
-					callback(result);
-				}else{
-					console.log("error");
-					callback(err);
-				}
+        if(!err){
+          console.log("RecruitUnitContentService createArticle: success");
+          console.log(result);
+          var successReturn = { //ensure succees param returned to client
+            data: result,
+            success: true
+          };
+          callback(null, successReturn);
+        }else{
+          console.log("error");
+          callback(err, null);
+        }
 			});
 
 	    }
 	},
 	function(err, results) {
 	    console.log(results);
-	    func_callback(err, results);
+	    func_callback(err, results.createArticle);
 	});
 };
 
@@ -291,7 +295,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	});
 };
 
-exports.RecruitUnitContentService = new RecruitUnitContentService;
+exports.Service = new RecruitUnitContentService;
 
 
 
