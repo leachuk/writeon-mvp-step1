@@ -15,17 +15,17 @@ var initCookie = function (setcookie, options) {
     var returnModelObj = {
 		id: 					{ type: String},
 		model: 					{ type: String},
-	    jobDesc:     			{ type: String, length: 255 },
+	    jobDescription:   { type: String, length: 255 },
 	    roleType:   			{ type: String }, //Text is used for large strings
       payBracketLower:  { type: Number},
       payBracketUpper:  { type: Number},
-	    location: 				{ type: String},
-	    requiredSkills: 		{ type: String},
+	    locationDescription: 				{ type: String},
+	    requiredSkills: 	{ type: String},
 	    authorName: 			{ type: String },
-	    authorEmail:    		{ type: String},
+	    authorEmail:    	{ type: String},
 	    createdDate: 			{ type: Number,  default: Date.now },
 	    createdDateFormatted:   { type: String},
-	    lastUpdatedDate: 		{ type: Number,  default: Date.now },
+	    lastUpdatedDate: 	{ type: Number,  default: Date.now },
 	    lastUpdatedDateFormatted:{ type: String},
 	    published: 	 			{ type: Boolean, default: false, index: true }
 	}
