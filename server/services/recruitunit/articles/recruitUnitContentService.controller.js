@@ -7,6 +7,9 @@ var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
+var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchService = couchDbHandlers.Service;
+
 var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
 var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
@@ -294,6 +297,30 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	    func_callback(err, results.updateArticle);
 	});
 };
+
+// ********************************************************************************************************************************** //
+//
+// Authentication and User Services
+//
+// ********************************************************************************************************************************** //
+
+//RecruitUnitContentService.prototype.authenticate = function(username, password, callback){
+//  var username = username;
+//  var password = password;
+//  console.log("username:" + username);
+//  couchService.authenticate(username, password, function (err, body, headers) {
+//    console.log("in RecruitUnitContentService authenticate");
+//    //console.log(body);
+//    if (!err) {
+//      console.log(headers);
+//    }else{
+//      console.log(err);
+//      //return err.message;
+//    }
+//
+//    callback(err, body, headers);
+//  });
+//};
 
 exports.Service = new RecruitUnitContentService;
 

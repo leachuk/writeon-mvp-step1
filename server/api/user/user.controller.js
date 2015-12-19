@@ -15,7 +15,7 @@ exports.signup = function(req, res) {
 
   var couchService = couchDbHandlers.CouchDBService;
   console.log("Signup with email["+ useremail +"], password["+ userpassword +"]");
-  
+
   //Include use-case where user already exists.
   couchService.createNewUserDatabase(useremail, userpassword, function(err,result){
     if (!err){
@@ -28,7 +28,7 @@ exports.signup = function(req, res) {
   // couchService.asyncTest("test 1", "test 2", function(result){
   //   res.send(result);
   // });
-  
+
   //res.send("Signup with email["+ useremail +"], password["+ userpassword +"]");
 };
 
@@ -54,14 +54,14 @@ exports.authenticate = function(req, res, next){
   var parts = req.headers.authorization.split(' ');
   var authService = authHandlers.AuthService;
   var clientip = req.ip;
- 
+
   if (parts.length == 2) {
     var scheme = parts[0];
     var credentials = parts[1];
 
     if (/^Bearer$/i.test(scheme)) {
         token = credentials;
-        
+
         authService.decodetoken(req, token, function(result){
           //only successfully authenticate from the same IP address. Stops token sharing/spoofing.
           if (result == null){
@@ -99,7 +99,7 @@ exports.signin = function(req, res){
   var username = req.body.username;
   var password = req.body.password;
   var clientip = req.ip;
-  var couchService = couchDbHandlers.CouchDBService;
+  var couchService = couchDbHandlers.Service;
 
   couchService.authenticate(username, password, function(err, result, headers){
     if (!err){

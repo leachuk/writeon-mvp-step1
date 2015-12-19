@@ -4,7 +4,7 @@ require('rootpath')();
 
 var _ = require('lodash');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
-var couchService = couchDbHandlers.CouchDBService;
+var couchService = couchDbHandlers.Service;
 
 var TestModel = require('server/models/JugglingModelTest');
 var ArticleModel = require('server/models/Article');
@@ -41,10 +41,10 @@ exports.saveArticle = function(req, res) {
 
   // Get this shit to work. Pass require path from client in req.query.modelId
   // for now make it the literal path, to be an id with a lookup.
-  var couchDbHandlers = require(req.query.modelId);
-  var couchService = couchDbHandlers.Service;
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
 
-	couchService.createArticle(req, {}, "", function(err, result){
+	appService.createArticle(req, {}, "", function(err, result){
 	    if (!err){
 	      //console.log(result);
 	      res.send(result);
