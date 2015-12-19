@@ -13,14 +13,14 @@ var initCookie = function (setcookie, options) {
     console.log(options);
 
     var returnModelObj = {
-		id: 					{ type: String},
-		model: 					{ type: String},
+		  id: 					    { type: String},
+		  model: 					  { type: String},
 	    jobDescription:   { type: String, length: 255 },
-	    roleType:   			{ type: String }, //Text is used for large strings
+	    roleType:   			{ type: String },
       payBracketLower:  { type: Number},
       payBracketUpper:  { type: Number},
 	    locationDescription: 				{ type: String},
-	    requiredSkills: 	{ type: String},
+	    skills: 	        { type: String},
 	    authorName: 			{ type: String },
 	    authorEmail:    	{ type: String},
 	    createdDate: 			{ type: Number,  default: Date.now },
