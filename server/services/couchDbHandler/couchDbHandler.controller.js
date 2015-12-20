@@ -9,7 +9,8 @@ var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
-var UserModel = require('server/models/User');
+var UserModel = require('server/models/User');//old model, not used
+var UserJdbModel = require('server/models/UserJdb');//current jugglingdb model. obv rename once working.
 var ArticleModel = require('server/models/Article');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
@@ -44,74 +45,39 @@ CouchDBService.prototype.asyncTest = function(value1, value2, func_callback){
 //
 // ********************************************************************************************************************************** //
 
-CouchDBService.prototype.createNewUserDatabase = function(useremail, userpassword, func_callback){
-//When a user signs up, create a new database for them and grant them r/w access
+CouchDBService.prototype.createNewUser = function(req, func_callback){
+//When a user signs up, create the user
 	var couchadmin = require("nano")(config.couchuriadmin);
 	var dbname = dbNameArticles;
 	var returnMessage = {};
 
-	console.log("createNewUserDatabase: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
+	//console.log("createNewUser: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
 
 	async.series({
 	    createUser: function(callback){
 	    	//create user in _users table
-			var _users = couchadmin.use("_users");
-			var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
-			_users.insert(json, "", function(error, body, headers){
-				if (error) {
-					console.log("create user error");
-					console.log(error.message);
-					returnMessage["success"] = false;
-					returnMessage["message"] = error.message;
-					callback(returnMessage,null);
-					//return res.status(error["status-code"]).send(error.message);
-					//response.send(error.message, error["status-code"]);
-				} else {
-					returnMessage["success"] = true;
-					callback(null,returnMessage);
-				}
-				console.log(returnMessage);
-			});
-	    },
-	  //   createUserDb: function(callback){
-	  //   	var returnMessage = {};
-			// //create db for user
-			// couchnano.db.create(dbname, function(error, body, headers){
-			// 	if (error) {
-			// 		console.log(error.message);
-			// 		//return res.status(error["status-code"]).send(error.message);
-			// 		returnMessage["ok"] = false;
-			// 		returnMessage["userDbCreatedMessage"] = error.message;
-			// 	} else {
-			// 		returnMessage["ok"] = true;
-			// 	}
-			// 	console.log(body);
-			// 	callback(null,returnMessage);
-			// 	//response.send(body, 200);
-			// 	//res.status(200).send(body);
 
-			// });
-	  //   },
-	  //   createUserSecurity: function(callback){
-	  //   	var returnMessage = {};
-			// //update the db security object
-			// var usersecurity = couchadmin.use(dbname);
-			// var json = {"admins":{"names":[],"roles":[]},"members":{"names":[useremail],"roles":[]}};
-			// usersecurity.insert(json, "_security", function(error, body, headers){
-			// 	if (error) {
-			// 		console.log("create user error");
-			// 		console.log(error.message);
-			// 		//return response.status(error["status-code"]).send(error.message);
-			// 		returnMessage["ok"] = false;
-			// 		returnMessage["userSecurityCreatedMessage"] = error.message;
-			// 		//response.send(error.message, error["status-code"]);
-			// 	} else {
-			// 		returnMessage["ok"] = true;
-			// 	}
-			// 	console.log(body);
-			// 	callback(null,returnMessage);
-			// });
-	  //   },
+        var userModel = UserJdbModel();
+
+        //var _users = couchadmin.use("_users");
+        //var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
+        //_users.insert(json, "", function(error, body, headers){
+        userModel.create(req.body, function(error, result){
+          if (error) {
+            console.log("create user error");
+            console.log(error.message);
+            returnMessage["success"] = false;
+            returnMessage["message"] = error.message;
+            callback(returnMessage,null);
+            //return res.status(error["status-code"]).send(error.message);
+            //response.send(error.message, error["status-code"]);
+          } else {
+            returnMessage["success"] = true;
+            callback(null,returnMessage);
+          }
+          console.log(returnMessage);
+        });
+	    },
 	    enableDatabaseAccess: function(callback){
 	    	console.log("enableDatabaseAccess");
 	    	var dbsecurity = couchadmin.use(dbname);
@@ -119,26 +85,31 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 				  if (!err) {
 				  	console.log("got _security body");
 				    console.log(returnMessage);
-				    var names = body.members.names;
-				    names.push(useremail);
-				    console.log(body);
-
+				    var names = body.members.names; //TODO: may not scale well with many users, find alternative.
+				    names.push(req.body.email);
+				    //console.log(body);
+            //add new user to the security table so they have access.
 				    dbsecurity.insert(body, "_security", function(update_err, update_body){
 				    	if(!err){
 					    	console.log("update_body _security");
 					    	console.log(update_body);
-					    	callback(null, "user database created")
+                var returnSuccess = {};
+                returnSuccess["success"] = true;
+                returnSuccess["message"] = "user access enabled";
+					    	callback(null, returnSuccess);
 				    	} else {
 				    		console.log("update_err _security");
 					    	console.log(update_err);
 				    	}
 				    });
-
 				    //callback(null, body);
 				  } else {
+            var returnError = {};
+            returnError["success"] = false;
+            returnError["message"] = "got _security error";
 				  	console.log("got _security error");
 				  	console.log(err);
-				  	callback(err, null);
+				  	callback(returnError, null);
 				  }
 	    	});
 	    }
@@ -146,7 +117,19 @@ CouchDBService.prototype.createNewUserDatabase = function(useremail, userpasswor
 	function(err, results) {
 	    // results is now equal to: {one: 1, two: 2}
 	    console.log(results);
-	    func_callback(err, results);
+      if(!err){
+        var successReturn = {
+          data: results,
+          success: true
+        }
+        func_callback(null, successReturn);
+      } else {
+        var errorReturn = {
+          data: err,
+          success: false
+        }
+        func_callback(errorReturn, null);
+      }
 	});
 
 };

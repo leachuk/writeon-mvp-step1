@@ -167,21 +167,21 @@ RecruitUnitContentService.prototype.listAllUserArticles = function(req, username
 		    });
 	    },
 	    listArticles: function(callback){
-	    	var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
-			var couchDb = couchsetup.use(dbtable);
-			couchDb.list({key:"Test Title 1"},function(err, body) {
-				if (!err) {
-					// body.rows.forEach(function(doc) {
-					//   listResultArray.push(doc);
-					//   console.log(doc);
-					// });
-					callback(null, body);
-					console.log(body);
-				}else{
-					callback(err, null);
-					console.log(err);
-				}
-			});
+        var couchsetup = require("nano")({ url : config.couchuri, cookie: returnSuccess.cookie});
+			  var couchDb = couchsetup.use(dbtable);
+        couchDb.list({key:"Test Title 1"},function(err, body) {
+          if (!err) {
+            // body.rows.forEach(function(doc) {
+            //   listResultArray.push(doc);
+            //   console.log(doc);
+            // });
+            callback(null, body);
+            console.log(body);
+          }else{
+            callback(err, null);
+            console.log(err);
+          }
+        });
 	    }
 	},
 	function(err, results) {

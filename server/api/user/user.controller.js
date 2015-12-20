@@ -9,15 +9,15 @@ var authHandlers = require('server/services/auth/auth.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {
-  var useremail = req.body.email;
-  var userpassword = req.body.password;
-  var databasename = useremail;
+  //var useremail = req.body.email;
+  //var userpassword = req.body.password;
+  //var databasename = useremail;
 
-  var couchService = couchDbHandlers.CouchDBService;
-  console.log("Signup with email["+ useremail +"], password["+ userpassword +"]");
+  var couchService = couchDbHandlers.Service;
+  //console.log("Signup with email["+ useremail +"], password["+ userpassword +"]");
 
   //Include use-case where user already exists.
-  couchService.createNewUserDatabase(useremail, userpassword, function(err,result){
+  couchService.createNewUser(req, function(err, result){
     if (!err){
       res.send(result);
     } else {
