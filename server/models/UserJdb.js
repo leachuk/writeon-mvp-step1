@@ -3,7 +3,7 @@ var Schema = require('jugglingdb').Schema;
 
 console.log("In User model");
 
-var init = function (options) {
+var init = function (model, options) {
   // Initialize here
   //cookie = setcookie; //connect to db as user via cookie
   schema = new Schema('nano', {url: config.couchuriadmin + '/_users'});
@@ -20,9 +20,10 @@ var init = function (options) {
   console.log("returnAllData:" + returnAllData);
 
   var returnModelObj = returnAllData ? { //full model
-    id: 		    { type: String},
+    id: 		    { type: String, default : "org.couchdb.user:" + model.email},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
     email:     	{ type: String},
-    name:       { type: String}, //Schema.Text can be used for large strings
+    name:       { type: String},
+    displayName:{ type: String},
     createdDate:{ type: Number,  default: Date.now },
     createdDateFormatted:{ type: String},
     lastUpdatedDate:{ type: Number,  default: Date.now },
@@ -30,9 +31,10 @@ var init = function (options) {
     roles:      { type: String, default: []},
     type:       { type: String, default: "user"}
   } : { //partial model
-    id: 		    { type: String},
+    id: 		    { type: String, default : "org.couchdb.user:" + model.email}, //couchdb user document requirement
     email:     	{ type: String},
     name:       { type: String},
+    displayName:{ type: String},
     roles:      { type: String, default: []},
     type:       { type: String, default: "user"}
   };
