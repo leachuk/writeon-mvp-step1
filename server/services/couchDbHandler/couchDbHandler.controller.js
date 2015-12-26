@@ -50,88 +50,99 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
 	var couchadmin = require("nano")(config.couchuriadmin);
 	var dbname = dbNameArticles;
 	var returnMessage = {};
+  var appkey = req.body.key;
 
 	//console.log("createNewUser: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
 
-	async.series({
-	    createUser: function(callback){
-	    	//create user in _users table
+  this.isValidAppKey(appkey, req, function(err, isValidKeyResult){
+    console.log("isValidAppKey:" + isValidKeyResult);
 
-        var userModel = UserJdbModel(req.body, {}); //coucdb requirment. the name part of _id and the name field must match.
+    if (isValidKeyResult){
+      async.series({
+          createUser: function(callback){
+            //create user in _users table
 
-        //var _users = couchadmin.use("_users");
-        //var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
-        //_users.insert(json, "", function(error, body, headers){
-        req.body.name = req.body.email; //couchdb requirement
-        userModel.create(req.body, function(error, result){
-          if (error) {
-            console.log("create user error");
-            console.log(error.message);
-            returnMessage["success"] = false;
-            returnMessage["message"] = error.message;
-            callback(returnMessage,null);
-            //return res.status(error["status-code"]).send(error.message);
-            //response.send(error.message, error["status-code"]);
-          } else {
-            returnMessage["success"] = true;
-            callback(null,returnMessage);
+            var userModel = UserJdbModel(req.body, {}); //coucdb requirment. the name part of _id and the name field must match.
+
+            //var _users = couchadmin.use("_users");
+            //var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
+            //_users.insert(json, "", function(error, body, headers){
+            req.body.name = req.body.email; //couchdb requirement
+            userModel.create(req.body, function(error, result){
+              if (error) {
+                console.log("create user error");
+                console.log(error.message);
+                returnMessage["success"] = false;
+                returnMessage["message"] = error.message;
+                callback(returnMessage,null);
+                //return res.status(error["status-code"]).send(error.message);
+                //response.send(error.message, error["status-code"]);
+              } else {
+                returnMessage["success"] = true;
+                callback(null,returnMessage);
+              }
+              console.log(returnMessage);
+            });
+          },
+          enableDatabaseAccess: function(callback){
+            console.log("enableDatabaseAccess");
+            var dbsecurity = couchadmin.use(dbname);
+            dbsecurity.get("_security", function(err, body){
+              if (!err) {
+                console.log("got _security body");
+                console.log(returnMessage);
+                var names = body.members.names; //TODO: may not scale well with many users, find alternative.
+                names.push(req.body.email);
+                //console.log(body);
+                //add new user to the security table so they have access.
+                dbsecurity.insert(body, "_security", function(update_err, update_body){
+                  if(!err){
+                    console.log("update_body _security");
+                    console.log(update_body);
+                    var returnSuccess = {};
+                    returnSuccess["success"] = true;
+                    returnSuccess["message"] = "user access enabled";
+                    callback(null, returnSuccess);
+                  } else {
+                    console.log("update_err _security");
+                    console.log(update_err);
+                  }
+                });
+                //callback(null, body);
+              } else {
+                var returnError = {};
+                returnError["success"] = false;
+                returnError["message"] = "got _security error";
+                console.log("got _security error");
+                console.log(err);
+                callback(returnError, null);
+              }
+            });
           }
-          console.log(returnMessage);
+        },
+        function(err, results) {
+          // results is now equal to: {one: 1, two: 2}
+          console.log(results);
+          if(!err){
+            var successReturn = {
+              data: results,
+              success: true
+            }
+            func_callback(null, successReturn);
+          } else {
+            var errorReturn = {
+              data: err,
+              success: false
+            }
+            func_callback(errorReturn, null);
+          }
         });
-	    },
-	    enableDatabaseAccess: function(callback){
-	    	console.log("enableDatabaseAccess");
-	    	var dbsecurity = couchadmin.use(dbname);
-	    	dbsecurity.get("_security", function(err, body){
-				  if (!err) {
-				  	console.log("got _security body");
-				    console.log(returnMessage);
-				    var names = body.members.names; //TODO: may not scale well with many users, find alternative.
-				    names.push(req.body.email);
-				    //console.log(body);
-            //add new user to the security table so they have access.
-				    dbsecurity.insert(body, "_security", function(update_err, update_body){
-				    	if(!err){
-					    	console.log("update_body _security");
-					    	console.log(update_body);
-                var returnSuccess = {};
-                returnSuccess["success"] = true;
-                returnSuccess["message"] = "user access enabled";
-					    	callback(null, returnSuccess);
-				    	} else {
-				    		console.log("update_err _security");
-					    	console.log(update_err);
-				    	}
-				    });
-				    //callback(null, body);
-				  } else {
-            var returnError = {};
-            returnError["success"] = false;
-            returnError["message"] = "got _security error";
-				  	console.log("got _security error");
-				  	console.log(err);
-				  	callback(returnError, null);
-				  }
-	    	});
-	    }
-	},
-	function(err, results) {
-	    // results is now equal to: {one: 1, two: 2}
-	    console.log(results);
-      if(!err){
-        var successReturn = {
-          data: results,
-          success: true
-        }
-        func_callback(null, successReturn);
-      } else {
-        var errorReturn = {
-          data: err,
-          success: false
-        }
-        func_callback(errorReturn, null);
-      }
-	});
+    } else { // not a valid app key
+      returnMessage["success"] = false;
+      returnMessage["data"] = {"message": "invalid or missing application key"};
+      func_callback(returnMessage, null);
+    }
+  });
 
 };
 
@@ -554,8 +565,51 @@ CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 	    console.log(results);
 	    func_callback(err, results);
 	});
-
 };
+
+CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
+  console.log("In isValidAppKey");
+  var couchadmin = require("nano")(config.couchuriadmin);
+
+  var token = null;
+  var clientip = req.ip;
+  var host = req.headers.host;
+
+  var returnSuccess = null;
+  var returnError = null;
+
+  async.series({
+      checkKey: function(callback){
+        var _projectFiles = couchadmin.use("loom_project_files");
+        _projectFiles.get("recruitUnit-project", {}, function(err, body) {
+          if(!err) {
+            console.log(body);
+            var appKey = body.key;
+            var appHost = body.validHosts; //host can be easily spoofed in /etc/hosts. Also using IP
+            var appIp = body.validIps;
+            var isEnabled = body.isEnabled;
+            if (appKey == key && host.indexOf(appHost) != -1 && clientip.indexOf(appIp) != -1 && isEnabled){
+              callback(null,true);
+            } else {
+              callback(false,null);
+            }
+          } else {
+            console.log(err);
+            var returnSuccess = {
+              data: err,
+              success: false
+            }
+            callback(returnSuccess, null);
+          }
+        });
+      }
+  },
+  function(err, results) {
+    console.log(results);
+    func_callback(err, results.checkKey);
+  });
+};
+
 
 exports.Service = new CouchDBService;
 
