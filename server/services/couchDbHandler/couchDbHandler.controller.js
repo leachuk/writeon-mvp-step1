@@ -139,7 +139,7 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
         });
     } else { // not a valid app key
       returnMessage["success"] = false;
-      returnMessage["data"] = {"message": "invalid or missing application key"};
+      returnMessage["data"] = err;
       func_callback(returnMessage, null);
     }
   });
@@ -580,8 +580,8 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
 
   async.series({
       checkKey: function(callback){
-        var _projectFiles = couchadmin.use("loom_project_files");
-        _projectFiles.get("recruitUnit-project", {}, function(err, body) {
+        var _projectFiles = couchadmin.use(config.dbNameProjects);
+        _projectFiles.get("recruitUnit-project", {}, function(err, body) { //TODO:recruitUnit-project should be passed in
           if(!err) {
             console.log(body);
             var appKey = body.key;
@@ -589,23 +589,28 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
             var appIp = body.validIps;
             var isEnabled = body.isEnabled;
             if (appKey == key && host.indexOf(appHost) != -1 && clientip.indexOf(appIp) != -1 && isEnabled){
-              callback(null,true);
+              var returnMessage = {
+                "success": true
+              }
+              callback(null,returnMessage);
             } else {
-              callback(false,null);
+              var returnMessage = {
+                "success": false,
+                "message": "missing or invalid application key"
+              }
+              callback(returnMessage,null);
             }
           } else {
-            console.log(err);
-            var returnSuccess = {
-              data: err,
-              success: false
+            var returnMessage = {
+              success: false,
+              message: err
             }
-            callback(returnSuccess, null);
+            callback(returnMessage, null);
           }
         });
       }
   },
   function(err, results) {
-    console.log(results);
     func_callback(err, results.checkKey);
   });
 };

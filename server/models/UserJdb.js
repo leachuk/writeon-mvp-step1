@@ -21,22 +21,23 @@ var init = function (model, options) {
 
   var returnModelObj = returnAllData ? { //full model
     id: 		    { type: String, default : "org.couchdb.user:" + model.email},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
+    name:       { type: String}, //couchdb requirement
+    roles:      { type: String, default: []}, //couchdb requirement
+    type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     email:     	{ type: String},
-    name:       { type: String},
     displayName:{ type: String},
+    jobRole:    { type: String},
     createdDate:{ type: Number,  default: Date.now },
-    createdDateFormatted:{ type: String},
-    lastUpdatedDate:{ type: Number,  default: Date.now },
-    lastUpdatedDateFormatted:{ type: String},
-    roles:      { type: String, default: []},
-    type:       { type: String, default: "user"}
-  } : { //partial model
+    createdDateFormatted: { type: String},
+    lastUpdatedDate: { type: Number,  default: Date.now },
+    lastUpdatedDateFormatted: { type: String}
+  } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
     id: 		    { type: String, default : "org.couchdb.user:" + model.email}, //couchdb user document requirement
+    name:       { type: String}, //couchdb requirement
+    roles:      { type: String, default: []}, //couchdb requirement
+    type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     email:     	{ type: String},
-    name:       { type: String},
-    displayName:{ type: String},
-    roles:      { type: String, default: []},
-    type:       { type: String, default: "user"}
+    displayName:{ type: String}
   };
 
   console.log("returnModelObj");
