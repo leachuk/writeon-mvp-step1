@@ -9,8 +9,7 @@ var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
-var UserModel = require('server/models/User');//old model, not used
-var UserJdbModel = require('server/models/UserJdb');//current jugglingdb model. obv rename once working.
+var UserModel = require('server/models/User');
 var ArticleModel = require('server/models/Article');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
@@ -62,7 +61,7 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
           createUser: function(callback){
             //create user in _users table
 
-            var userModel = UserJdbModel(req.body, {}); //coucdb requirment. the name part of _id and the name field must match.
+            var userModel = UserModel(req.body, {}); //coucdb requirment. the name part of _id and the name field must match.
 
             //var _users = couchadmin.use("_users");
             //var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
