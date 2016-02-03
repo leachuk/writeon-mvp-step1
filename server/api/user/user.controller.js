@@ -88,6 +88,7 @@ exports.signin = function(req, res){
   var password = req.body.password;
   var clientip = req.ip;
   var couchService = couchDbHandlers.Service;
+  var returnMessage = {};
 
   couchService.authenticate(username, password, function(err, result, headers){
     if (!err){
@@ -105,7 +106,9 @@ exports.signin = function(req, res){
         //res.send(result);
     }else{
       console.log("error:" + err);
-      res.status(401).send(err.message);
+      returnMessage["success"] = false;
+      returnMessage["message"] = err.reason;
+      res.status(401).send(returnMessage);
     }
   });
 
