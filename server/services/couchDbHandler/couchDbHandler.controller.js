@@ -82,41 +82,6 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
               }
               console.log(returnMessage);
             });
-          },
-          enableDatabaseAccess: function(callback){
-            console.log("enableDatabaseAccess");
-            var dbsecurity = couchadmin.use(dbname);
-            dbsecurity.get("_security", function(err, body){
-              if (!err) {
-                console.log("got _security body");
-                console.log(returnMessage);
-                var names = body.members.names; //TODO: may not scale well with many users, find alternative.
-                names.push(req.body.email);
-                //console.log(body);
-                //add new user to the security table so they have access.
-                dbsecurity.insert(body, "_security", function(update_err, update_body){
-                  if(!err){
-                    console.log("update_body _security");
-                    console.log(update_body);
-                    var returnSuccess = {};
-                    returnSuccess["success"] = true;
-                    returnSuccess["message"] = "user access enabled";
-                    callback(null, returnSuccess);
-                  } else {
-                    console.log("update_err _security");
-                    console.log(update_err);
-                  }
-                });
-                //callback(null, body);
-              } else {
-                var returnError = {};
-                returnError["success"] = false;
-                returnError["message"] = "got _security error";
-                console.log("got _security error");
-                console.log(err);
-                callback(returnError, null);
-              }
-            });
           }
         },
         function(err, results) {
