@@ -94,16 +94,19 @@ exports.signin = function(req, res){
     if (!err){
       console.log("success");
       console.log(headers);
-        var cookieheader = headers['set-cookie'];
-        var profile = { username: result.name,
-                        cookie: cookieheader[0],
-                        ok: result.ok,
-                        roles: result.roles,
-                        ip: clientip };
-        // We are encoding the profile inside the token
-        var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
-        res.json({ token: token });
-        //res.send(result);
+      var cookieheader = headers['set-cookie'];
+      var profile = { username: result.name,
+                      cookie: cookieheader[0],
+                      ok: result.ok,
+                      roles: result.roles,
+                      ip: clientip };
+      // We are encoding the profile inside the token
+      var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
+
+      returnMessage["success"] = true;
+      returnMessage["token"] = token;
+      //res.json({ token: token });
+      res.send(returnMessage);
     }else{
       console.log("error:" + err);
       returnMessage["success"] = false;

@@ -580,14 +580,14 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
   async.series({
       checkKey: function(callback){
         var _projectFiles = couchadmin.use(config.dbNameProjects);
-        _projectFiles.get("recruitUnit-project", {}, function(err, body) { //TODO:recruitUnit-project should be passed in
+        _projectFiles.get("recruitUnit-project", {}, function(err, body) { //TODO:recruitUnit-project should be passed in. Stored in couchdb.
           if(!err) {
             console.log(body);
             var appKey = body.key;
             var appHost = body.validHosts; //host can be easily spoofed in /etc/hosts. Also using IP
             var appIp = body.validIps;
             var isEnabled = body.isEnabled;
-            if (appKey == key && host.indexOf(appHost) != -1 && clientip.indexOf(appIp) != -1 && isEnabled){
+            if (appKey == key && host.indexOf(appHost) != -1 && appIp.indexOf(clientip) != -1 && isEnabled){
               var returnMessage = {
                 "success": true
               }
