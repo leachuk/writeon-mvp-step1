@@ -30,7 +30,8 @@ var init = function (model, options) {
     createdDate:{ type: Number,  default: Date.now },
     createdDateFormatted: { type: String},
     lastUpdatedDate: { type: Number,  default: Date.now },
-    lastUpdatedDateFormatted: { type: String}
+    lastUpdatedDateFormatted: { type: String},
+    password: {type: String}
   } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
     id: 		    { type: String, default : "org.couchdb.user:" + model.email}, //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
