@@ -25,7 +25,7 @@ exports.signup = function(req, res) {
 exports.getuser = function(req, res){
   console.log("in getuser");
   var username = req.param("username");
-  var couchService = couchDbHandlers.CouchDBService;
+  var couchService = couchDbHandlers.Service;
   couchService.getUser(username, function(err, result){
     if (!err){
       res.send(result);
