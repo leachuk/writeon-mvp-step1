@@ -30,14 +30,11 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	console.log(req.body);
 
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles; //still required here?
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -71,9 +68,6 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 
 RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
@@ -84,7 +78,7 @@ RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -111,9 +105,6 @@ RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 
 RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -122,7 +113,7 @@ RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback)
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -152,14 +143,11 @@ RecruitUnitContentService.prototype.listAllUserArticles = function(req, username
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -195,9 +183,6 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
@@ -205,7 +190,7 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -240,9 +225,6 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 RecruitUnitContentService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -254,7 +236,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });

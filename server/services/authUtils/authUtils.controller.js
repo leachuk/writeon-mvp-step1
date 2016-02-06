@@ -4,11 +4,13 @@ var _authService = require('server/services/auth/auth.controller').AuthService;;
 
 function AuthUtils(){};
 
-AuthUtils.prototype.authenticateToken = function(authHeader, secret, callback){
+AuthUtils.prototype.authenticateToken = function(req, callback){
 	console.log("in Util authenticateToken");
-	console.log("token");
-	console.log(authHeader);
-	var parts = authHeader;
+
+  var parts = req.headers.authorization.split(' ');
+  var secret = req.app.secret;
+
+	//var parts = authHeader;
 
 	if (parts.length == 2) {
 		var scheme = parts[0];
@@ -16,7 +18,9 @@ AuthUtils.prototype.authenticateToken = function(authHeader, secret, callback){
 
 		if (/^Bearer$/i.test(scheme)) {
 		    var token = credentials;
-		    
+        console.log("token");
+        console.log(token);
+
 		    _authService.decodetoken(secret, token, function(result){
 		      if (result == null){
 		        console.log("Invalid token");
@@ -28,7 +32,7 @@ AuthUtils.prototype.authenticateToken = function(authHeader, secret, callback){
 		} else {
 		  console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
 		  callback(new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]'), null);
-		}	
+		}
 	} else {
 		console.log("Format is Authorization: Bearer [token]");
 		var returnError = new UnauthorizedError('credentials_bad_format', {

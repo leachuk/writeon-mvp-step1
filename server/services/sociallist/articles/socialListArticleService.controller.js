@@ -27,14 +27,11 @@ SocialListArticleService.prototype.createArticle = function(req, jsondata, docti
 	console.log(req.body);
 
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -76,9 +73,6 @@ SocialListArticleService.prototype.createArticle = function(req, jsondata, docti
 
 SocialListArticleService.prototype.getArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
@@ -89,7 +83,7 @@ SocialListArticleService.prototype.getArticle = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -104,7 +98,7 @@ SocialListArticleService.prototype.getArticle = function(req, func_callback){
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -116,9 +110,6 @@ SocialListArticleService.prototype.getArticle = function(req, func_callback){
 
 SocialListArticleService.prototype.deleteArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -127,7 +118,7 @@ SocialListArticleService.prototype.deleteArticle = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -143,7 +134,7 @@ SocialListArticleService.prototype.deleteArticle = function(req, func_callback){
 				}else{
 					console.log("couch nano error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -157,14 +148,11 @@ SocialListArticleService.prototype.listAllUserArticles = function(req, username,
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -200,9 +188,6 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
@@ -210,7 +195,7 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -232,7 +217,7 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
-				}		
+				}
 			});
 	    }
 	},
@@ -245,9 +230,6 @@ SocialListArticleService.prototype.listMyArticles = function(req, func_callback)
 SocialListArticleService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -259,7 +241,7 @@ SocialListArticleService.prototype.updateArticle = function(req, func_callback) 
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -275,7 +257,7 @@ SocialListArticleService.prototype.updateArticle = function(req, func_callback) 
 				}else{
 					console.log("update get error");
 					callback(err, null);
-				}		
+				}
 			});
 	    },
 	    updateArticle: function(callback){
@@ -292,7 +274,7 @@ SocialListArticleService.prototype.updateArticle = function(req, func_callback) 
 				}else{
 					console.log("updateArticle get error");
 					callback(err, null);
-				}		
+				}
 			});
 
 	    }
@@ -314,7 +296,7 @@ SocialListArticleService.prototype.insertArticle = function(username, docname, f
     } else {
 		console.log(err);
     }
-    // db.insert({foo: "bar", "_rev": body.rev}, "foobar", 
+    // db.insert({foo: "bar", "_rev": body.rev}, "foobar",
     // function (error, response) {
     //   if(!error) {
     //     console.log("it worked");

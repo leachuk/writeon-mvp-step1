@@ -156,14 +156,11 @@ CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_
 	console.log(req.body);
 
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -196,10 +193,7 @@ CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_
 
 CouchDBService.prototype.getArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
-	var dbtable = dbNameArticles;
+  var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
@@ -209,7 +203,7 @@ CouchDBService.prototype.getArticle = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -236,9 +230,6 @@ CouchDBService.prototype.getArticle = function(req, func_callback){
 
 CouchDBService.prototype.deleteArticle = function(req, func_callback){
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -247,7 +238,7 @@ CouchDBService.prototype.deleteArticle = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -277,14 +268,11 @@ CouchDBService.prototype.listAllUserArticles = function(req, username, func_call
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -320,9 +308,6 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
@@ -330,7 +315,7 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
@@ -405,9 +390,6 @@ CouchDBService.prototype.listMyArticles = function(req, func_callback){
 CouchDBService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var dbtable = dbNameArticles;
 
 	var id = req.param("id");
@@ -419,7 +401,7 @@ CouchDBService.prototype.updateArticle = function(req, func_callback) {
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	returnSuccess = result;
 		    	callback(err, result);
 		    });
@@ -488,16 +470,13 @@ CouchDBService.prototype.insertArticle = function(username, docname, field, valu
 
 CouchDBService.prototype.testCookie = function(req, res, func_callback) {
 	console.log("In testCookie");
-	var token = null;
-	var parts = req.headers.authorization.split(' ');
-	var secret = req.app.secret;
 	var clientip = req.ip;
 	var returnSuccess = null;
 	var returnError = null;
 
 	async.series({
 	    authToken: function(callback){
-		    _authUtils.authenticateToken(parts, secret, function(err, result){
+		    _authUtils.authenticateToken(req, function(err, result){
 		    	//console.log("authToken result:");
 		    	//console.log(result);
 		    	returnSuccess = result;
