@@ -5,14 +5,13 @@ console.log("In User model");
 
 var init = function (model, options) {
   // Initialize here
-  //cookie = setcookie; //connect to db as user via cookie
+  // Must use admin user, not cookie auth, as _users is only accessible by admin. May need alternative approach, e.g. create a seperate user table
   schema = new Schema('nano', {url: config.couchuriadmin + '/_users'});
   console.log("options:");
   console.log(options);
 
-  //console.log("typeof options.returnAll" + typeof options.returnAll)
   var returnAllData = true;
-  if (typeof options != 'undefined') {
+  if (typeof options != 'undefined' && options != null) {
     if (typeof options.returnAll != 'undefined') {
       returnAllData = options.returnAll === 'true' || options.returnAll === true;
     }
@@ -20,7 +19,7 @@ var init = function (model, options) {
   console.log("returnAllData:" + returnAllData);
 
   var returnModelObj = returnAllData ? { //full model
-    id: 		    { type: String, default : "org.couchdb.user:" + model.email},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
+    id: 		    { type: String},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
     roles:      { type: String, default: []}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
@@ -33,7 +32,7 @@ var init = function (model, options) {
     lastUpdatedDateFormatted: { type: String},
     password: {type: String}
   } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
-    id: 		    { type: String, default : "org.couchdb.user:" + model.email}, //couchdb user document requirement
+    id: 		    { type: String}, //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
     roles:      { type: String, default: []}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'

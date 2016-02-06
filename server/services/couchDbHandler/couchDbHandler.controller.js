@@ -110,17 +110,56 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
 
 };
 
-CouchDBService.prototype.getUser = function(username, callback){
+CouchDBService.prototype.getUser = function(req, username, func_callback){
   console.log("couchdb service getUser, username: " + username);
-  var _users = couchnano.db.use('_users');
-  _users.get('org.couchdb.user:' +  username, function(err, body) {
-    if (!err) {
-      console.log(new UserModel(body));
-      callback(null, new UserModel(body));
-    }else{
-      console.log(err);
-      callback(err, null);
+
+  var returnAuthToken = null;
+  //Todo: fix this up to work with _users.get below.
+  async.series({
+    authToken: function(callback){
+      _authUtils.authenticateToken(req, function(err, result){
+        //console.log("authToken result:");
+        //console.log(result);
+        returnAuthToken = result; //decoded json token
+        callback(err, result);
+      });
+    },
+    getUser: function(callback){
+      //check the requested username is the authenticated user. May need to change, but should provide sufficient security
+      if (returnAuthToken.username == username) {
+        var userModelAuth = UserModel(null, null);
+        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+          if (!err) {
+            console.log("CouchDBService getUser: success");
+            console.log(result);
+            var returnMessage = { //ensure success param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("CouchDBService getUser: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      }else{
+        var returnMessage = {
+          "success": false,
+          "message": "Unauthorised request for user details"
+        }
+        callback(returnMessage, null);
+      }
     }
+  },
+  function(err, results) {
+    console.log("getUser results:");
+    console.log(results);
+    func_callback(err, results.getUser);
   });
 };
 
@@ -151,12 +190,12 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 //
 // ********************************************************************************************************************************** //
 
+//Todo: refactor to remove unnecessary method params 'jsondata, doctitle'
 CouchDBService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
 	console.log("in CouchDBService, saveArticle");
 	console.log(req.body);
 
 	var returnSuccess = null;
-	var dbtable = dbNameArticles;
 
 	async.series({
 	    authToken: function(callback){
