@@ -61,12 +61,13 @@ CouchDBService.prototype.createNewUser = function(req, func_callback){
           createUser: function(callback){
             //create user in _users table
 
-            var userModel = UserModel(req.body, {}); //coucdb requirment. the name part of _id and the name field must match.
+            var userModel = UserModel(req.body, {});
 
             //var _users = couchadmin.use("_users");
             //var json = {"_id":"org.couchdb.user:" + useremail,"name":useremail,"roles":[],"type":"user","password":userpassword};
             //_users.insert(json, "", function(error, body, headers){
             req.body.name = req.body.email; //couchdb requirement
+            req.body.id = "org.couchdb.user:" + req.body.email; //couchdb requirement. the name part of _id and the name field must match.
             userModel.create(req.body, function(error, result){
               if (error) {
                 console.log("create user error");
