@@ -185,6 +185,31 @@ CouchDBService.prototype.authenticate = function(username, password, callback){
 		callback(err, body, headers);
 	});
 };
+
+CouchDBService.prototype.isValidUser = function(req, username, func_callback){
+  console.log("couchdb service isValidUser, username: " + username);
+
+  var returnAuthToken = null;
+  //Todo: fix this up to work with _users.get below.
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnAuthToken = result; //decoded json token
+          callback(err, result);
+        });
+      },
+      isUserValid: function(callback){
+          //create an authUtils service which checks the requested user exists. Return true/false
+      }
+    },
+    function(err, results) {
+      console.log("getUser results:");
+      console.log(results);
+      func_callback(err, results.getUser);
+    });
+};
 // ********************************************************************************************************************************** //
 //
 // Article and Content Services
