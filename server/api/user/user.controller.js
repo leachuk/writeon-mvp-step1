@@ -116,3 +116,16 @@ exports.signin = function(req, res){
   });
 
 };
+
+exports.isuservalid = function(req, res){
+  console.log("in user:isuservalid controller");
+  var username = req.param("username");
+  var couchService = couchDbHandlers.Service;
+  couchService.isUserValid(req, username, function(err, result){
+    if (!err){
+      res.send(result);
+    } else {
+      res.send(err);
+    }
+  });
+};

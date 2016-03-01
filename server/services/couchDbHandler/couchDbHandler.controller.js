@@ -115,7 +115,6 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
   console.log("couchdb service getUser, username: " + username);
 
   var returnAuthToken = null;
-  //Todo: fix this up to work with _users.get below.
   async.series({
     authToken: function(callback){
       _authUtils.authenticateToken(req, function(err, result){
@@ -162,6 +161,54 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
     console.log(results);
     func_callback(err, results.getUser);
   });
+};
+
+//Allow an authenticated user to check if another user exists.
+//Use: A recruiter wants to view and submit a developers form at /developer/<dev userid>. This confirms the form is valid.
+CouchDBService.prototype.isUserValid = function(req, username, func_callback){
+  console.log("couchdb service isUserValid, username: " + username);
+
+  var returnAuthToken = null;
+  async.series({
+      //ensure current request has authentication token
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnAuthToken = result; //decoded json token
+          callback(err, result);
+        });
+      },
+      getUser: function(callback){
+        //check the requested username is the authenticated user. May need to change, but should provide sufficient security
+
+          var userModelAuth = UserModel(null, null);
+          userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+            if (!err) {
+              console.log("CouchDBService getUser: success");
+              console.log(result);
+              var returnMessage = { //ensure success param returned to client
+                data: result.email,
+                success: true
+              };
+              callback(null, returnMessage);
+            } else {
+              console.log("CouchDBService getUser: error");
+              var returnMessage = {
+                "success": false,
+                "data": err,
+                "message": "UserModel error"
+              }
+              callback(returnMessage, null);
+            }
+          });
+      }
+    },
+    function(err, results) {
+      console.log("isUserValid results:");
+      console.log(results);
+      func_callback(err, results.getUser);
+    });
 };
 
 CouchDBService.prototype.authenticate = function(username, password, callback){
