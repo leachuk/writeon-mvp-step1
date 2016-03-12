@@ -180,28 +180,26 @@ CouchDBService.prototype.isUserValid = function(req, username, func_callback){
         });
       },
       getUser: function(callback){
-        //check the requested username is the authenticated user. May need to change, but should provide sufficient security
-
-          var userModelAuth = UserModel(null, null);
-          userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
-            if (!err) {
-              console.log("CouchDBService getUser: success");
-              console.log(result);
-              var returnMessage = { //ensure success param returned to client
-                data: result.email,
-                success: true
-              };
-              callback(null, returnMessage);
-            } else {
-              console.log("CouchDBService getUser: error");
-              var returnMessage = {
-                "success": false,
-                "data": err,
-                "message": "UserModel error"
-              }
-              callback(returnMessage, null);
+        var userModelAuth = UserModel(null, null);
+        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+          if (!err && result != null) {
+            console.log("CouchDBService getUser: success");
+            console.log(result);
+            var returnMessage = { //ensure success param returned to client
+              data: result.email,
+              success: true
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("CouchDBService getUser: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
             }
-          });
+            callback(returnMessage, null);
+          }
+        });
       }
     },
     function(err, results) {
