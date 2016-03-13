@@ -54,7 +54,7 @@ AuthService.prototype.fulldecodetoken = function(req, res, callback) {
   var result = null;
   var token = null;
   var parts = req.headers.authorization.split(' ');
- 
+
   if (parts.length == 2) {
     var scheme = parts[0];
     var credentials = parts[1];
@@ -62,7 +62,7 @@ AuthService.prototype.fulldecodetoken = function(req, res, callback) {
     if (/^Bearer$/i.test(scheme)) {
         token = credentials;
         result = jwt.decode(token, req.secret);
-  		callback(err,result);  
+  		callback(err,result);
     } else {
       console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
       err = new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]');
@@ -92,6 +92,19 @@ AuthService.prototype.initAuthorization = function() {
 	acl.addUserRoles('writeonmvpstep1-3@test.com', 'article-viewer');
 };
 
+AuthService.prototype.initUserAuthorization = function() {
+  //acl.addUserRoles('testuser', 'guest')
+  //acl.allow('guest', 'articles', ['edit','view']);
+
+  //create roles
+  //TODO refactor this into a proper model/schema with jugglingDb
+  acl.allow('recruiter',['getuser'],['view']);
+  //acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
+
+  //assign users to roles
+  acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
+};
+
 AuthService.prototype.checkUserIsAuthorisedUrl = function(){
 	var self = this;
 	var middleware = false;
@@ -99,7 +112,7 @@ AuthService.prototype.checkUserIsAuthorisedUrl = function(){
         // check if this is a middleware call
         if(next){
             // only middleware calls would have the "next" argument
-            middleware = true;  
+            middleware = true;
         }
 
 		var username = null;
@@ -139,7 +152,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
         // check if this is a middleware call
         if(next){
             // only middleware calls would have the "next" argument
-            middleware = true;  
+            middleware = true;
         }
 		var username = null;
 		var reqModel = req.result.model.toLowerCase();

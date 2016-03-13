@@ -126,7 +126,7 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
     },
     getUser: function(callback){
       //check the requested username is the authenticated user. May need to change, but should provide sufficient security
-      if (returnAuthToken.username == username) {
+      //if (returnAuthToken.username == username) {
         var userModelAuth = UserModel(null, null);
         userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
           if (!err) {
@@ -147,13 +147,13 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
             callback(returnMessage, null);
           }
         });
-      }else{
-        var returnMessage = {
-          "success": false,
-          "message": "Unauthorised request for user details"
-        }
-        callback(returnMessage, null);
-      }
+      //}else{
+      //  var returnMessage = {
+      //    "success": false,
+      //    "message": "Unauthorised request for user details"
+      //  }
+      //  callback(returnMessage, null);
+      //}
     }
   },
   function(err, results) {
