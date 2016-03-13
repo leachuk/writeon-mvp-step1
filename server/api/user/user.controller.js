@@ -21,11 +21,12 @@ exports.signup = function(req, res) {
 };
 
 //testing authentication endpoint
-//not secured to the same ip
+//not secured to the same ip, can be secured at the endpoint using acl
 exports.getuser = function(req, res){
   console.log("in getuser");
   var username = req.param("username");
   var couchService = couchDbHandlers.Service;
+
   couchService.getUser(req, username, function(err, result){
     if (!err){
       res.send(result);
@@ -35,6 +36,29 @@ exports.getuser = function(req, res){
   });
 };
 
+//secured to authenticated user making the request
+exports.getthisuser = function(req, res, next) {
+  console.log("in getthisuser");
+  var username = req.param("username");
+  var couchService = couchDbHandlers.Service;
+  var authService = authHandlers.AuthService;
+
+  authService.fulldecodetoken(req, res, function (err, result) {
+    if (!err && username == result.username){
+      couchService.getUser(req, username, function (err, result) {
+        if (!err) {
+          res.send(result);
+        } else {
+          res.send(err);
+        }
+      });
+    } else {
+      console.log("Authorization origin declined");
+      res.status(401);
+      return next(new Error("Permission denied."));
+    }
+  });
+}
 
 exports.authenticate = function(req, res, next){
   console.log("in users.authenticate");
@@ -49,7 +73,6 @@ exports.authenticate = function(req, res, next){
 
     if (/^Bearer$/i.test(scheme)) {
         token = credentials;
-
         authService.decodetoken(req, token, function(result){
           //only successfully authenticate from the same IP address. Stops token sharing/spoofing.
           if (result == null){
@@ -66,7 +89,6 @@ exports.authenticate = function(req, res, next){
             res.status(401);
             return next(new Error("Permission denied."));
           }
-
         });
     } else {
       console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
@@ -114,7 +136,6 @@ exports.signin = function(req, res){
       res.status(401).send(returnMessage);
     }
   });
-
 };
 
 exports.isuservalid = function(req, res){

@@ -12,8 +12,8 @@ authService.initUserAuthorization();
 
 router.post('/signup', controller.signup);
 router.post('/signin', controller.signin);
-router.get('/getuser/:username', authService.checkUserIsAuthorisedUrl(), controller.getuser);//todo: get this working
-//router.get('/getuser/:username', controller.getuser);
+router.get('/getuser/:username', controller.getthisuser);//secured to specific user making the request
+router.get('/getdeveloper/:username', authService.checkUserIsAuthorisedUrl(),controller.getuser);//secured through acl
 router.post('/authenticate', controller.authenticate);
 router.get('/isuservalid/:username', controller.isuservalid);
 
