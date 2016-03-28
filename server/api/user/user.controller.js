@@ -9,9 +9,10 @@ var authHandlers = require('server/services/auth/auth.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {
-  var couchService = couchDbHandlers.Service;
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
 
-  couchService.createNewUser(req, function(err, result){
+  appService.createNewUser(req, function(err, result){
     if (!err){
       res.send(result);
     } else {
