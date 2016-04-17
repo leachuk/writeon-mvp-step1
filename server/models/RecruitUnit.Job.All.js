@@ -27,7 +27,9 @@ var initCookie = function (setcookie, options) {
 	    createdDateFormatted:   { type: String},
 	    lastUpdatedDate: 	{ type: Number,  default: Date.now },
 	    lastUpdatedDateFormatted:{ type: String},
-	    published: 	 			{ type: Boolean, default: false, index: true }
+	    published: 	 			{ type: Boolean, default: false, index: true },
+      submitTo:         { type: String},
+      submittedBy:      { type: String}
 	}
 
 	console.log("returnModelObj");
