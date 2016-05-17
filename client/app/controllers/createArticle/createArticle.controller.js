@@ -18,7 +18,7 @@ angular.module('writeonMvpStep1App')
         $scope.usermodel = usermodel; //for test display only
 
         var articleModel = new Article({
-            title: title, 
+            title: title,
             bodyText: bodyText,
             authorName: rootscope.user.username,
             authorEmail: rootscope.user.username,
@@ -32,7 +32,9 @@ angular.module('writeonMvpStep1App')
         console.log(articleModel);
 
         //save article
-        API.Article.saveArticle(articleModel).then( function( articledata ){
+        //the controllerId enables different controllers to be defined per application, so different models and behaviour can be defined
+        var controllerId = "server/services/couchDbHandler/couchDbHandler.controller"; //eventually replace with an id which does a lookup to the path server side
+        API.Article.saveArticle(articleModel, controllerId).then( function( articledata ){
                 console.log(articledata);
         });
     };

@@ -2,7 +2,7 @@
 
 angular.module('writeonMvpStep1App')
   .factory('API', ['$resource', function ($resource) {
-    
+
     var service = {};
 
     //Article Service
@@ -18,20 +18,20 @@ angular.module('writeonMvpStep1App')
       });
     };
 
-    service.Article.saveArticle = function(model) {
-      console.log(model);
+    service.Article.saveArticle = function(modelData,controllerId) {
+      console.log(modelData);
       var r=$resource('/api/articles/saveArticle', {},
                       {
-                          saveArticle: { method: 'POST', params: {}}
+                          saveArticle: { method: 'POST', params: {'modelId': controllerId}}
                       });
 
-      return r.saveArticle(model).$promise.then(function(data) {
-        return data; 
+      return r.saveArticle(modelData).$promise.then(function(data) {
+        return data;
       });
     };
 
     service.Article.listAllMyArticles = function() {
-      var r=$resource('/api/articles/listMyArticles', {}, 
+      var r=$resource('/api/articles/listMyArticles', {},
                       {
                           listAllMyArticles: {method: 'GET', isArray: true, params: {getAllData: false}}
                       });
@@ -42,7 +42,7 @@ angular.module('writeonMvpStep1App')
 
     service.Article.delete = function(id, rev) {
       console.log("delete, id:" + id + ", rev:" + rev);
-      var r=$resource('/api/articles/deleteArticle', {}, 
+      var r=$resource('/api/articles/deleteArticle', {},
                       {
                           deleteArticle: {method: 'POST', params: { id: id, rev: rev}}
                       });
