@@ -13,6 +13,8 @@ var couchService = couchDbHandlers.Service;
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
 var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
+var ComparisonTestModel = require('server/models/RecruitUnit.ComparisonTest.js');
+
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
@@ -278,6 +280,52 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	    console.log(results);
 	    func_callback(err, results.updateArticle);
 	});
+};
+
+// ********************************************************************************************************************************** //
+//
+// Comparison Services
+//
+// ********************************************************************************************************************************** //
+
+RecruitUnitContentService.prototype.createComparison = function(req, jsondata, doctitle, func_callback){
+  console.log("in RecruitUnitContentService, createComparison");
+  console.log(req.body);
+
+  var returnSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnSuccess = result;
+          callback(err, result);
+        });
+      },
+      createArticle: function(callback){
+        var articleModelAuth = ComparisonTestModel(returnSuccess.cookie);
+        articleModelAuth.create(req.body, function(err, result){
+          if(!err){
+            console.log("RecruitUnitContentService createComparison: success");
+            console.log(result);
+            var successReturn = { //ensure succees param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, successReturn);
+          }else{
+            console.log("error");
+            callback(err, null);
+          }
+        });
+
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, results.createArticle);
+    });
 };
 
 exports.Service = new RecruitUnitContentService;
