@@ -328,6 +328,26 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
     });
 };
 
+RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDocId, func_callback){
+  console.log("in RecruitUnitContentService, compare");
+  //make sure JSON structure in sourceDocId matches specified elements in comparisonDocId.
+  //then return JSON report for each element which matches saying if it is greater, less or equal to the source
+  
+};
+
+///////  Private Functions /////////
+function assertGreaterThan(sourceValue, comparisonValue){
+  return sourceValue > comparisonValue;  
+}
+
+function assertLessThan(sourceValue, comparisonValue){
+  return sourceValue < comparisonValue;
+}
+
+function assertEqualTo(sourceValue, comparisonValue){
+  return sourceValue === comparisonValue;
+}
+
 exports.Service = new RecruitUnitContentService;
 
 
