@@ -24,5 +24,6 @@ router.post('/updateArticle', controller.updateArticle);
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);
 router.get('/testform', controller.testForm);
+router.get('/testcompare', controller.compare);
 
 module.exports = router;

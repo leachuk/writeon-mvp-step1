@@ -77,6 +77,27 @@ exports.saveComparison = function(req, res) {
   });
 };
 
+exports.compare = function(req, res) {
+  console.log("Article controller, saveComparison");
+  console.log(req.body);
+
+  // Pass require path from client in req.query.modelId
+  // for now make it the literal path to the controller, to be an id with a lookup on the server.
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
+  var appService = applicationHandler.Service;
+
+  appService.compare({"foo-source":"foo-var"}, {"bar-compare":"bar-var"}, function(err, result){
+    if (!err){
+      //console.log(result);
+      res.send(result);
+    } else {
+      console.log(err);
+      res.send(err);
+    }
+  });
+};
+
 exports.updateArticle = function(req,res){
     var docname = req.body.docname;
     var fieldparam = req.body.field;

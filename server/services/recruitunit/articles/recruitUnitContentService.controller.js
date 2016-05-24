@@ -330,14 +330,54 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
 
 RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDocId, func_callback){
   console.log("in RecruitUnitContentService, compare");
+  console.log("sourceDocId:");
+  console.log(sourceDocId);
+  console.log("comparisonDocId:");
+  console.log(comparisonDocId);
   //make sure JSON structure in sourceDocId matches specified elements in comparisonDocId.
   //then return JSON report for each element which matches saying if it is greater, less or equal to the source
-  
+  var sourceJson = {
+    "_id": "comparisonDocumentTest1",
+    "_rev": "1-ff676e6634b3d17a022c59a01b3bc9e6",
+    "model": "RecruitUnitComparisonTest",
+    "roleType": "contractor",
+    "payBracketLower": 110,
+    "payBracketUpper": 130,
+    "skills": ["foo","bar"],
+    "authorName": "developer1@gmail.com",
+    "createdDate": 1463906114820
+  }
+
+  var comparisonJson = {
+    "id": "sampleRecruitUnitJobSubmitDoc1",
+    "model": "RecruitUnitJobItem",
+    "jobDescription": "sdfjhsd sdkjfh sf sdkjsdkfj hsdfjkdsfsjkdhf skdjf skdf hkk",
+    "roleType": "developer",
+    "payBracketLower": 90,
+    "payBracketUpper": 110,
+    "locationDescription":  "sydney cbd, near circular quay",
+    "skills":["angular", "javascript", "nodejs", "aem", "java"],
+    "authorName": "recruiter1",
+    "authorEmail": "recruiter1@gmail.com",
+    "createdDate":  1463906114820,
+    "createdDateFormatted":  "24 May, 2016",
+    "lastUpdatedDate":  "1463906114820",
+    "lastUpdatedDateFormatted": "24 May, 2016",
+    "published": false,
+    "submitTo": "developer11@gmail.com"
+  }
+
+  //loop over sourceJson and get the keys
+  _.forEach(sourceJson, function(value, key) {
+    console.log("key:" + key, "value:" + value);
+  });
+
+  func_callback(null, "compare success\n");
 };
 
 ///////  Private Functions /////////
 function assertGreaterThan(sourceValue, comparisonValue){
-  return sourceValue > comparisonValue;  
+  return sourceValue > comparisonValue;
 }
 
 function assertLessThan(sourceValue, comparisonValue){
