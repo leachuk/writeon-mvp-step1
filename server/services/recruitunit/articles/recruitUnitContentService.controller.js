@@ -346,7 +346,7 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
     "skills": ["foo","bar"],
     "authorName": "developer1@gmail.com",
     "createdDate": 1463906114820
-  }
+  }//Think I need to extend the data in here with a new 'rule' property. So {"roleType" : {"value":"contractor"}, {"rule":"isTrue"}}
 
   var comparisonJson = {
     "id": "sampleRecruitUnitJobSubmitDoc1",
@@ -370,6 +370,9 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
     console.log("key:" + key, "value:" + value);
+    var sourceKey  = key;
+    var sourceValue = value;
+
   });
 
   func_callback(null, "compare success\n");
