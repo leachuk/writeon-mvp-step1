@@ -340,13 +340,13 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
     "_id": "comparisonDocumentTest1",
     "_rev": "1-ff676e6634b3d17a022c59a01b3bc9e6",
     "model": "RecruitUnitComparisonTest",
-    "roleType": "contractor",
-    "payBracketLower": 110,
-    "payBracketUpper": 130,
-    "skills": ["foo","bar"],
+    "roleType": {"value":"contractor", "rule":"assertEqualTo"},
+    "payBracketLower": {"value":110, "rule":"assertGreaterThan"},
+    "locationDescription":  {"value": ["sydneyx","cbd"], "rule":"assertArrayContains"},
+    "skills": {"value" : ["bar","aem","foo"], "rule":"assertArrayContains"},
     "authorName": "developer1@gmail.com",
     "createdDate": 1463906114820
-  }//Think I need to extend the data in here with a new 'rule' property. So {"roleType" : {"value":"contractor"}, {"rule":"isTrue"}}
+  }
 
   var comparisonJson = {
     "id": "sampleRecruitUnitJobSubmitDoc1",
@@ -356,7 +356,7 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
     "payBracketLower": 90,
     "payBracketUpper": 110,
     "locationDescription":  "sydney cbd, near circular quay",
-    "skills":["angular", "javascript", "nodejs", "aem", "java"],
+    "skills":["angular", "javascript", "nodejs", "aemx", "java"],
     "authorName": "recruiter1",
     "authorEmail": "recruiter1@gmail.com",
     "createdDate":  1463906114820,
@@ -367,12 +367,23 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
     "submitTo": "developer11@gmail.com"
   }
 
+  var comparisonTests = {
+    "assertEqualTo" : assertEqualTo,
+    "assertGreaterThan" : assertGreaterThan,
+    "assertLessThan" : assertLessThan,
+    "assertArrayContains" : assertArrayContains
+  }
+
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
-    console.log("key:" + key, "value:" + value);
-    var sourceKey  = key;
-    var sourceValue = value;
-
+    //console.log("key:" + key, "value:" + value);
+    var found = _.get(comparisonJson, key);
+    if (found !== undefined && sourceJson[key]['rule'] !== undefined) {
+      console.log("[" + key + "]:" + found + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
+      var sourceRule = sourceJson[key]['rule'];
+      var test = comparisonTests[sourceRule];
+      console.log(test(sourceJson[key]['value'],found));
+    }
   });
 
   func_callback(null, "compare success\n");
@@ -380,15 +391,37 @@ RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDo
 
 ///////  Private Functions /////////
 function assertGreaterThan(sourceValue, comparisonValue){
+  console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+
   return sourceValue > comparisonValue;
 }
 
 function assertLessThan(sourceValue, comparisonValue){
+  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+
   return sourceValue < comparisonValue;
 }
 
 function assertEqualTo(sourceValue, comparisonValue){
+  console.log("assertEqualTo: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+
   return sourceValue === comparisonValue;
+}
+
+function assertArrayContains(sourceValue, comparisonValue){
+  console.log("assertArrayContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+
+  var matchExists = false;
+  var wordArray = _.words(comparisonValue);
+  console.log("wordArray:" + wordArray);
+
+  _.forEach(sourceValue, function(value, key){
+    console.log("value:"+ value +", key:" + key);
+    matchExists = _.indexOf(wordArray, value) != -1;
+    return !matchExists; //exit loop when match found
+  })
+
+  return matchExists;
 }
 
 exports.Service = new RecruitUnitContentService;

@@ -6,7 +6,7 @@ var _ = require('lodash');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-var TestModel = require('server/models/JugglingModelTest');
+//var TestModel = require('server/models/JugglingModelTest');
 var ArticleModel = require('server/models/Article');
 
 // Get list of articles
