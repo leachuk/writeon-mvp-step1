@@ -68,10 +68,10 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	});
 };
 
-RecruitUnitContentService.prototype.getArticle = function(req, model, func_callback){
+RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
 	var returnSuccess = null;
-  var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
-  var Model = require(comparisonSourceTestDocModel);
+  //var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
+  var Model = require(modelPath);
 
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
@@ -288,6 +288,48 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 // Comparison Services
 //
 // ********************************************************************************************************************************** //
+
+RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = function(req, func_callback) {
+  console.log("in RecruitUnitContentService, getTestSourceAndComparisonDocuments");
+  console.log(req.body);
+
+  var _this = this; //so we can re-use internal prototype functions
+  var comparisonModelPath = "server/models/RecruitUnit.ComparisonTest.js";
+  var testSourceDocId = req.param("testSourceDocId"); //the document which contains the comparison test rules and values
+  var comparisonDocId = req.param("comparisonDocId"); //the submitted recruiters document
+  console.log("testSourceDocId:" + testSourceDocId);
+  console.log("comparisonDocId:" + comparisonDocId);
+
+  //get the source and comparison json
+  async.series({
+      getTestSourceDoc: function(callback){
+        req.params.id = testSourceDocId;
+        _this.getArticle(req, comparisonModelPath, function(err, result){
+          if (!err){
+            callback(err, result);
+          } else {
+            callback(err, result);
+          }
+        });
+      },
+      getComparisonDoc: function(callback){
+        req.params.id = comparisonDocId;
+        _this.getArticle(req, comparisonModelPath, function(err, result){
+          if (!err){
+            callback(err, result);
+          } else {
+            callback(err, result);
+          }
+        });
+      }
+    },
+    function(err, result) {
+      console.log("getting source and comparison doc results");
+      //console.log(result);
+      func_callback(err, result);
+    });
+
+}
 
 RecruitUnitContentService.prototype.createComparison = function(req, jsondata, doctitle, func_callback){
   console.log("in RecruitUnitContentService, createComparison");

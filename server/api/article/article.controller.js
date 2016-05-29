@@ -89,62 +89,34 @@ exports.compare = function(req, res) {
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
   var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
   var appService = applicationHandler.Service;
+  var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
 
-  var testSourceDocId = req.param("testSourceDocId"); //the document which contains the comparison test rules and values
-  var comparisonDocId = req.param("comparisonDocId"); //the submitted recruiters document
-  console.log("testSourceDocId:" + testSourceDocId);
-  console.log("comparisonDocId:" + comparisonDocId);
+  var testSourceDoc = {};
+  var comparisonDoc = {};
 
-  //get the source and comparison json
-  async.series({
-    getTestSourceDoc: function(callback){
-      req.params.id = testSourceDocId;
-      appService.getArticle(req, 'modelPathHere', function(err, result){
-        if (!err){
-          console.log(result);
-          callback(err, result);
-        } else {
-          console.log(err);
-          callback(err, result);
-        }
-      });
-    },
-    getComparisonDoc: function(callback){
-      req.params.id = comparisonDocId;
-      appService.getArticle(req, 'modelPathHere', function(err, result){
-        if (!err){
-          console.log(result);
-          callback(err, result);
-        } else {
-          console.log(err);
-          callback(err, result);
-        }
-      });
-    }
-  },
-    function(err, result) {
-      console.log("getting source and comparison doc results");
-      console.log(result);
-
+  console.log("appService.getTestSourceAndComparisonDocuments");
+  appService.getTestSourceAndComparisonDocuments(req, function(err, result){
       if (!err){
-        //console.log(result);
-        res.send(result);
+        testSourceDoc = result.getTestSourceDoc;
+        comparisonDoc = result.getComparisonDoc;
+
+        //todo: use async methods to prevent nesting
+        console.log("recruitUnitUtils.compare");
+        recruitUnitUtils.compare(testSourceDoc, comparisonDoc, function(err, result){
+          if (!err){
+            console.log(result);
+            res.send(result);
+          } else {
+            console.log(err);
+            res.send(err);
+          }
+        });
       } else {
         console.log(err);
         res.send(err);
       }
   });
 
-
-  // appService.compare({"foo-source":"foo-var"}, {"bar-compare":"bar-var"}, function(err, result){
-  //   if (!err){
-  //     //console.log(result);
-  //     res.send(result);
-  //   } else {
-  //     console.log(err);
-  //     res.send(err);
-  //   }
-  // });
 };
 
 exports.updateArticle = function(req,res){
