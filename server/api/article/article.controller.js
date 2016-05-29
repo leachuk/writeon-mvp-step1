@@ -3,6 +3,8 @@
 require('rootpath')();
 
 var _ = require('lodash');
+var async = require('async');
+
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
@@ -77,8 +79,9 @@ exports.saveComparison = function(req, res) {
   });
 };
 
+//For testing, to be refactored into RecruitUnit client once working
 exports.compare = function(req, res) {
-  console.log("Article controller, saveComparison");
+  console.log("Article controller, compare");
   console.log(req.body);
 
   // Pass require path from client in req.query.modelId
@@ -87,15 +90,61 @@ exports.compare = function(req, res) {
   var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
   var appService = applicationHandler.Service;
 
-  appService.compare({"foo-source":"foo-var"}, {"bar-compare":"bar-var"}, function(err, result){
-    if (!err){
-      //console.log(result);
-      res.send(result);
-    } else {
-      console.log(err);
-      res.send(err);
+  var testSourceDocId = req.param("testSourceDocId"); //the document which contains the comparison test rules and values
+  var comparisonDocId = req.param("comparisonDocId"); //the submitted recruiters document
+  console.log("testSourceDocId:" + testSourceDocId);
+  console.log("comparisonDocId:" + comparisonDocId);
+
+  //get the source and comparison json
+  async.series({
+    getTestSourceDoc: function(callback){
+      req.params.id = testSourceDocId;
+      appService.getArticle(req, 'modelPathHere', function(err, result){
+        if (!err){
+          console.log(result);
+          callback(err, result);
+        } else {
+          console.log(err);
+          callback(err, result);
+        }
+      });
+    },
+    getComparisonDoc: function(callback){
+      req.params.id = comparisonDocId;
+      appService.getArticle(req, 'modelPathHere', function(err, result){
+        if (!err){
+          console.log(result);
+          callback(err, result);
+        } else {
+          console.log(err);
+          callback(err, result);
+        }
+      });
     }
+  },
+    function(err, result) {
+      console.log("getting source and comparison doc results");
+      console.log(result);
+
+      if (!err){
+        //console.log(result);
+        res.send(result);
+      } else {
+        console.log(err);
+        res.send(err);
+      }
   });
+
+
+  // appService.compare({"foo-source":"foo-var"}, {"bar-compare":"bar-var"}, function(err, result){
+  //   if (!err){
+  //     //console.log(result);
+  //     res.send(result);
+  //   } else {
+  //     console.log(err);
+  //     res.send(err);
+  //   }
+  // });
 };
 
 exports.updateArticle = function(req,res){

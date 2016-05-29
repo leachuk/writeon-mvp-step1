@@ -10,11 +10,11 @@ var async = require('async');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
+var utilsService = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
+
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
 var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
-var ComparisonTestModel = require('server/models/RecruitUnit.ComparisonTest.js');
-
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
@@ -68,9 +68,10 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	});
 };
 
-RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
+RecruitUnitContentService.prototype.getArticle = function(req, model, func_callback){
 	var returnSuccess = null;
-	var dbtable = dbNameArticles;
+  var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
+  var Model = require(comparisonSourceTestDocModel);
 
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
@@ -86,8 +87,8 @@ RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 		    });
 	    },
 	    getArticle: function(callback){
-			var articleModelAuth = ArticleModel(returnSuccess.cookie, {returnAll: getAllData});
-			articleModelAuth.find(id, function(err, body){
+			var docModel = Model(returnSuccess.cookie, {returnAll: getAllData});
+        docModel.find(id, function(err, body){
 				if(!err){
 					console.log("success result");
 					console.log(body);
@@ -328,101 +329,6 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
     });
 };
 
-RecruitUnitContentService.prototype.compare = function(sourceDocId, comparisonDocId, func_callback){
-  console.log("in RecruitUnitContentService, compare");
-  console.log("sourceDocId:");
-  console.log(sourceDocId);
-  console.log("comparisonDocId:");
-  console.log(comparisonDocId);
-  //make sure JSON structure in sourceDocId matches specified elements in comparisonDocId.
-  //then return JSON report for each element which matches saying if it is greater, less or equal to the source
-  var sourceJson = {
-    "_id": "comparisonDocumentTest1",
-    "_rev": "1-ff676e6634b3d17a022c59a01b3bc9e6",
-    "model": "RecruitUnitComparisonTest",
-    "roleType": {"value":"contractor", "rule":"assertEqualTo"},
-    "payBracketLower": {"value":110, "rule":"assertGreaterThan"},
-    "locationDescription":  {"value": ["sydneyx","cbd"], "rule":"assertArrayContains"},
-    "skills": {"value" : ["bar","aem","foo"], "rule":"assertArrayContains"},
-    "authorName": "developer1@gmail.com",
-    "createdDate": 1463906114820
-  }
-
-  var comparisonJson = {
-    "id": "sampleRecruitUnitJobSubmitDoc1",
-    "model": "RecruitUnitJobItem",
-    "jobDescription": "sdfjhsd sdkjfh sf sdkjsdkfj hsdfjkdsfsjkdhf skdjf skdf hkk",
-    "roleType": "developer",
-    "payBracketLower": 90,
-    "payBracketUpper": 110,
-    "locationDescription":  "sydney cbd, near circular quay",
-    "skills":["angular", "javascript", "nodejs", "aemx", "java"],
-    "authorName": "recruiter1",
-    "authorEmail": "recruiter1@gmail.com",
-    "createdDate":  1463906114820,
-    "createdDateFormatted":  "24 May, 2016",
-    "lastUpdatedDate":  "1463906114820",
-    "lastUpdatedDateFormatted": "24 May, 2016",
-    "published": false,
-    "submitTo": "developer11@gmail.com"
-  }
-
-  var comparisonTests = {
-    "assertEqualTo" : assertEqualTo,
-    "assertGreaterThan" : assertGreaterThan,
-    "assertLessThan" : assertLessThan,
-    "assertArrayContains" : assertArrayContains
-  }
-
-  //loop over sourceJson and get the keys
-  _.forEach(sourceJson, function(value, key) {
-    //console.log("key:" + key, "value:" + value);
-    var found = _.get(comparisonJson, key);
-    if (found !== undefined && sourceJson[key]['rule'] !== undefined) {
-      console.log("[" + key + "]:" + found + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
-      var sourceRule = sourceJson[key]['rule'];
-      var test = comparisonTests[sourceRule];
-      console.log(test(sourceJson[key]['value'],found));
-    }
-  });
-
-  func_callback(null, "compare success\n");
-};
-
-///////  Private Functions /////////
-function assertGreaterThan(sourceValue, comparisonValue){
-  console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
-
-  return sourceValue > comparisonValue;
-}
-
-function assertLessThan(sourceValue, comparisonValue){
-  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
-
-  return sourceValue < comparisonValue;
-}
-
-function assertEqualTo(sourceValue, comparisonValue){
-  console.log("assertEqualTo: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
-
-  return sourceValue === comparisonValue;
-}
-
-function assertArrayContains(sourceValue, comparisonValue){
-  console.log("assertArrayContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
-
-  var matchExists = false;
-  var wordArray = _.words(comparisonValue);
-  console.log("wordArray:" + wordArray);
-
-  _.forEach(sourceValue, function(value, key){
-    console.log("value:"+ value +", key:" + key);
-    matchExists = _.indexOf(wordArray, value) != -1;
-    return !matchExists; //exit loop when match found
-  })
-
-  return matchExists;
-}
 
 exports.Service = new RecruitUnitContentService;
 
