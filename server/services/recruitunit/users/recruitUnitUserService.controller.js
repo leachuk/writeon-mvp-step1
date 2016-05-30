@@ -25,7 +25,7 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
 //When a user signs up, create the user
   var returnMessage = {};
   var appkey = req.body.key;
-
+  console.log("appkey:" + appkey);
   //console.log("createNewUser: dbname["+ dbname +"], useremail["+ useremail +"], userpassword["+ userpassword +"]");
 
   couchService.isValidAppKey(appkey, req, function(err, isValidKeyResult){
@@ -88,7 +88,7 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
 };
 
 RecruitUnitUserService.prototype.getUser = function(req, username, func_callback){
-  console.log("couchdb service getUser, username: " + username);
+  console.log("RecruitUnitUserService getUser, username: " + username);
 
   var returnAuthToken = null;
   async.series({
@@ -106,7 +106,7 @@ RecruitUnitUserService.prototype.getUser = function(req, username, func_callback
         var userModelAuth = UserModel(null, null);
         userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
           if (!err) {
-            console.log("CouchDBService getUser: success");
+            console.log("RecruitUnitUserService getUser: success");
             console.log(result);
             var returnMessage = { //ensure success param returned to client
               data: result,

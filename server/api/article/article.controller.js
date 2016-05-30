@@ -97,6 +97,7 @@ exports.compare = function(req, res) {
   console.log("appService.getTestSourceAndComparisonDocuments");
   appService.getTestSourceAndComparisonDocuments(req, function(err, result){
       if (!err){
+        console.log(result);
         testSourceDoc = result.getTestSourceDoc;
         comparisonDoc = result.getComparisonDoc;
 

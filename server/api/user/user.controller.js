@@ -23,6 +23,7 @@ exports.signup = function(req, res) {
 
 //testing authentication endpoint
 //not secured to the same ip, can be secured at the endpoint using acl
+//don't think this should be used
 exports.getuser = function(req, res){
   console.log("in getuser");
   var username = req.param("username");
