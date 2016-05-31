@@ -25,8 +25,6 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
     "assertArrayContains" : assertArrayContains
   }
 
-  //var sourceJson = JSON.parse(JSON.stringify(sourceJson));//required for lodash to parse couchdb obj correctly
-
   var results = [];
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
@@ -40,13 +38,8 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
       results.push({"rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
     }
   });
-  console.log("comparison results");
-  console.log(results);
-  // //TEMP TESTING RETURN OBJ
-  // var resultJson = [
-  //   {"rule":"foo", "result":"12345"},
-  //   {"rule":"bar", "result":"54321"}
-  // ];
+  //console.log("comparison results");
+  //console.log(results);
   func_callback(null, results);//do error check
 };
 
