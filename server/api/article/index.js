@@ -11,7 +11,7 @@ authService.initAuthorization();
 var acl = authService.acl();
 
 router.get('/', controller.index);
-router.get('/getarticle/:id', [controller.getArticle, authService.checkUserIsAuthorisedModel()]);
+router.get('/getarticle/:id', controller.getArticle, authService.checkUserIsAuthorisedModel());
 router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
 router.post('/saveArticle', controller.saveArticle);
 router.post('/saveComparison', controller.saveComparison);
