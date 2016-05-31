@@ -15,6 +15,7 @@ var utilsService = require('server/services/recruitunit/utils/recruitUnitUtility
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
 var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
+var ComparisonTestModel = require('server/models/RecruitUnit.ComparisonTest.js');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
