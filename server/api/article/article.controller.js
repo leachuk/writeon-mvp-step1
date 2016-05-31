@@ -22,7 +22,11 @@ exports.getArticle = function(req, res, next) {
 	//var dbTable = req.param("dbtable");
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
-	couchService.getArticle(req, function(err, result){
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.getArticle(req, function(err, result){
 	    if (!err){
 	      console.log(result);
 	      //res.send(result);

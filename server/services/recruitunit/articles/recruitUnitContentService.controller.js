@@ -69,10 +69,11 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	});
 };
 
-RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
+RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
 	var returnSuccess = null;
   //var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
-  var Model = require(modelPath);
+  //var Model = require(modelPath);
+  var Model = ContentItemModel; //ToDo: may need to refactor this so we can pass in the path, like above. This will do for testing
 
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
