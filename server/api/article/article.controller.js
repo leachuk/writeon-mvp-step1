@@ -28,14 +28,14 @@ exports.getArticle = function(req, res, next) {
 
   appService.getArticle(req, function(err, result){
 	    if (!err){
-	      console.log(result);
-	      //res.send(result);
-	      req.result = result;
-	      next();
+	      //console.log(result);
+	      // res.send(result);
+	      req.result = result; //used in subsequent acl call
+	      next(); //forward on for acl to handle, otherwise the model isn't authenticated
 	    } else {
-	      console.log(err);
-	      //res.send(err);
-	      next(err);
+	      //console.log(err);
+	      // res.send(err);
+	      next(err); //forward on for acl to handle
 	    }
 	});
 	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});

@@ -157,7 +157,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
             middleware = true;
         }
 		var username = null;
-		var reqModel = req.result.model.toLowerCase();
+		var reqModel = req.result.model.toLowerCase(); //model parameter is required in the model.
 		self.fulldecodetoken(req, res, function(err, result){
 			if(result){
 				console.log("fulldecodetoken result");
@@ -178,7 +178,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
 		    } else {
 		    	console.log("error");
 		    	console.log(err);
-		    	var error = new Error("Authorisation denied. Insufficient access privelages");
+		    	var error = new Error("Authorisation denied. Insufficient model access privelages");
 		    	//next(error);
 		    	res.status(403).send(error);
 		    }
