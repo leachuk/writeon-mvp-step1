@@ -69,12 +69,9 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 	});
 };
 
-RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
+RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
 	var returnSuccess = null;
-  //var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
-  //var Model = require(modelPath);
-  var Model = ContentItemModel; //ToDo: may need to refactor this so we can pass in the path, like above. This will do for testing
-
+  var Model = require(modelPath); //def needed, passed in from other functions, eg in getTestSourceAndComparisonDocuments
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
 	console.log("getAllData:" + getAllData);
@@ -93,8 +90,10 @@ RecruitUnitContentService.prototype.getArticle = function(req, func_callback){
         docModel.find(id, function(err, body){
 				if(!err){
 					console.log("success result");
-					console.log(body);
-					callback(null, body);
+					//console.log(body);
+          var jsonBody = JSON.parse(JSON.stringify(body));
+
+					callback(null, jsonBody);
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);

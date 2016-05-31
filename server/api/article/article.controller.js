@@ -109,7 +109,11 @@ exports.compare = function(req, res) {
         console.log("recruitUnitUtils.compare");
         recruitUnitUtils.compare(testSourceDoc, comparisonDoc, function(err, result){
           if (!err){
+            console.log("compare results:")
             console.log(result);
+            _.forEach(result, function(value, key){
+              console.log("key["+ key +"], rule["+ value.rule +"], result["+ value.result +"]");
+            });
             res.send(result);
           } else {
             console.log(err);
