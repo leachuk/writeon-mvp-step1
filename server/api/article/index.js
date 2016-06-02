@@ -20,6 +20,7 @@ router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller
 router.get('/listByAuthor/:username', controller.listByAuthor); //todo fix authService.checkUserIsAuthorisedUrl(), need to escape url.
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle', controller.updateArticle);
+router.get('/compare/:testsourceid/:comparisonid', controller.compare);
 
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);

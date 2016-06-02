@@ -297,8 +297,8 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
   var _this = this; //so we can re-use internal prototype functions
   var sourceTestModelPath = "server/models/RecruitUnit.ComparisonTest.js";
   var comparisonModelPath = "server/models/RecruitUnit.Job.All.js";
-  var testSourceDocId = req.param("testSourceDocId"); //the document which contains the comparison test rules and values
-  var comparisonDocId = req.param("comparisonDocId"); //the submitted recruiters document
+  var testSourceDocId = req.param("testsourceid"); //the document which contains the comparison test rules and values
+  var comparisonDocId = req.param("comparisonid"); //the submitted recruiters document
   console.log("testSourceDocId:" + testSourceDocId);
   console.log("comparisonDocId:" + comparisonDocId);
 
