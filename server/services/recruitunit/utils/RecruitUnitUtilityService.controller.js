@@ -25,8 +25,6 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
     "assertArrayContains" : assertArrayContains
   }
 
-  var sourceJson = JSON.parse(JSON.stringify(sourceJson));//required for lodash to parse couchdb obj correctly
-
   var results = [];
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
@@ -34,15 +32,16 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
     var foundJson = _.get(comparisonJson, key);
     if (foundJson !== undefined && sourceJson[key]['rule'] !== undefined) {
       console.log("[" + key + "]:" + foundJson + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
+
       var sourceRule = sourceJson[key]['rule'];
+      var sourceParam = key;
       var testMethod = comparisonTests[sourceRule];
-      console.log(testMethod(sourceJson[key]['value'],foundJson));
-      results.push({"rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
+      results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
     }
   });
-  console.log("comparison results");
-  console.log(results);
-  func_callback(null, results + "\n");
+  //console.log("comparison results");
+  //console.log(results);
+  func_callback(null, results);//do error check
 };
 
 // ********************************************************************************************************************************** //
@@ -52,21 +51,21 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
 // ********************************************************************************************************************************** //
 
 function assertGreaterThan(sourceValue, comparisonValue){
-  console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+  console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
 
-  return sourceValue > comparisonValue;
+  return (sourceValue > comparisonValue);
 }
 
 function assertLessThan(sourceValue, comparisonValue){
-  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
 
-  return sourceValue < comparisonValue;
+  return (sourceValue < comparisonValue);
 }
 
 function assertEqualTo(sourceValue, comparisonValue){
   console.log("assertEqualTo: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
 
-  return sourceValue === comparisonValue;
+  return (sourceValue.toLowerCase() === comparisonValue.toLowerCase());
 }
 
 function assertArrayContains(sourceValue, comparisonValue){

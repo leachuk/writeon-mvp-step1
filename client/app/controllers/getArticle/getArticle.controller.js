@@ -4,7 +4,8 @@ angular.module('writeonMvpStep1App')
   .controller('GetArticleCtrl', function ($scope, $stateParams, API, $moment) {
     $scope.articleId = $stateParams.id;
 
-    API.Article.getArticle($scope.articleId).then(function(data){
+    var modelPath = "server/services/couchDbHandler/couchDbHandler.controller";
+    API.Article.getArticle($scope.articleId, modelPath).then(function(data){
         console.log(data);
         $scope.article = data;
     });

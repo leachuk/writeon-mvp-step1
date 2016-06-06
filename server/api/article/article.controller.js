@@ -22,16 +22,20 @@ exports.getArticle = function(req, res, next) {
 	//var dbTable = req.param("dbtable");
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
-	couchService.getArticle(req, function(err, result){
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.getArticle(req, function(err, result){
 	    if (!err){
-	      console.log(result);
-	      //res.send(result);
-	      req.result = result;
-	      next();
+	      //console.log(result);
+	      // res.send(result);
+	      req.result = result; //used in subsequent acl call
+	      next(); //forward on for acl to handle, otherwise the model isn't authenticated
 	    } else {
-	      console.log(err);
-	      //res.send(err);
-	      next(err);
+	      //console.log(err);
+	      // res.send(err);
+	      next(err); //forward on for acl to handle
 	    }
 	});
 	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
@@ -93,31 +97,53 @@ exports.compare = function(req, res) {
 
   var testSourceDoc = {};
   var comparisonDoc = {};
+  var returnSuccess = null;
 
   console.log("appService.getTestSourceAndComparisonDocuments");
-  appService.getTestSourceAndComparisonDocuments(req, function(err, result){
-      if (!err){
-        console.log(result);
-        testSourceDoc = result.getTestSourceDoc;
-        comparisonDoc = result.getComparisonDoc;
-
-        //todo: use async methods to prevent nesting
-        console.log("recruitUnitUtils.compare");
-        recruitUnitUtils.compare(testSourceDoc, comparisonDoc, function(err, result){
+  
+  async.series({
+      getTestSourceAndComparisonDocuments: function(callback){
+        appService.getTestSourceAndComparisonDocuments(req, function(err, result){
           if (!err){
-            console.log(result);
-            res.send(result);
+            //console.log(result);
+            returnSuccess = result;
+            callback(err, result);
           } else {
             console.log(err);
             res.send(err);
           }
         });
+      },
+      compare: function(callback){
+        testSourceDoc = returnSuccess.getTestSourceDoc;
+        comparisonDoc = returnSuccess.getComparisonDoc;
+        console.log("recruitUnitUtils.compare");
+        recruitUnitUtils.compare(testSourceDoc, comparisonDoc, function(err, result) {
+          console.log("compare results:")
+          //console.log(result);
+          _.forEach(result, function (value, key) {
+            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          });
+          if (!err){
+            //console.log(result);
+            callback(null,result);
+          } else {
+            console.log(err);
+            callback(err, null);
+          }
+        });
+      }
+    },
+    function(err, result) {
+      console.log("getting source and comparison doc results");
+      if (!err){
+        console.log(result);
+        res.send(result.compare);
       } else {
         console.log(err);
         res.send(err);
       }
-  });
-
+    });
 };
 
 exports.updateArticle = function(req,res){

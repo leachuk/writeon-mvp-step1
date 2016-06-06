@@ -71,9 +71,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 
 RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
 	var returnSuccess = null;
-  //var comparisonSourceTestDocModel = 'server/models/RecruitUnit.ComparisonTest.js'; //todo: replace with model from method
-  var Model = require(modelPath);
-
+  var Model = require(modelPath); //def needed, passed in from other functions, eg in getTestSourceAndComparisonDocuments
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
 	console.log("getAllData:" + getAllData);
@@ -92,8 +90,10 @@ RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_c
         docModel.find(id, function(err, body){
 				if(!err){
 					console.log("success result");
-					console.log(body);
-					callback(null, body);
+					//console.log(body);
+          var jsonBody = JSON.parse(JSON.stringify(body));
+
+					callback(null, jsonBody);
 				}else{
 					console.log("articleModelAuth error");
 					callback(err, null);
@@ -297,8 +297,8 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
   var _this = this; //so we can re-use internal prototype functions
   var sourceTestModelPath = "server/models/RecruitUnit.ComparisonTest.js";
   var comparisonModelPath = "server/models/RecruitUnit.Job.All.js";
-  var testSourceDocId = req.param("testSourceDocId"); //the document which contains the comparison test rules and values
-  var comparisonDocId = req.param("comparisonDocId"); //the submitted recruiters document
+  var testSourceDocId = req.param("testsourceid"); //the document which contains the comparison test rules and values
+  var comparisonDocId = req.param("comparisonid"); //the submitted recruiters document
   console.log("testSourceDocId:" + testSourceDocId);
   console.log("comparisonDocId:" + comparisonDocId);
 

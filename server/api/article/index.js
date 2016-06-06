@@ -11,7 +11,7 @@ authService.initAuthorization();
 var acl = authService.acl();
 
 router.get('/', controller.index);
-router.get('/getarticle/:id', [controller.getArticle, authService.checkUserIsAuthorisedModel()]);
+router.get('/getarticle/:id', controller.getArticle, authService.checkUserIsAuthorisedModel());
 router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
 router.post('/saveArticle', controller.saveArticle);
 router.post('/saveComparison', controller.saveComparison);
@@ -20,6 +20,7 @@ router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller
 router.get('/listByAuthor/:username', controller.listByAuthor); //todo fix authService.checkUserIsAuthorisedUrl(), need to escape url.
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle', controller.updateArticle);
+router.get('/compare/:testsourceid/:comparisonid', controller.compare);
 
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);
