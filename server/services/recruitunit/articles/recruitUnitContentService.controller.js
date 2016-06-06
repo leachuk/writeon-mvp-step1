@@ -143,6 +143,7 @@ RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback)
 	});
 };
 
+//not used.
 RecruitUnitContentService.prototype.listAllUserArticles = function(req, username, func_callback){
 	//var listResultJson = null;
 	//var listResultArray = [];
@@ -187,7 +188,6 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	//var listResultJson = null;
 	//var listResultArray = [];
 	var returnSuccess = null;
-	var dbtable = dbNameArticles;
 
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
@@ -205,19 +205,19 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	    	console.log("RecruitUnitContentService listMyArticles: returnSuccess");
 	    	console.log(returnSuccess.cookie);
 	    	console.log(returnSuccess.username);
-			var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
-			articleModelAuth.all({where:{authorName: returnSuccess.username}}, function(err, body){
-				if(!err){
-					console.log("success result");
-					//convert list of full article model to a partial model
-					var updatedBody = ContentItemListPartialModelConverter(body);
-					//console.log(updatedBody);
-					callback(null, updatedBody);
-				}else{
-					console.log("articleModelAuth error");
-					callback(err, null);
-				}
-			});
+        var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
+        articleModelAuth.all({where:{submitTo: returnSuccess.username}}, function(err, body){
+          if(!err){
+            console.log("success result");
+            //convert list of full article model to a partial model
+            var updatedBody = ContentItemListPartialModelConverter(body);
+            //console.log(updatedBody);
+            callback(null, updatedBody);
+          }else{
+            console.log("articleModelAuth error");
+            callback(err, null);
+          }
+        });
 	    }
 	},
 	function(err, results) {

@@ -98,9 +98,9 @@ AuthService.prototype.initUserAuthorization = function() {
   //acl.allow('guest', 'articles', ['edit','view']);
 
   //create roles
-  //.allow(<role>,[<endpoint path>,...],[<rights(edit/view/delete)>,...])
+  //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
   //TODO refactor this into a proper model/schema with jugglingDb
-  acl.allow('recruiter',['getarticle','getspecifieduser', 'recruitunitjobitem'],['view']);
+  acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'recruitunitjobitem'],['view']);
   //acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
   //assign users to roles

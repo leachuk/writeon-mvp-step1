@@ -177,8 +177,11 @@ exports.listAllUserArticles = function(req, res){
 //get articles of the authenticated user
 exports.listMyArticles = function(req, res){
 	console.log("article.controller listMyArticles");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
 	// TODO. Create a design doc to handle list document query
- 	couchService.listMyArticles(req, function(err, result){
+  appService.listMyArticles(req, function(err, result){
 		if(!err){
 			res.send(result);
 		}else{
