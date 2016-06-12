@@ -20,6 +20,7 @@ var initCookie = function (setcookie, options) {
       payBracketLower:  { type: Number},
       payBracketUpper:  { type: Number},
 	    locationDescription:    { type: String},
+      location:         { type: String},
 	    skills: 	        { type: String},
 	    authorName: 			{ type: String },
 	    authorEmail:    	{ type: String},

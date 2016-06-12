@@ -11,6 +11,7 @@ var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.con
 var couchService = couchDbHandlers.Service;
 
 var utilsService = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
+var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
 
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
@@ -226,6 +227,96 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	});
 };
 
+//Todo: complete this with results of comparison in returned json
+RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callback){
+  //var listResultJson = null;
+  //var listResultArray = [];
+  var _this = this;
+
+  var requestParams = req.query;
+  var getAllData = requestParams.getAllData;
+
+  async.waterfall([
+        authenticate,
+        listMyArticles,
+        getTestAndComparisonResults,
+        appendComparisonResultsToArticleList,
+  ],function (err, result) {
+    // result now equals result of last run function
+  });
+  function authenticate(callback){
+    _authUtils.authenticateToken(req, function(err, result){
+      //console.log("authToken result:");
+      //console.log(result);
+      callback(null, result) //first callback param always reserved for error callbacks
+    });
+  }
+  function listMyArticles(returnSuccess, callback){
+    console.log("RecruitUnitContentService listMyTestContent: returnSuccess");
+    console.log(returnSuccess.cookie);
+    console.log(returnSuccess.username);
+    var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
+    articleModelAuth.all({where:{submitTo: returnSuccess.username}}, function(err, body){
+      if(!err){
+        console.log("success result");
+        //convert list of full article model to a partial model
+        callback(null, ContentItemListPartialModelConverter(body));
+      }else{
+        console.log("articleModelAuth error");
+        callback(err, null);
+      }
+    });
+  }
+  function getTestAndComparisonResults(articleList, callback){
+    var testSourceAndComparisonDocList = [];
+    async.each(articleList, function(value, callback) {
+      //console.log(value);
+      req.params.testsourceid = value.id;
+      req.params.comparisonid = "comparisonDocumentTest1"; //Todo: how to pass/set this doc id. Hardocde for now.
+
+      _this.getTestSourceAndComparisonDocuments(req, function(err, result){
+        if (!err){
+          //console.log(result);
+          testSourceAndComparisonDocList.push(result);
+          callback();
+        } else {
+          console.log(err);
+          res.send(err);
+        }
+      });
+    }, function (err) {
+      if (err) { res.send(err); }
+      callback(null, testSourceAndComparisonDocList);
+    });
+  }
+  function appendComparisonResultsToArticleList(comparisonAndTestList, callback) {
+    var testResult = [];
+
+    _(comparisonAndTestList).forEach(function(value) {
+      recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
+        console.log("compare results:")
+        //console.log(result);
+        _.forEach(result, function (value, key) {
+          console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+        });
+        if (!err) {
+          //console.log(result);
+          //callback(null, result);
+          testResult.push(result);
+        } else {
+          console.log(err);
+          callback(err, null);
+        }
+      });
+    });
+
+    console.log(testResult);
+  }
+
+};
+
+
+
 RecruitUnitContentService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
@@ -299,8 +390,8 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
   var comparisonModelPath = "server/models/RecruitUnit.Job.All.js";
   var testSourceDocId = req.param("testsourceid"); //the document which contains the comparison test rules and values
   var comparisonDocId = req.param("comparisonid"); //the submitted recruiters document
-  console.log("testSourceDocId:" + testSourceDocId);
-  console.log("comparisonDocId:" + comparisonDocId);
+  //console.log("testSourceDocId:" + testSourceDocId);
+  //console.log("comparisonDocId:" + comparisonDocId);
 
   //get the source and comparison json
   async.series({

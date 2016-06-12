@@ -17,6 +17,7 @@ router.post('/saveArticle', controller.saveArticle);
 router.post('/saveComparison', controller.saveComparison);
 //router.post('/insertArticle', controller.insertArticle);
 router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller.listMyArticles);
+router.get('/listMyTestContent', authService.checkUserIsAuthorisedUrl(), controller.listMyTestContent);
 router.get('/listByAuthor/:username', controller.listByAuthor); //todo fix authService.checkUserIsAuthorisedUrl(), need to escape url.
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle', controller.updateArticle);

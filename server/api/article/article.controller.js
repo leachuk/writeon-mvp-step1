@@ -190,6 +190,21 @@ exports.listMyArticles = function(req, res){
 	});
 };
 
+exports.listMyTestContent = function(req, res){
+  console.log("article.controller listMyTestContent");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.listMyTestContent(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 exports.listByAuthor = function(req, res){
 	console.log("article.controller listByAuthor");
 
