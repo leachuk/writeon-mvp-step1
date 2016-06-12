@@ -312,9 +312,13 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
         });
     }, function (err) {
       if (err) { callback(err, null); }
-      console.log(testResult);
-      //todo: append testResult into listResultArray
-      //callback(null, testResult);
+
+      var combinedTestResultWithDocList = [];
+      for (var i=0; i < listResultArray.length; i++){
+        combinedTestResultWithDocList.push({"document": listResultArray[i], "testResult": testResult[i]});
+      }
+      console.log(combinedTestResultWithDocList);
+      func_callback(null, combinedTestResultWithDocList);
     });
 
   }

@@ -53,13 +53,13 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
 function assertGreaterThan(sourceValue, comparisonValue){
   console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
 
-  return (sourceValue > comparisonValue);
+  return (comparisonValue > sourceValue);
 }
 
 function assertLessThan(sourceValue, comparisonValue){
   console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
 
-  return (sourceValue < comparisonValue);
+  return (comparisonValue < sourceValue);
 }
 
 function assertEqualTo(sourceValue, comparisonValue){
