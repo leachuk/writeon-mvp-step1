@@ -230,7 +230,7 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 //Todo: complete this with results of comparison in returned json
 RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callback){
   //var listResultJson = null;
-  //var listResultArray = [];
+  var listResultArray = [];
   var _this = this;
 
   var requestParams = req.query;
@@ -260,7 +260,8 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
       if(!err){
         console.log("success result");
         //convert list of full article model to a partial model
-        callback(null, ContentItemListPartialModelConverter(body));
+        listResultArray = ContentItemListPartialModelConverter(body);
+        callback(null, listResultArray);
       }else{
         console.log("articleModelAuth error");
         callback(err, null);
@@ -271,8 +272,8 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
     var testSourceAndComparisonDocList = [];
     async.each(articleList, function(value, callback) {
       //console.log(value);
-      req.params.testsourceid = value.id;
-      req.params.comparisonid = "comparisonDocumentTest1"; //Todo: how to pass/set this doc id. Hardocde for now.
+      req.params.testsourceid = "comparisonDocumentTest1";
+      req.params.comparisonid =  value.id; //Todo: how to pass/set this doc id. Hardocde for now.
 
       _this.getTestSourceAndComparisonDocuments(req, function(err, result){
         if (!err){
@@ -285,32 +286,37 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
         }
       });
     }, function (err) {
-      if (err) { res.send(err); }
+      if (err) { callback(err, null); }
       callback(null, testSourceAndComparisonDocList);
     });
   }
   function appendComparisonResultsToArticleList(comparisonAndTestList, callback) {
     var testResult = [];
 
-    _(comparisonAndTestList).forEach(function(value) {
-      recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
-        console.log("compare results:")
-        //console.log(result);
-        _.forEach(result, function (value, key) {
-          console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
-        });
-        if (!err) {
+    async.each(comparisonAndTestList, function(value, callback) {
+        recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
+          console.log("compare results:")
           //console.log(result);
-          //callback(null, result);
-          testResult.push(result);
-        } else {
-          console.log(err);
-          callback(err, null);
-        }
-      });
+          _.forEach(result, function (value, key) {
+            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          });
+          if (!err) {
+            //console.log(result);
+            //callback(null, result);
+            testResult.push(result);
+            callback();
+          } else {
+            console.log(err);
+            callback(err, null);
+          }
+        });
+    }, function (err) {
+      if (err) { callback(err, null); }
+      console.log(testResult);
+      //todo: append testResult into listResultArray
+      //callback(null, testResult);
     });
 
-    console.log(testResult);
   }
 
 };
