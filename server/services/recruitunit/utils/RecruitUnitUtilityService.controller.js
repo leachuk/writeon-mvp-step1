@@ -39,6 +39,11 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
       results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
     }
   });
+  //add isPass and isPartialPass property to test result
+  var isPass = _.every(results, ['result', true]);
+  var isPartialPass = _.find(results, {'result': false}) === undefined;
+
+  results = {'isPass': isPass, 'isPartialPass': isPartialPass, 'results': results};
   //console.log("comparison results");
   //console.log(results);
   func_callback(null, results);//do error check

@@ -15,7 +15,7 @@ var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUti
 
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
-var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
+//var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
 var ComparisonTestModel = require('server/models/RecruitUnit.ComparisonTest.js');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
@@ -259,8 +259,7 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
     articleModelAuth.all({where:{submitTo: returnSuccess.username}}, function(err, body){
       if(!err){
         console.log("success result");
-        //convert list of full article model to a partial model
-        listResultArray = ContentItemListPartialModelConverter(body);
+        listResultArray = body; //listResultArray used later for combining with test results
         callback(null, listResultArray);
       }else{
         console.log("articleModelAuth error");
@@ -297,9 +296,9 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
         recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
           console.log("compare results:")
           //console.log(result);
-          _.forEach(result, function (value, key) {
-            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
-          });
+          // _.forEach(result, function (value, key) {
+          //   console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          // });
           if (!err) {
             //console.log(result);
             //callback(null, result);
