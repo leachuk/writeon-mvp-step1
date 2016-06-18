@@ -41,7 +41,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   });
   //add isPass and isPartialPass property to test result
   var isPass = _.every(results, ['result', true]);
-  var isPartialPass = _.find(results, {'result': false}) === undefined;
+  var isPartialPass = _.find(results, {'result': true}) !== undefined;
 
   results = {'isPass': isPass, 'isPartialPass': isPartialPass, 'results': results};
   //console.log("comparison results");
