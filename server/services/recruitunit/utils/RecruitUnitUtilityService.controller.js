@@ -26,6 +26,8 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   }
 
   var results = [];
+  var isPass = false;
+  var isPartialPass = false;
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
     console.log("key:" + key, "value:" + value);
@@ -37,11 +39,12 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
       var sourceParam = key;
       var testMethod = comparisonTests[sourceRule];
       results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
+      //add isPass and isPartialPass property to test result
+      isPass = _.every(results, ['result', true]);
+      isPartialPass = (isPass === false) && (_.find(results, {'result': true}) !== undefined);
     }
   });
-  //add isPass and isPartialPass property to test result
-  var isPass = _.every(results, ['result', true]);
-  var isPartialPass = _.find(results, {'result': true}) !== undefined;
+
 
   results = {'isPass': isPass, 'isPartialPass': isPartialPass, 'results': results};
   //console.log("comparison results");
