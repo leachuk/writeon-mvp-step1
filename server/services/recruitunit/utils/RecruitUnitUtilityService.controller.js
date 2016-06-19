@@ -80,12 +80,12 @@ function assertArrayContains(sourceValue, comparisonValue){
   console.log("assertArrayContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
 
   var matchExists = false;
-  var wordArray = _.words(comparisonValue);
+  var wordArray = _.words(comparisonValue.toLowerCase());
   console.log("wordArray:" + wordArray);
 
   _.forEach(sourceValue, function(value, key){
     console.log("value:"+ value +", key:" + key);
-    matchExists = _.indexOf(wordArray, value) != -1;
+    matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
     return !matchExists; //exit loop when match found
   })
 
