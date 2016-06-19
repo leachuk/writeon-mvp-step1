@@ -314,7 +314,8 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
 
       var combinedTestResultWithDocList = [];
       for (var i=0; i < listResultArray.length; i++){
-        combinedTestResultWithDocList.push({"document": listResultArray[i], "testResult": testResult[i]});
+        var testResultItem = _.find(testResult,['docId',listResultArray[i].id]);
+        combinedTestResultWithDocList.push({"document": listResultArray[i], "testResult": testResultItem});
       }
       console.log(combinedTestResultWithDocList);
       func_callback(null, combinedTestResultWithDocList);

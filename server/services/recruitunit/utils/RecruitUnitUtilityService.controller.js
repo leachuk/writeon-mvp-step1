@@ -28,6 +28,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   var results = [];
   var isPass = false;
   var isPartialPass = false;
+  var sourceDocId = comparisonJson.id;
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
     console.log("key:" + key, "value:" + value);
@@ -39,14 +40,13 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
       var sourceParam = key;
       var testMethod = comparisonTests[sourceRule];
       results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
-      //add isPass and isPartialPass property to test result
-      isPass = _.every(results, ['result', true]);
-      isPartialPass = (isPass === false) && (_.find(results, {'result': true}) !== undefined);
     }
   });
+  //add isPass and isPartialPass property to test result
+  isPass = _.every(results, ['result', true]);
+  isPartialPass = (isPass === false) && (_.find(results, {'result': true}) !== undefined);
 
-
-  results = {'isPass': isPass, 'isPartialPass': isPartialPass, 'results': results};
+  results = {'docId': sourceDocId, 'isPass': isPass, 'isPartialPass': isPartialPass, 'results': results};
   //console.log("comparison results");
   //console.log(results);
   func_callback(null, results);//do error check
@@ -86,7 +86,9 @@ function assertArrayContains(sourceValue, comparisonValue){
   _.forEach(sourceValue, function(value, key){
     console.log("value:"+ value +", key:" + key);
     matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
-    return !matchExists; //exit loop when match found
+    if(matchExists){
+      return matchExists; //exit loop when match found
+    }
   })
 
   return matchExists;
