@@ -256,7 +256,7 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
     console.log(returnSuccess.cookie);
     console.log(returnSuccess.username);
     var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
-    articleModelAuth.all({where:{submitTo: returnSuccess.username}}, function(err, body){
+    articleModelAuth.all({where:{submitTo: returnSuccess.username, published: true}}, function(err, body){
       if(!err){
         console.log("success result");
         listResultArray = body; //listResultArray used later for combining with test results
