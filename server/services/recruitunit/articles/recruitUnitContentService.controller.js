@@ -330,7 +330,7 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
 RecruitUnitContentService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
 	var articleUpdateModel = null;
-	var dbtable = dbNameArticles;
+	//var dbtable = dbNameArticles;
 
 	var id = req.param("id");
 	console.log("updateData");
@@ -347,7 +347,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 		    });
 	    },
 	    getArticle: function(callback){
-			var articleModelAuth = ArticleModel(returnSuccess.cookie, {returnAll: true});
+			var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: true});
 			articleModelAuth.find(id, function(err, body){
 				if(!err){
 					console.log("update get success result");

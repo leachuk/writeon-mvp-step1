@@ -100,7 +100,7 @@ exports.compare = function(req, res) {
   var returnSuccess = null;
 
   console.log("appService.getTestSourceAndComparisonDocuments");
-  
+
   async.series({
       getTestSourceAndComparisonDocuments: function(callback){
         appService.getTestSourceAndComparisonDocuments(req, function(err, result){
@@ -151,7 +151,11 @@ exports.updateArticle = function(req,res){
     var fieldparam = req.body.field;
     var valueparam = req.body.value;
 
-    couchService.updateArticle("username_example", docname, fieldparam, valueparam, function(err, result){
+    console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+    var applicationHandler = require(req.query.modelId);
+    var appService = applicationHandler.Service;
+
+    appService.updateArticle(req, function(err, result){
     	if(!err){
 			res.send(result);
 		}else{
@@ -240,17 +244,17 @@ exports.deleteArticle = function(req, res){
 //};
 
 //******** Testing Enpoints *************//
-exports.updateArticle = function(req, res){
-	console.log("in updateArticle");
-
-    couchService.updateArticle(req, function(err, result){
-		if(!err){
-			res.send(result);
-		}else{
-			res.send(err);
-		}
-	});
-};
+// exports.updateArticle = function(req, res){
+// 	console.log("in updateArticle");
+//
+//     couchService.updateArticle(req, function(err, result){
+// 		if(!err){
+// 			res.send(result);
+// 		}else{
+// 			res.send(err);
+// 		}
+// 	});
+// };
 
 
 exports.testCookie = function(req, res){
