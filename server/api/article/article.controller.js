@@ -83,7 +83,7 @@ exports.saveComparison = function(req, res) {
   });
 };
 
-//For testing, to be refactored into RecruitUnit client once working
+//Todo: For testing, to be refactored into RecruitUnit client once working
 exports.compare = function(req, res) {
   console.log("Article controller, compare");
   console.log(req.body);
@@ -147,10 +147,6 @@ exports.compare = function(req, res) {
 };
 
 exports.updateArticle = function(req,res){
-    var docname = req.body.docname;
-    var fieldparam = req.body.field;
-    var valueparam = req.body.value;
-
     console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
     var applicationHandler = require(req.query.modelId);
     var appService = applicationHandler.Service;
