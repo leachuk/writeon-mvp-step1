@@ -368,9 +368,13 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	    	console.log(typeof updateData);
 	    	articleUpdateModel.updateAttributes(updateData, function(err, body){
 				if(!err){
-					console.log("updateArticle success result");
-					console.log(body);
-					callback(null, body);
+					console.log("updateArticle success");
+					//console.log(body);
+          var successReturn = { //ensure succees param returned to client
+            data: body,
+            success: true
+          };
+					callback(null, successReturn);
 				}else{
 					console.log("updateArticle get error");
 					callback(err, null);
