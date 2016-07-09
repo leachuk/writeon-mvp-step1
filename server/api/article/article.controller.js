@@ -23,10 +23,11 @@ exports.getArticle = function(req, res, next) {
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(req.param('modelId'));
   var appService = applicationHandler.Service;
 
-  appService.getArticle(req, function(err, result){
+  var modelPath = req.param("model");
+  appService.getArticle(req, modelPath, function(err, result){
 	    if (!err){
 	      //console.log(result);
 	      // res.send(result);
