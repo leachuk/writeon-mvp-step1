@@ -22,6 +22,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
     "assertEqualTo" : assertEqualTo,
     "assertGreaterThan" : assertGreaterThan,
     "assertLessThan" : assertLessThan,
+    "assertStringContains" : assertStringContains,
     "assertArrayContains" : assertArrayContains
   }
 
@@ -76,8 +77,8 @@ function assertEqualTo(sourceValue, comparisonValue){
   return (sourceValue.toLowerCase() === comparisonValue.toLowerCase());
 }
 
-function assertArrayContains(sourceValue, comparisonValue){
-  console.log("assertArrayContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+function assertStringContains(sourceValue, comparisonValue){
+  console.log("assertStringContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
 
   var matchExists = false;
   var wordArray = _.words(comparisonValue.toLowerCase());
@@ -88,6 +89,24 @@ function assertArrayContains(sourceValue, comparisonValue){
     matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
     if(matchExists){
       return matchExists; //exit loop when match found
+    }
+  })
+
+  return matchExists;
+}
+
+function assertArrayContains(sourceValue, comparisonValue){
+  console.log("assertArrayContains: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"]")
+
+  var matchExists = false;
+  var wordArray = _.values(_.mapValues(comparisonValue, _.method("toLowerCase")));
+  console.log("wordArray:" + wordArray);
+
+  _.forEach(sourceValue, function(value, key){
+    console.log("value:"+ value +", key:" + key);
+    matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
+    if(matchExists){
+      return false; //exit loop when match found
     }
   })
 
