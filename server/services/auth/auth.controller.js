@@ -101,10 +101,12 @@ AuthService.prototype.initUserAuthorization = function() {
   //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
   //TODO refactor this into a proper model/schema with jugglingDb
   acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
+  acl.allow('developer',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
   //acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
   //assign users to roles
   acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
+  acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
 };
 
 AuthService.prototype.checkUserIsAuthorisedUrl = function(){
