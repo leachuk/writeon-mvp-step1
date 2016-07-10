@@ -24,3 +24,5 @@ module.exports = {
   dbNameArticles: "article_documents",
   dbNameProjects: "loom_project_files"
 };
+
+//console.log = function(){}; //disable all console output to speed up response time. Might not make much difference.
