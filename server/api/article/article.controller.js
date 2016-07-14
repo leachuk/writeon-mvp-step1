@@ -52,7 +52,7 @@ exports.saveArticle = function(req, res) {
   var applicationHandler = require(req.query.modelId);
   var appService = applicationHandler.Service;
 
-	appService.createArticle(req, {}, "", function(err, result){
+	appService.createArticle(req, function(err, result){
 	    if (!err){
 	      //console.log(result);
 	      res.send(result);

@@ -17,9 +17,10 @@ var initCookie = function (setcookie, options) {
     model: 					  { type: String }, //auto populated. Doesn't require submitted data
     roleType:   			{ type: JSON   },
     locationDescription: { type: JSON   },
-    payBracketLower:  { type: Number },
-    skills: 	        { type: String },
+    payBracketLower:  { type: JSON },
+    skills: 	        { type: JSON },
     authorName: 			{ type: String },
+    published:        { type: Boolean },
     createdDate: 			{ type: Number,  default: Date.now }
   }
 

@@ -29,12 +29,13 @@ function RecruitUnitContentService(){};
 //
 // ********************************************************************************************************************************** //
 
-RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doctitle, func_callback){
+RecruitUnitContentService.prototype.createArticle = function(req, func_callback){
 	console.log("in RecruitUnitContentService, createArticle");
 	console.log(req.body);
 
+  var Model = require(req.param('modelType'));
+
 	var returnSuccess = null;
-	var dbtable = dbNameArticles; //still required here?
 
 	async.series({
 	    authToken: function(callback){
@@ -46,7 +47,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 		    });
 	    },
 	    createArticle: function(callback){
-			var articleModelAuth = ContentItemModel(returnSuccess.cookie);
+			var articleModelAuth = Model(returnSuccess.cookie);
 			articleModelAuth.create(req.body, function(err, result){
         if(!err){
           console.log("RecruitUnitContentService createArticle: success");
@@ -72,7 +73,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, jsondata, doct
 
 RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
 	var returnSuccess = null;
-  var Model = require(modelPath); //def needed, passed in from other functions, eg in getTestSourceAndComparisonDocuments
+  var Model = require(modelPath); //def needed (should refactor so consistent. Get from req modelType), passed in from other functions, eg in getTestSourceAndComparisonDocuments
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
 	console.log("getAllData:" + getAllData);
