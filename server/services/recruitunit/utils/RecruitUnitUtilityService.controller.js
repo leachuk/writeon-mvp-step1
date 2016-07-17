@@ -82,16 +82,17 @@ function assertStringContains(sourceValue, comparisonValue){
 
   var matchExists = false;
   var wordArray = _.words(comparisonValue.toLowerCase());
-  console.log("wordArray:" + wordArray);
+  console.log("   wordArray:" + wordArray);
 
   _.forEach(sourceValue, function(value, key){
-    console.log("value:"+ value +", key:" + key);
+    console.log("   value:"+ value +", key:" + key);
     matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
     if(matchExists){
-      return matchExists; //exit loop when match found
+      console.log("   matchExists:" + matchExists);
+      return !matchExists; //exit loop when match found i.e. return false
     }
   })
-
+  console.log("   returning:" + matchExists);
   return matchExists;
 }
 
@@ -100,16 +101,17 @@ function assertArrayContains(sourceValue, comparisonValue){
 
   var matchExists = false;
   var wordArray = _.values(_.mapValues(comparisonValue, _.method("toLowerCase")));
-  console.log("wordArray:" + wordArray);
+  console.log("   wordArray:" + wordArray);
 
   _.forEach(sourceValue, function(value, key){
-    console.log("value:"+ value +", key:" + key);
+    console.log("   value:"+ value +", key:" + key);
     matchExists = _.indexOf(wordArray, value.toLowerCase()) != -1;
     if(matchExists){
+      console.log("   matchExists:" + matchExists);
       return false; //exit loop when match found
     }
   })
-
+  console.log("   returning:" + matchExists);
   return matchExists;
 }
 
