@@ -22,6 +22,7 @@ router.get('/listByAuthor/:username', controller.listByAuthor); //todo fix authS
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle/:id', controller.updateArticle);
 router.get('/compare/:testsourceid/:comparisonid', controller.compare);
+router.get('/search', controller.search); //optional todo: might want to secure endpoint with authService.checkUserIsAuthorisedUrl()
 
 router.get('/testcookie', controller.testCookie);
 router.post('/testmodel', controller.testModel);

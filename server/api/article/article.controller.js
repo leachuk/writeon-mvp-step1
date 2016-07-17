@@ -223,6 +223,22 @@ exports.deleteArticle = function(req, res){
 	});
 };
 
+//search for articles which match json criteria. req modelId, modelType, searchJson
+exports.search = function(req, res){
+  console.log("article.controller search");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.search(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 //Is this redundant? Remove.
 //exports.insertArticle = function(req, res){
 //	console.log("in insertArticle");

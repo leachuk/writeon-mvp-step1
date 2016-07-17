@@ -390,6 +390,50 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	});
 };
 
+//find articles which match input json parameters
+RecruitUnitContentService.prototype.search = function(req, func_callback){
+  //var listResultJson = null;
+  //var listResultArray = [];
+  var returnSuccess = null;
+
+  var Model = require(req.param('modelType'));
+  var searchJson = req.param('searchJson');
+  var requestParams = req.query;
+  var getAllData = requestParams.getAllData;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnSuccess = result;
+          callback(err, result);
+        });
+      },
+      search: function(callback){
+        console.log("RecruitUnitContentService search: returnSuccess");
+        console.log(returnSuccess.cookie);
+        console.log(returnSuccess.username);
+        var articleModelAuth = Model(returnSuccess.cookie, {returnAll: getAllData});
+        articleModelAuth.all({where: JSON.parse(searchJson)}, function(err, body){
+          if(!err){
+            console.log("success result");
+            //optional todo: convert list of full article model to a partial model
+
+            callback(null, body);
+          }else{
+            console.log("articleModelAuth error");
+            callback(err, null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, results.search);
+    });
+};
+
 // ********************************************************************************************************************************** //
 //
 // Comparison Services
