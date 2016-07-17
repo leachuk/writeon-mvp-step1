@@ -238,7 +238,7 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
   var getAllData = requestParams.getAllData;
 
   var comparisonDocId = req.param('comparisonRulesDocId');
-    
+
   async.waterfall([
         authenticate,
         listMyArticles,
@@ -275,7 +275,7 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
     async.each(articleList, function(value, callback) {
       //console.log(value);
       req.params.testsourceid = comparisonDocId;
-      req.params.comparisonid =  value.id; //Todo: how to pass/set this doc id. Hardocde for now.
+      req.params.comparisonid =  value.id;
 
       _this.getTestSourceAndComparisonDocuments(req, function(err, result){
         if (!err){

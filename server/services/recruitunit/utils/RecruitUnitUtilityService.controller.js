@@ -34,7 +34,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   _.forEach(sourceJson, function(value, key) {
     console.log("key:" + key, "value:" + value);
     var foundJson = _.get(comparisonJson, key);
-    if (foundJson !== undefined && sourceJson[key]['rule'] !== undefined) {
+    if (foundJson !== undefined && sourceJson[key]['rule'] !== undefined && !sourceJson[key]['disabled']) {
       console.log("[" + key + "]:" + foundJson + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
 
       var sourceRule = sourceJson[key]['rule'];
@@ -59,16 +59,16 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
 //
 // ********************************************************************************************************************************** //
 
-function assertGreaterThan(sourceValue, comparisonValue){
+function assertGreaterThan(comparisonValue, sourceValue){
   console.log("assertGreaterThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
 
-  return (comparisonValue > sourceValue);
+  return (sourceValue >= comparisonValue);
 }
 
 function assertLessThan(sourceValue, comparisonValue){
-  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue > comparisonValue) +"]");
+  console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue < comparisonValue) +"]");
 
-  return (comparisonValue < sourceValue);
+  return (sourceValue < comparisonValue);
 }
 
 function assertEqualTo(sourceValue, comparisonValue){
