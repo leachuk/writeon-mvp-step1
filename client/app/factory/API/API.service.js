@@ -7,10 +7,10 @@ angular.module('writeonMvpStep1App')
 
     //Article Service
     service.Article = {};
-    service.Article.getArticle = function(id) {
+    service.Article.getArticle = function(id, modelPath) {
       var r=$resource('/api/articles/getarticle/:id', {},
                       {
-                          getArticle: { method: 'GET', params: { id: id }}
+                          getArticle: { method: 'GET', params: { id: id, modelId: modelPath }}
                       });
 
       return r.getArticle({id: id}).$promise.then(function(data) {

@@ -83,6 +83,7 @@ AuthService.prototype.initAuthorization = function() {
 
 	//create roles
 	//TODO refactor this into a proper model/schema with jugglingDb
+  //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
 	acl.allow('article-editor',['getarticle', 'listmyarticles', 'savearticle', 'article'],['edit', 'view', 'delete']);
 	acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
@@ -97,13 +98,15 @@ AuthService.prototype.initUserAuthorization = function() {
   //acl.allow('guest', 'articles', ['edit','view']);
 
   //create roles
-  //.allow(<role>,[<endpoint path>,...],[<rights(edit/view/delete)>,...])
+  //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
   //TODO refactor this into a proper model/schema with jugglingDb
-  acl.allow('recruiter',['getspecifieduser'],['view']);
+  acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
+  acl.allow('developer',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
   //acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
   //assign users to roles
   acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
+  acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
 };
 
 AuthService.prototype.checkUserIsAuthorisedUrl = function(){
@@ -156,7 +159,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
             middleware = true;
         }
 		var username = null;
-		var reqModel = req.result.model.toLowerCase();
+		var reqModel = req.result.model.toLowerCase(); //model parameter is required in the model.
 		self.fulldecodetoken(req, res, function(err, result){
 			if(result){
 				console.log("fulldecodetoken result");
@@ -177,7 +180,7 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
 		    } else {
 		    	console.log("error");
 		    	console.log(err);
-		    	var error = new Error("Authorisation denied. Insufficient access privelages");
+		    	var error = new Error("Authorisation denied. Insufficient model access privelages");
 		    	//next(error);
 		    	res.status(403).send(error);
 		    }

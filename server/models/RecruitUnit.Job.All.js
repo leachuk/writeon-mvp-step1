@@ -19,7 +19,8 @@ var initCookie = function (setcookie, options) {
 	    roleType:   			{ type: String },
       payBracketLower:  { type: Number},
       payBracketUpper:  { type: Number},
-	    locationDescription: 				{ type: String},
+	    locationDescription:    { type: String},
+      location:         { type: String},
 	    skills: 	        { type: String},
 	    authorName: 			{ type: String },
 	    authorEmail:    	{ type: String},
@@ -28,8 +29,7 @@ var initCookie = function (setcookie, options) {
 	    lastUpdatedDate: 	{ type: Number,  default: Date.now },
 	    lastUpdatedDateFormatted:{ type: String},
 	    published: 	 			{ type: Boolean, default: false, index: true },
-      submitTo:         { type: String},
-      submittedBy:      { type: String}
+      submitTo:         { type: String}
 	}
 
 	console.log("returnModelObj");

@@ -3,10 +3,12 @@
 require('rootpath')();
 
 var _ = require('lodash');
+var async = require('async');
+
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-var TestModel = require('server/models/JugglingModelTest');
+//var TestModel = require('server/models/JugglingModelTest');
 var ArticleModel = require('server/models/Article');
 
 // Get list of articles
@@ -20,16 +22,21 @@ exports.getArticle = function(req, res, next) {
 	//var dbTable = req.param("dbtable");
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
-	couchService.getArticle(req, function(err, result){
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.param('modelId'));
+  var appService = applicationHandler.Service;
+
+  var modelPath = req.param("model");
+  appService.getArticle(req, modelPath, function(err, result){
 	    if (!err){
-	      console.log(result);
-	      //res.send(result);
-	      req.result = result;
-	      next();
+	      //console.log(result);
+	      // res.send(result);
+	      req.result = result; //used in subsequent acl call
+	      next(); //forward on for acl to handle, otherwise the model isn't authenticated
 	    } else {
-	      console.log(err);
-	      //res.send(err);
-	      next(err);
+	      //console.log(err);
+	      // res.send(err);
+	      next(err); //forward on for acl to handle
 	    }
 	});
 	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
@@ -45,7 +52,7 @@ exports.saveArticle = function(req, res) {
   var applicationHandler = require(req.query.modelId);
   var appService = applicationHandler.Service;
 
-	appService.createArticle(req, {}, "", function(err, result){
+	appService.createArticle(req, function(err, result){
 	    if (!err){
 	      //console.log(result);
 	      res.send(result);
@@ -77,12 +84,75 @@ exports.saveComparison = function(req, res) {
   });
 };
 
-exports.updateArticle = function(req,res){
-    var docname = req.body.docname;
-    var fieldparam = req.body.field;
-    var valueparam = req.body.value;
+//Todo: For testing, to be refactored into RecruitUnit client once working
+exports.compare = function(req, res) {
+  console.log("Article controller, compare");
+  console.log(req.body);
 
-    couchService.updateArticle("username_example", docname, fieldparam, valueparam, function(err, result){
+  // Pass require path from client in req.query.modelId
+  // for now make it the literal path to the controller, to be an id with a lookup on the server.
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
+  var appService = applicationHandler.Service;
+  var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
+
+  var testSourceDoc = {};
+  var comparisonDoc = {};
+  var returnSuccess = null;
+
+  console.log("appService.getTestSourceAndComparisonDocuments");
+
+  async.series({
+      getTestSourceAndComparisonDocuments: function(callback){
+        appService.getTestSourceAndComparisonDocuments(req, function(err, result){
+          if (!err){
+            //console.log(result);
+            returnSuccess = result;
+            callback(err, result);
+          } else {
+            console.log(err);
+            res.send(err);
+          }
+        });
+      },
+      compare: function(callback){
+        testSourceDoc = returnSuccess.getTestSourceDoc;
+        comparisonDoc = returnSuccess.getComparisonDoc;
+        console.log("recruitUnitUtils.compare");
+        recruitUnitUtils.compare(testSourceDoc, comparisonDoc, function(err, result) {
+          console.log("compare results:")
+          //console.log(result);
+          _.forEach(result, function (value, key) {
+            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          });
+          if (!err){
+            //console.log(result);
+            callback(null,result);
+          } else {
+            console.log(err);
+            callback(err, null);
+          }
+        });
+      }
+    },
+    function(err, result) {
+      console.log("getting source and comparison doc results");
+      if (!err){
+        console.log(result);
+        res.send(result.compare);
+      } else {
+        console.log(err);
+        res.send(err);
+      }
+    });
+};
+
+exports.updateArticle = function(req,res){
+    console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+    var applicationHandler = require(req.query.modelId);
+    var appService = applicationHandler.Service;
+
+    appService.updateArticle(req, function(err, result){
     	if(!err){
 			res.send(result);
 		}else{
@@ -108,14 +178,32 @@ exports.listAllUserArticles = function(req, res){
 //get articles of the authenticated user
 exports.listMyArticles = function(req, res){
 	console.log("article.controller listMyArticles");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
 	// TODO. Create a design doc to handle list document query
- 	couchService.listMyArticles(req, function(err, result){
+  appService.listMyArticles(req, function(err, result){
 		if(!err){
 			res.send(result);
 		}else{
 			res.send(err);
 		}
 	});
+};
+
+exports.listMyTestContent = function(req, res){
+  console.log("article.controller listMyTestContent");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.listMyTestContent(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
 };
 
 exports.listByAuthor = function(req, res){
@@ -133,6 +221,22 @@ exports.deleteArticle = function(req, res){
 			res.send(err);
 		}
 	});
+};
+
+//search for articles which match json criteria. req modelId, modelType, searchJson
+exports.search = function(req, res){
+  console.log("article.controller search");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.search(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
 };
 
 //Is this redundant? Remove.
@@ -153,17 +257,17 @@ exports.deleteArticle = function(req, res){
 //};
 
 //******** Testing Enpoints *************//
-exports.updateArticle = function(req, res){
-	console.log("in updateArticle");
-
-    couchService.updateArticle(req, function(err, result){
-		if(!err){
-			res.send(result);
-		}else{
-			res.send(err);
-		}
-	});
-};
+// exports.updateArticle = function(req, res){
+// 	console.log("in updateArticle");
+//
+//     couchService.updateArticle(req, function(err, result){
+// 		if(!err){
+// 			res.send(result);
+// 		}else{
+// 			res.send(err);
+// 		}
+// 	});
+// };
 
 
 exports.testCookie = function(req, res){

@@ -10,6 +10,8 @@ AuthUtils.prototype.authenticateToken = function(req, callback){
   var parts = req.headers.authorization.split(' ');
   var secret = req.app.secret;
 
+  console.log("parts length:["+ parts.length +"], secret:["+ secret +"]");
+  console.log(parts);
 	//var parts = authHeader;
 
 	if (parts.length == 2) {
