@@ -119,18 +119,29 @@ exports.signin = function(req, res){
       console.log("success");
       console.log(headers);
       var cookieheader = headers['set-cookie'];
-      var profile = { username: result.name,
-                      cookie: cookieheader[0],
-                      ok: result.ok,
-                      roles: result.roles,
-                      ip: clientip };
-      // We are encoding the profile inside the token
-      var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
 
-      returnMessage["success"] = true;
-      returnMessage["token"] = token;
-      //res.json({ token: token });
-      res.send(returnMessage);
+      //todo: refactor this to use proper async serial flow control rather than callback hell
+      //using non authed method as already within an authenticated call
+      couchService.getUserNoAuthentication(req, result.name, function (err, getUserResult) {
+        if (!err) {
+          //object passed back to client side as token. Currently jwt token is only signed, not encrypted, so the payload can be openly read. DO NOT place secure data in here.
+          var profile = { username: result.name,
+            cookie: cookieheader[0],
+            ok: result.ok,
+            roles: result.roles,
+            jobRole: getUserResult.data.jobRole,
+            ip: clientip };
+          // We are encoding the profile inside the token
+          var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
+
+          returnMessage["success"] = true;
+          returnMessage["token"] = token;
+
+          res.send(returnMessage);
+        } else {
+          res.send(err);
+        }
+      });
     }else{
       console.log("error:" + err);
       returnMessage["success"] = false;

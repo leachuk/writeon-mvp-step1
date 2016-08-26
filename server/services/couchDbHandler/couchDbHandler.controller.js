@@ -163,6 +163,42 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
   });
 };
 
+CouchDBService.prototype.getUserNoAuthentication = function(req, username, func_callback){
+  console.log("couchdb service getUserNoAuthentication, username: " + username);
+
+  async.series({
+      getUser: function(callback){
+        //check the requested username is the authenticated user. May need to change, but should provide sufficient security
+        //if (returnAuthToken.username == username) {
+        var userModelAuth = UserModel(null, null);
+        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+          if (!err) {
+            console.log("CouchDBService getUser: success");
+            console.log(result);
+            var returnMessage = { //ensure success param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("CouchDBService getUser: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log("getUserNoAuthentication results:");
+      console.log(results);
+      func_callback(err, results.getUser);
+    });
+};
+
 //Allow an authenticated user to check if another user exists.
 //Use: A recruiter wants to view and submit a developers form at /developer/<dev userid>. This confirms the form is valid.
 CouchDBService.prototype.isUserValid = function(req, username, func_callback){
