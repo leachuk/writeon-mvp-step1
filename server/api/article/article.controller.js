@@ -42,7 +42,7 @@ exports.getArticle = function(req, res, next) {
 	//res.send({Title: 'Server Test Title', BodyText: 'Body text from the server'});
 };
 
-exports.saveArticle = function(req, res) {
+exports.createArticle = function(req, res) {
 	console.log("Article controller, saveArticle");
 	console.log(req.body);
 

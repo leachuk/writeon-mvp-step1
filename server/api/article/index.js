@@ -13,7 +13,8 @@ var acl = authService.acl();
 router.get('/', controller.index);
 router.get('/getarticle/:id', controller.getArticle, authService.checkUserIsAuthorisedModel());
 router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
-router.post('/saveArticle', controller.saveArticle);
+//router.post('/createArticle', authService.checkUserIsAuthorisedUrl(), controller.createArticle);//secure via url works
+router.post('/createArticle', authService.checkUserIsAuthorisedModel(), controller.createArticle);//not secured via model. to fix.
 router.post('/saveComparison', controller.saveComparison);
 //router.post('/insertArticle', controller.insertArticle);
 router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller.listMyArticles);

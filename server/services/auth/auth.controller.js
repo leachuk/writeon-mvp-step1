@@ -94,19 +94,36 @@ AuthService.prototype.initAuthorization = function() {
 };
 
 AuthService.prototype.initUserAuthorization = function() {
+  //https://github.com/OptimalBits/node_acl
+
   //acl.addUserRoles('testuser', 'guest')
   //acl.allow('guest', 'articles', ['edit','view']);
 
   //create roles
-  //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
+  //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase model path and filename. e.g. server/models/recruitunit.job.all.js']')
   //TODO refactor this into a proper model/schema with jugglingDb
-  acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
-  acl.allow('developer',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
+  //TODO specify specific CRUD parameters (get(r), put(c), delete(d), post(u)), i.e. get should be replaced with read
+  //acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
+  //acl.allow('recruiter',['server/models/recruitunit.job.all.js'],['create']);
+
+  acl.allow([
+    {
+      roles:['recruiter'],
+      allows:[
+        {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'], permissions: ['view']},
+        {resources: ['server/models/recruitunit.job.all.js'], permissions: ['view', 'create']}
+      ]
+    }
+  ]);
+
+
+
+  //acl.allow('developer',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
   //acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
 
   //assign users to roles
   acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
-  acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
+  //acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
 };
 
 AuthService.prototype.checkUserIsAuthorisedUrl = function(){
@@ -159,7 +176,9 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
             middleware = true;
         }
 		var username = null;
-		var reqModel = req.result.model.toLowerCase(); //model parameter is required in the model.
+		//var reqModel = req.result.modelType.toLowerCase(); //model parameter is required in the model.
+    var reqModel = req.query.modelType.toLowerCase();
+
 		self.fulldecodetoken(req, res, function(err, result){
 			if(result){
 				console.log("fulldecodetoken result");
@@ -167,25 +186,36 @@ AuthService.prototype.checkUserIsAuthorisedModel = function(){
 				username = result.username;
 			} else {
 				console.log("fulldecodetoken error");
-				console.log(err);
-			}
+				console.log(err);//todo: probably null, check and remove everywhere if needed.
+
+        var error = new Error("Authorisation denied. Insufficient model access privelages"); //todo: do this in checkUserIsAuthorisedUrl check above
+        res.status(403).send(error);
+      }
 		});
 
-		acl.isAllowed(username, reqModel, ['view'], function(err, result){
+
+    //debug to see users permissions.
+    acl.allowedPermissions(username, [reqModel], function(err, permissions){
+      console.log("Allowed permissions for:" + username + ", to access:" + reqModel);
+      console.log(permissions)
+    })
+
+    //TODO: how to deal with one user only having read permission, while another has read and write. how to 'chain' the isAllowed?
+		acl.isAllowed(username, reqModel, ['view', 'create'], function(err, result){
 		    if(result){
-		        console.log("User member is allowed to view articles");
+		        console.log("User member is allowed to access articles");
 		        console.log(result);
-		        //next();
-		        res.send(req.result);
+		        next();
 		    } else {
-		    	console.log("error");
+		    	console.log("view error");
 		    	console.log(err);
+
 		    	var error = new Error("Authorisation denied. Insufficient model access privelages");
-		    	//next(error);
 		    	res.status(403).send(error);
 		    }
 		});
-	}
+
+  }
 };
 
 AuthService.prototype.acl = function() {
