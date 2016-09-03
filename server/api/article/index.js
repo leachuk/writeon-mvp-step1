@@ -7,18 +7,17 @@ var controller = require('./article.controller');
 var router = express.Router();
 
 var authService = require('server/services/auth/auth.controller').AuthService;
-authService.initAuthorization();
+//authService.initAuthorization();
 var acl = authService.acl();
 
 router.get('/', controller.index);
-router.get('/getarticle/:id', controller.getArticle, authService.checkUserIsAuthorisedModel());
-router.get('/listAllUserArticles/:username', controller.listAllUserArticles);
-//router.post('/createArticle', authService.checkUserIsAuthorisedUrl(), controller.createArticle);//secure via url works
-router.post('/createArticle', authService.checkUserIsAuthorisedModel(), controller.createArticle);//not secured via model. to fix.
+router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read'), controller.getArticle);
+router.get('/listAllUserArticles/:username', controller.listAllUserArticles);//todo: secure me
+router.put('/createArticle', authService.checkUserIsAuthorisedOperation('create'), controller.createArticle);
 router.post('/saveComparison', controller.saveComparison);
 //router.post('/insertArticle', controller.insertArticle);
-router.get('/listMyArticles', authService.checkUserIsAuthorisedUrl(), controller.listMyArticles);
-router.get('/listMyTestContent', authService.checkUserIsAuthorisedUrl(), controller.listMyTestContent);
+router.get('/listMyArticles', authService.checkUserIsAuthorisedOperation('read'), controller.listMyArticles);
+router.get('/listMyTestContent', authService.checkUserIsAuthorisedOperation('read'), controller.listMyTestContent);
 router.get('/listByAuthor/:username', controller.listByAuthor); //todo fix authService.checkUserIsAuthorisedUrl(), need to escape url.
 router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle/:id', controller.updateArticle);
