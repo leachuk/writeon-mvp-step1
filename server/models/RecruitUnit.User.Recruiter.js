@@ -26,9 +26,9 @@ var init = function (model, options) {
     email:     	{ type: String},
     displayName:{ type: String},
     jobRole:    { type: String},
-    createdDate:{ type: Number,  default: Date.now },
+    createdDate:{ type: Number,  default: Math.floor(Date.now()/1000) },
     createdDateFormatted: { type: String},
-    lastUpdatedDate: { type: Number,  default: Date.now },
+    lastUpdatedDate: { type: Number,  default: Math.floor(Date.now()/1000) },
     lastUpdatedDateFormatted: { type: String},
     password: {type: String}
   } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
