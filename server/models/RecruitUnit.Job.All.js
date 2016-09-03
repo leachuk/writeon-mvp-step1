@@ -21,7 +21,7 @@ var initCookie = function (setcookie, options) {
       payBracketUpper:  { type: Number},
 	    locationDescription:    { type: String},
       location:         { type: String},
-	    skills: 	        { type: String},
+	    skills: 	        { type: JSON},
 	    authorName: 			{ type: String },
 	    authorEmail:    	{ type: String},
 	    createdDate: 			{ type: Number,  default: Date.now },

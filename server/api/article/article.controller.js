@@ -177,7 +177,7 @@ exports.listMyArticles = function(req, res){
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
   var applicationHandler = require(req.query.modelId);
   var appService = applicationHandler.Service;
-	// TODO. Create a design doc to handle list document query
+	// TODO. Create a design doc to handle list document query. Is this done?
   appService.listMyArticles(req, function(err, result){
 		if(!err){
 			res.send(result);
