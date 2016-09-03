@@ -150,7 +150,7 @@ AuthService.prototype.checkUserIsAuthorisedOperation = function(operation){
         console.log("fulldecodetoken result");
         console.log(result);
         username = result.username;
-        
+
         acl.isAllowed(username, reqParts[1], operation, function(err, res){
           if(res){
             console.log("User member ["+ username +"] is allowed to ["+ operation +"] on ["+ reqParts[1]+"]");
@@ -175,100 +175,6 @@ AuthService.prototype.checkUserIsAuthorisedOperation = function(operation){
 
   }
 };
-
-
-// AuthService.prototype.checkUserIsAuthorisedUrl = function(){
-// 	var self = this;
-// 	var middleware = false;
-// 	return function(req, res, next){
-//         // check if this is a middleware call
-//         if(next){
-//             // only middleware calls would have the "next" argument
-//             middleware = true;
-//         }
-//
-// 		var username = null;
-// 		var reqUriPath = _utils.parseUri(req.url).path;
-// 		var reqParts = reqUriPath.split("/").map(function(n){return n.toLowerCase();});
-//
-// 		self.fulldecodetoken(req, res, function(err, result){
-// 			if(result){
-// 				console.log("fulldecodetoken result");
-// 				console.log(result);
-// 				username = result.username;
-// 			} else {
-// 				console.log("fulldecodetoken error");
-// 				console.log(err);
-// 			}
-// 		});
-//
-// 		acl.isAllowed(username, reqParts[1], ['view'], function(err, res){
-// 		    if(res){
-// 		        console.log("User member is allowed to view articles");
-// 		        console.log(res);
-// 		        next();
-// 		    } else {
-// 		    	console.log("error");
-// 		    	console.log(err);
-// 		    	var error = new Error("Authorisation denied. Insufficient access privelages");
-// 		    	next(error);
-// 		    }
-// 		});
-// 	}
-// };
-
-//todo: Deprecated
-// AuthService.prototype.checkUserIsAuthorisedModel = function(){
-// 	var self = this;
-// 	var middleware = false;
-// 	return function(req, res, next){
-//         // check if this is a middleware call
-//         if(next){
-//             // only middleware calls would have the "next" argument
-//             middleware = true;
-//         }
-// 		var username = null;
-// 		//var reqModel = req.result.modelType.toLowerCase(); //model parameter is required in the model.
-//     var reqModel = req.query.modelType.toLowerCase();
-//
-// 		self.fulldecodetoken(req, res, function(err, result){
-// 			if(result){
-// 				console.log("fulldecodetoken result");
-// 				console.log(result);
-// 				username = result.username;
-// 			} else {
-// 				console.log("fulldecodetoken error");
-// 				console.log(err);//todo: probably null, check and remove everywhere if needed.
-//
-//         var error = new Error("Authorisation denied. Insufficient model access privelages"); //todo: do this in checkUserIsAuthorisedUrl check above
-//         res.status(403).send(error);
-//       }
-// 		});
-//
-//
-//     //debug to see users permissions.
-//     acl.allowedPermissions(username, [reqModel], function(err, permissions){
-//       console.log("Allowed permissions for:" + username + ", to access:" + reqModel);
-//       console.log(permissions)
-//     })
-//
-//     //TODO: how to deal with one user only having read permission, while another has read and write. how to 'chain' the isAllowed?
-// 		acl.isAllowed(username, reqModel, ['view', 'create'], function(err, result){
-// 		    if(result){
-// 		        console.log("User member is allowed to access articles");
-// 		        console.log(result);
-// 		        next();
-// 		    } else {
-// 		    	console.log("view error");
-// 		    	console.log(err);
-//
-// 		    	var error = new Error("Authorisation denied. Insufficient model access privelages");
-// 		    	res.status(403).send(error);
-// 		    }
-// 		});
-//
-//   }
-// };
 
 AuthService.prototype.acl = function() {
 	return acl;
