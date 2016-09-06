@@ -70,7 +70,7 @@ AuthService.prototype.fulldecodetoken = function(req, res, callback) {
     }
   } else {
     console.log("Format is Authorization: Bearer [token]");
-    err = new UnauthorizedError('credentials_bad_format', {
+    err = new UnauthorizedError('credentials_bad_format', { //todo: need to fix exception thrown becuase ReferenceError: UnauthorizedError is not defined. This object needs defining.
       message : 'Format is Authorization: Bearer [token]'
     });
     callback(err,result);
