@@ -29,6 +29,26 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
+  // Add headers to allow remote API calls
+  app.use(function (req, res, next) {
+    // Website you wish to allow to connect
+    //TODO: Add a whitelist array and check that req.headers.origin is in there before setting Access-Control-Allow-Origin.
+    //      This allows us to control who can access the API.
+    if (typeof req.headers.origin != 'undefined'){
+      //console.log("check ORIGIN:" + req.headers.origin);
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    }
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Pass to next layer of middleware
+    next();
+  });
+
   //Set secured routes which require authentication
   app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/things',
                                                                    '/api/users/authenticate',
@@ -39,25 +59,7 @@ module.exports = function(app) {
                                                                    new RegExp('/api/articles/.*'),//temp non secured
                                                                    '/services/couchDbHandler']}));
 
-  // Add headers to allow remote API calls
-  app.use(function (req, res, next) {
-      // Website you wish to allow to connect
-      //TODO: Add a whitelist array and check that req.headers.origin is in there before setting Access-Control-Allow-Origin.
-      //      This allows us to control who can access the API.
-      if (typeof req.headers.origin != 'undefined'){
-        //console.log("check ORIGIN:" + req.headers.origin);
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-      }
-      // Request methods you wish to allow
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-      // Request headers you wish to allow
-      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
-      // Set to true if you need the website to include cookies in the requests sent
-      // to the API (e.g. in case you use sessions)
-      res.setHeader('Access-Control-Allow-Credentials', true);
-      // Pass to next layer of middleware
-      next();
-  });
+
 
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
