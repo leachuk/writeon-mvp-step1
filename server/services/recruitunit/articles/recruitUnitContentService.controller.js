@@ -48,6 +48,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, func_callback)
 	    },
 	    createArticle: function(callback){
 			var articleModelAuth = Model(returnSuccess.cookie);
+      req.body.isPass = true;//todo: continue here by dynamically calculating isPass and isPartialPass based on submitTo users comparison result. the developers search results can then be refactored to simply read the value.
 			articleModelAuth.create(req.body, function(err, result){
         if(!err){
           console.log("RecruitUnitContentService createArticle: success");
@@ -228,7 +229,6 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	});
 };
 
-//Todo: complete this with results of comparison in returned json
 RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callback){
   //var listResultJson = null;
   var listResultArray = [];

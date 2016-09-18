@@ -29,7 +29,9 @@ var initCookie = function (setcookie, options) {
 	    lastUpdatedDate: 	{ type: Number,  default: Math.floor(Date.now()/1000) },
 	    lastUpdatedDateFormatted:{ type: String},
 	    published: 	 			{ type: Boolean, default: false, index: true },
-      submitTo:         { type: String}
+      submitTo:         { type: String},
+      isPass:           { type: Boolean, default: false},
+      isPartialPass:    { type: Boolean, default: false}
 	}
 
 	console.log("returnModelObj");
