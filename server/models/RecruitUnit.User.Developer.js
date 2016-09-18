@@ -21,7 +21,7 @@ var init = function (model, options) {
   var returnModelObj = returnAllData ? { //full model
     id: 		    { type: String},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
-    roles:      { type: String, default: []}, //couchdb requirement
+    roles:      { type: String, default: ["editor"]}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     email:     	{ type: String},
     displayName:{ type: String},
