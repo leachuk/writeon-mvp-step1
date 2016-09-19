@@ -235,6 +235,21 @@ exports.search = function(req, res){
   });
 };
 
+exports.getUserTestResults = function(req, res){
+  console.log("article.controller getUserTestResults");
+  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
+  var applicationHandler = require(req.query.modelId);
+  var appService = applicationHandler.Service;
+
+  appService.getUserTestResults(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 //Is this redundant? Remove.
 //exports.insertArticle = function(req, res){
 //	console.log("in insertArticle");

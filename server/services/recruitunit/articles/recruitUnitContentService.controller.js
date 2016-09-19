@@ -48,7 +48,6 @@ RecruitUnitContentService.prototype.createArticle = function(req, func_callback)
 	    },
 	    createArticle: function(callback){
 			var articleModelAuth = Model(returnSuccess.cookie);
-      req.body.isPass = true;//todo: continue here by dynamically calculating isPass and isPartialPass based on submitTo users comparison result. the developers search results can then be refactored to simply read the value.
 			articleModelAuth.create(req.body, function(err, result){
         if(!err){
           console.log("RecruitUnitContentService createArticle: success");
@@ -323,7 +322,6 @@ RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callb
       console.log(combinedTestResultWithDocList);
       func_callback(null, combinedTestResultWithDocList);
     });
-
   }
 
 };
@@ -419,12 +417,12 @@ RecruitUnitContentService.prototype.search = function(req, func_callback){
         console.log(returnSuccess.cookie);
         console.log(returnSuccess.username);
         var articleModelAuth = Model(returnSuccess.cookie, {returnAll: getAllData});
-        articleModelAuth.all({where: JSON.parse(searchJson)}, function(err, body){
+        articleModelAuth.all({where: JSON.parse(searchJson)}, function(err, searchresults){
           if(!err){
             console.log("success result");
             //optional todo: convert list of full article model to a partial model
 
-            callback(null, body);
+            callback(null, searchresults);
           }else{
             console.log("articleModelAuth error");
             callback(err, null);
@@ -437,6 +435,99 @@ RecruitUnitContentService.prototype.search = function(req, func_callback){
       func_callback(err, results.search);
     });
 };
+
+//get test results for specified user and inject the result into the return data
+RecruitUnitContentService.prototype.getUserTestResults = function(req, func_callback){
+  //var listResultJson = null;
+  //var listResultArray = [];
+  var returnSuccess = null;
+
+  var Model = require(req.param('modelType'));
+  var ComparisonRulesModel = require('server/models/RecruitUnit.ComparisonTest.js');
+  var userEmail = req.param('authorEmail');
+  var requestParams = req.query;
+  var getAllData = requestParams.getAllData;
+
+  var authCookie;
+  var searchJson = '{"authorEmail": "' + userEmail + '"}';
+
+  async.waterfall([
+    authToken,
+    search,
+    getComparisonRulesDocs,
+    injectTestResults
+  ],function (err, result) {
+    // result now equals result of last run function
+    //console.log(result);
+    func_callback(err, result);
+  });
+  function authToken(callback){
+    _authUtils.authenticateToken(req, function(err, result){
+      //console.log("authToken result:");
+      //console.log(result);
+      authCookie = result.cookie;
+      callback(null, result);
+    });
+  }
+  function search(returnSuccess, callback){
+    console.log("RecruitUnitContentService getUserTestResults>search");
+    console.log(authCookie);
+    console.log(returnSuccess.username);
+    var articleModelAuth = Model(authCookie, {returnAll: getAllData});
+    articleModelAuth.all({where: JSON.parse(searchJson)}, function(err, searchresults){
+      if(!err){
+        console.log("success result");
+        callback(null, searchresults);
+      }else{
+        console.log("articleModelAuth error");
+        callback(err, null);
+      }
+    });
+  }
+  function getComparisonRulesDocs(userDocResults, callback){
+    console.log("RecruitUnitContentService getUserTestResults>injectTestResults");
+
+    var _this = this; //so we can re-use internal prototype functions
+    var uniqueSubmitTo = _.uniqBy(userDocResults, 'submitTo');
+
+
+
+    var testSourceAndComparisonDocList = [];
+    async.each(userDocResults, function(value, callback) {
+      //get users unique comparison document
+      var comparisonRulesModelAuth = ComparisonRulesModel(authCookie, {returnAll: true});
+      var comparisonSearchJson = '{"authorName": "' + value.submitTo + '"}';
+      comparisonRulesModelAuth.all({where: JSON.parse(comparisonSearchJson)}, function (err, comparisonDocResults) {
+        if (!err) {
+          console.log("success result");
+          //optional todo: convert list of full article model to a partial model
+
+          callback(null, comparisonDocResults);
+        } else {
+          console.log("articleModelAuth error");
+          callback(err, null);
+        }
+      });
+    });
+  }
+  function injectTestResults(searchResults, callback){
+      req.params.testsourceid = comparisonDocId;
+      req.params.comparisonid =  value.id;
+
+      _this.getTestSourceAndComparisonDocuments(req, function(err, result){
+        if (!err){
+          //console.log(result);
+          testSourceAndComparisonDocList.push(result);
+          callback();
+        } else {
+          console.log(err);
+          //res.send(err);
+          callback(err, null);
+        }
+      });
+  }
+
+}
 
 // ********************************************************************************************************************************** //
 //
