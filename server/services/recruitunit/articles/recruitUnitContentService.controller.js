@@ -441,6 +441,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   //var listResultJson = null;
   //var listResultArray = [];
   var returnSuccess = null;
+  var _this = this; //so we can re-use internal prototype functions
 
   var Model = require(req.param('modelType'));
   var ComparisonRulesModel = require('server/models/RecruitUnit.ComparisonTest.js');
@@ -450,6 +451,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
 
   var authCookie;
   var searchJson = '{"authorEmail": "' + userEmail + '"}';
+  var comparisonDocListArray = [];
 
   async.waterfall([
     authToken,
@@ -487,11 +489,6 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   function getComparisonRulesDocs(userDocResults, callback){
     console.log("RecruitUnitContentService getUserTestResults>injectTestResults");
 
-    var _this = this; //so we can re-use internal prototype functions
-    var uniqueSubmitTo = _.uniqBy(userDocResults, 'submitTo');
-
-
-
     var testSourceAndComparisonDocList = [];
     async.each(userDocResults, function(value, callback) {
       //get users unique comparison document
@@ -499,20 +496,25 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
       var comparisonSearchJson = '{"authorName": "' + value.submitTo + '"}';
       comparisonRulesModelAuth.all({where: JSON.parse(comparisonSearchJson)}, function (err, comparisonDocResults) {
         if (!err) {
-          console.log("success result");
-          //optional todo: convert list of full article model to a partial model
-
-          callback(null, comparisonDocResults);
+          console.log("comparisonRulesModelAuth success result");
+          if (comparisonDocResults.length > 0) {
+            comparisonDocListArray.push(comparisonDocResults[0]);//force return first item in case there are multiple comparison documents returned
+          }
+          callback();
         } else {
           console.log("articleModelAuth error");
           callback(err, null);
         }
       });
+    }, function (err) {
+      if (err) { callback(err, null); }
+      var uniqueComparisonDocListArray = _.uniqBy(comparisonDocListArray, 'authorName');
+      callback(null, userDocResults, uniqueComparisonDocListArray);
     });
   }
-  function injectTestResults(searchResults, callback){
-      req.params.testsourceid = comparisonDocId;
-      req.params.comparisonid =  value.id;
+  function injectTestResults(testSearchResults, comparisonDocSearchResults, callback){
+      //req.params.testsourceid = comparisonDocId;
+      //req.params.comparisonid =  value.id;
 
       _this.getTestSourceAndComparisonDocuments(req, function(err, result){
         if (!err){
