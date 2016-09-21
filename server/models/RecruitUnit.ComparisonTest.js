@@ -19,7 +19,7 @@ var initCookie = function (setcookie, options) {
     locationDescription: { type: JSON   },
     payBracketLower:  { type: JSON },
     skills: 	        { type: JSON },
-    authorName: 			{ type: String },
+    authorEmail: 			{ type: String },
     published:        { type: Boolean },
     createdDate: 			{ type: Number,  default: Date.now }
   }

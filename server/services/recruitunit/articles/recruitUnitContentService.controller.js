@@ -10,7 +10,6 @@ var async = require('async');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-var utilsService = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;//todo: delete? appears duplicate of below
 var recruitUnitUtils = require('server/services/recruitunit/utils/RecruitUnitUtilityService.controller').Service;
 
 //var UserModel = require('server/models/User');
@@ -493,7 +492,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     async.each(userDocResults, function(value, callback) {
       //get users unique comparison document
       var comparisonRulesModelAuth = ComparisonRulesModel(authCookie, {returnAll: true});
-      var comparisonSearchJson = '{"authorName": "' + value.submitTo + '"}';
+      var comparisonSearchJson = '{"authorEmail": "' + value.submitTo + '"}';
       comparisonRulesModelAuth.all({where: JSON.parse(comparisonSearchJson)}, function (err, comparisonDocResults) {
         if (!err) {
           console.log("comparisonRulesModelAuth success result");
@@ -516,22 +515,31 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     var testResult = [];
 
     async.each(testSearchResults, function(value, callback) {
-      recruitUnitUtils.compare(comparisonDocSearchResults[0].toJSON(), value.toJSON(), function (err, result) {
-        console.log("compare results:")
-        console.log(result);
-        _.forEach(result, function (value, key) {
-          console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+      var comparisonJsonArray = [];
+      for(var i=0; i < comparisonDocSearchResults.length; i++){
+        comparisonJsonArray.push(comparisonDocSearchResults[i].toJSON());//convert from model schema object to JSON object for lodash
+      }
+      var comparisonJson = _.find(comparisonJsonArray,{ 'authorEmail': value.submitTo })
+      if (comparisonJson !== undefined) {
+        recruitUnitUtils.compare(comparisonJson, value.toJSON(), function (err, result) {
+          console.log("compare results:")
+          console.log(result);
+          _.forEach(result, function (value, key) {
+            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          });
+          if (!err) {
+            //console.log(result);
+            //callback(null, result);
+            testResult.push(result);
+            callback();
+          } else {
+            console.log(err);
+            callback(err, null);
+          }
         });
-        if (!err) {
-          //console.log(result);
-          //callback(null, result);
-          testResult.push(result);
-          callback();
-        } else {
-          console.log(err);
-          callback(err, null);
-        }
-      });
+      } else {
+        callback();
+      }
     }, function (err) {
       if (err) { callback(err, null); }
 
