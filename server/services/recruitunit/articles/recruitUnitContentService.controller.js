@@ -10,8 +10,8 @@ var async = require('async');
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-var utilsService = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
-var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
+var utilsService = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;//todo: delete? appears duplicate of below
+var recruitUnitUtils = require('server/services/recruitunit/utils/RecruitUnitUtilityService.controller').Service;
 
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
@@ -513,20 +513,36 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     });
   }
   function injectTestResults(testSearchResults, comparisonDocSearchResults, callback){
-      //req.params.testsourceid = comparisonDocId;
-      //req.params.comparisonid =  value.id;
+    var testResult = [];
 
-      _this.getTestSourceAndComparisonDocuments(req, function(err, result){
-        if (!err){
+    async.each(testSearchResults, function(value, callback) {
+      recruitUnitUtils.compare(comparisonDocSearchResults[0].toJSON(), value.toJSON(), function (err, result) {
+        console.log("compare results:")
+        console.log(result);
+        _.forEach(result, function (value, key) {
+          console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+        });
+        if (!err) {
           //console.log(result);
-          testSourceAndComparisonDocList.push(result);
+          //callback(null, result);
+          testResult.push(result);
           callback();
         } else {
           console.log(err);
-          //res.send(err);
           callback(err, null);
         }
       });
+    }, function (err) {
+      if (err) { callback(err, null); }
+
+      var combinedTestResultWithDocList = [];
+      for (var i=0; i < testSearchResults.length; i++){
+        var testResultItem = _.find(testResult,['docId',testSearchResults[i].id]);
+        combinedTestResultWithDocList.push({"document": testSearchResults[i], "testResult": testResultItem});
+      }
+      console.log(combinedTestResultWithDocList);
+      callback(null, combinedTestResultWithDocList);
+    });
   }
 
 }
