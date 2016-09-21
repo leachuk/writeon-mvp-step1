@@ -32,10 +32,10 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   var sourceDocId = comparisonJson.id;
   //loop over sourceJson and get the keys
   _.forEach(sourceJson, function(value, key) {
-    console.log("key:" + key, "value:" + value);
+    //console.log("key:" + key, "value:" + value);
     var foundJson = _.get(comparisonJson, key);
     if (foundJson !== undefined && sourceJson[key]['rule'] !== undefined && !sourceJson[key]['disabled']) {
-      console.log("[" + key + "]:" + foundJson + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
+      //console.log("[" + key + "]:" + foundJson + ",rule[" + sourceJson[key]['rule'] + "], compare to source [" + sourceJson[key]['value'] + "]");
 
       var sourceRule = sourceJson[key]['rule'];
       var sourceParam = key;

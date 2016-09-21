@@ -51,7 +51,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, func_callback)
         if(!err){
           console.log("RecruitUnitContentService createArticle: success");
           console.log(result);
-          var successReturn = { //ensure succees param returned to client
+          var successReturn = { //ensure success param returned to client
             data: result,
             success: true
           };
@@ -486,7 +486,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     });
   }
   function getComparisonRulesDocs(userDocResults, callback){
-    console.log("RecruitUnitContentService getUserTestResults>injectTestResults");
+    console.log("RecruitUnitContentService getUserTestResults > getComparisonRulesDocs");
 
     var testSourceAndComparisonDocList = [];
     async.each(userDocResults, function(value, callback) {
@@ -512,21 +512,23 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     });
   }
   function injectTestResults(testSearchResults, comparisonDocSearchResults, callback){
+    console.log("RecruitUnitContentService getUserTestResults > injectTestResults");
+
     var testResult = [];
 
-    async.each(testSearchResults, function(value, callback) {
+    async.each(testSearchResults, function(testDocItem, callback) {
       var comparisonJsonArray = [];
       for(var i=0; i < comparisonDocSearchResults.length; i++){
         comparisonJsonArray.push(comparisonDocSearchResults[i].toJSON());//convert from model schema object to JSON object for lodash
       }
-      var comparisonJson = _.find(comparisonJsonArray,{ 'authorEmail': value.submitTo })
+      var comparisonJson = _.find(comparisonJsonArray,{ 'authorEmail': testDocItem.submitTo })
       if (comparisonJson !== undefined) {
-        recruitUnitUtils.compare(comparisonJson, value.toJSON(), function (err, result) {
-          console.log("compare results:")
-          console.log(result);
-          _.forEach(result, function (value, key) {
-            console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
-          });
+        recruitUnitUtils.compare(comparisonJson, testDocItem.toJSON(), function (err, result) {
+          // console.log("compare results:")
+          // console.log(result);
+          // _.forEach(result, function (value, key) {
+          //   console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+          // });
           if (!err) {
             //console.log(result);
             //callback(null, result);
