@@ -557,6 +557,70 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
 
 }
 
+RecruitUnitContentService.prototype.createJobSubmission = function(req, func_callback){
+  console.log("in RecruitUnitContentService, createArticle");
+  console.log(req.body);
+
+  var JobModel = require("server/models/RecruitUnit.Job.All.js");
+
+  var returnSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnSuccess = result;
+          callback(err, result);
+        });
+      },
+      checkSubmitToUserExists: function(callback){
+        var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+        var userModel = UserModel(returnSuccess.cookie, {returnAll: true});
+        userModel.all({where: {userGuid: req.body.submitTo}}, function(err, result){
+          if (!err && result != null && result.length > 0) {
+            console.log("checkSubmitToUserExists: success");
+            console.log(result);
+            var returnMessage = { //ensure success param returned to client
+              success: true
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("checkSubmitToUserExists: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      },
+      createArticle: function(callback){
+        var articleModelAuth = JobModel(returnSuccess.cookie);
+        articleModelAuth.create(req.body, function(err, result){
+          if(!err){
+            console.log("RecruitUnitContentService createArticle: success");
+            console.log(result);
+            var successReturn = { //ensure success param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, successReturn);
+          }else{
+            console.log("createArticle error");
+            callback(err, null);
+          }
+        });
+
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, results.createArticle);
+    });
+};
+
 // ********************************************************************************************************************************** //
 //
 // Comparison Services
@@ -628,48 +692,6 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
             console.log("RecruitUnitContentService createComparison: success");
             console.log(result);
             var successReturn = { //ensure succees param returned to client
-              data: result,
-              success: true
-            };
-            callback(null, successReturn);
-          }else{
-            console.log("error");
-            callback(err, null);
-          }
-        });
-
-      }
-    },
-    function(err, results) {
-      console.log(results);
-      func_callback(err, results.createArticle);
-    });
-};
-
-RecruitUnitContentService.prototype.createJobSubmission = function(req, func_callback){
-  console.log("in RecruitUnitContentService, createArticle");
-  console.log(req.body);
-
-  var JobModel = require("server/models/RecruitUnit.Job.All.js");
-
-  var returnSuccess = null;
-
-  async.series({
-      authToken: function(callback){
-        _authUtils.authenticateToken(req, function(err, result){
-          //console.log("authToken result:");
-          //console.log(result);
-          returnSuccess = result;
-          callback(err, result);
-        });
-      },
-      createArticle: function(callback){
-        var articleModelAuth = JobModel(returnSuccess.cookie);
-        articleModelAuth.create(req.body, function(err, result){
-          if(!err){
-            console.log("RecruitUnitContentService createArticle: success");
-            console.log(result);
-            var successReturn = { //ensure success param returned to client
               data: result,
               success: true
             };
