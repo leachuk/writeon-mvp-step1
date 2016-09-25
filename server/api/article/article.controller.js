@@ -237,8 +237,8 @@ exports.search = function(req, res){
 
 exports.getUserTestResults = function(req, res){
   console.log("article.controller getUserTestResults");
-  console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  console.log("setting app handler to use methods defined by controller:" + req.query.controllerId);
+  var applicationHandler = require(req.query.controllerId);
   var appService = applicationHandler.Service;
 
   appService.getUserTestResults(req, function(err, result){

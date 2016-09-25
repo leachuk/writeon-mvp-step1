@@ -442,7 +442,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   var returnSuccess = null;
   var _this = this; //so we can re-use internal prototype functions
 
-  var Model = require(req.param('modelType'));
+  var Model = require('server/models/RecruitUnit.Job.All.js');
   var ComparisonRulesModel = require('server/models/RecruitUnit.ComparisonTest.js');
   var userEmail = req.param('authorEmail');
   var requestParams = req.query;
