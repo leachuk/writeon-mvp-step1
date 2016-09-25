@@ -23,6 +23,7 @@ var init = function (model, options) {
     name:       { type: String}, //couchdb requirement
     roles:      { type: String, default: []}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
+    userGuid:   { type: String},
     email:     	{ type: String},
     displayName:{ type: String},
     jobRole:    { type: String},
@@ -36,6 +37,7 @@ var init = function (model, options) {
     name:       { type: String}, //couchdb requirement
     roles:      { type: String, default: []}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
+    userGuid:   { type: String},
     email:     	{ type: String},
     displayName:{ type: String}
   };
