@@ -646,6 +646,48 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
     });
 };
 
+RecruitUnitContentService.prototype.createJobSubmission = function(req, func_callback){
+  console.log("in RecruitUnitContentService, createArticle");
+  console.log(req.body);
+
+  var JobModel = require("server/models/RecruitUnit.Job.All.js");
+
+  var returnSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnSuccess = result;
+          callback(err, result);
+        });
+      },
+      createArticle: function(callback){
+        var articleModelAuth = JobModel(returnSuccess.cookie);
+        articleModelAuth.create(req.body, function(err, result){
+          if(!err){
+            console.log("RecruitUnitContentService createArticle: success");
+            console.log(result);
+            var successReturn = { //ensure success param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, successReturn);
+          }else{
+            console.log("error");
+            callback(err, null);
+          }
+        });
+
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, results.createArticle);
+    });
+};
+
 
 exports.Service = new RecruitUnitContentService;
 

@@ -57,6 +57,7 @@ module.exports = function(app) {
                                                                    '/api/auths/checktoken',
                                                                    '/api/auths/getuser',
                                                                    new RegExp('/api/articles/.*'),//temp non secured
+                                                                   new RegExp('/api/recruitunit/.*'),//temp non secured
                                                                    '/services/couchDbHandler']}));
 
 

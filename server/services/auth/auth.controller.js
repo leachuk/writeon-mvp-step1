@@ -112,7 +112,7 @@ AuthService.prototype.initUserAuthorization = function() {
       roles:['recruiter'],
       allows:[
         {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'], permissions: ['read']},
-        {resources: ['createarticle'], permissions: ['create']}
+        {resources: ['createarticle', 'createjobsubmission'], permissions: ['create']}
       ]
     },
     {
@@ -126,7 +126,9 @@ AuthService.prototype.initUserAuthorization = function() {
 
   //assign users to roles
   acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
+  acl.addUserRoles('recruiter2@gmail.com', 'recruiter');
   acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
+  acl.addUserRoles('developer2@gmail.com', 'developer');
 };
 
 //operation param maps to the role permissions of create, read, update, delete. Can be passed as an array i.e. ['create','read'], or single string 'create'
