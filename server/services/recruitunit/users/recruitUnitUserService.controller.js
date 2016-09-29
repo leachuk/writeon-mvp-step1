@@ -187,6 +187,55 @@ RecruitUnitUserService.prototype.isUserValid = function(req, username, func_call
     });
 };
 
+RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_callback){
+  console.log("RecruitUnitUserService getUserFromGuid, userguid: " + userguid);
+
+  var returnSuccess = null;
+  async.series({
+    authToken: function(callback){
+      _authUtils.authenticateToken(req, function(err, result){
+        //console.log("authToken result:");
+        //console.log(result);
+        returnSuccess = result; //decoded json token
+        callback(err, result);
+      });
+    },
+    getUserFromGuid: function(callback){
+      var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+      var userModelAuthenticated = UserModel(returnSuccess.cookie, {returnAll: true});
+      userModelAuthenticated.all({where: {userGuid: userguid}}, function(err, result){
+        if (!err && result != null && result.length > 0) {
+          console.log("getUserFromGuid: success");
+          console.log(result);
+          var resultData = result[0];
+          var returnMessage = { //ensure success param returned to client
+            "success": true,
+            "data": {
+              "displayName" : resultData.displayName,
+              "jobRole" : resultData.jobRole,
+              "userGuid" : resultData.userGuid
+            }
+          };
+          callback(null, returnMessage);
+        } else {
+          console.log("checkSubmitToUserExists: error");
+          var returnMessage = {
+            "success": false,
+            "data": err,
+            "message": "UserModel error"
+          }
+          callback(returnMessage, null);
+        }
+      });
+    }
+  },
+  function(err, results) {
+    console.log("getUser results:");
+    console.log(results);
+    func_callback(err, results.getUserFromGuid);
+  });
+};
+
 exports.Service = new RecruitUnitUserService;
 
 
