@@ -130,6 +130,7 @@ exports.signin = function(req, res){
             ok: result.ok,
             roles: result.roles,
             jobRole: getUserResult.data.jobRole,
+            isComparisonFormEnabled: getUserResult.data.isComparisonFormEnabled,
             ip: clientip };
           // We are encoding the profile inside the token
           var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });

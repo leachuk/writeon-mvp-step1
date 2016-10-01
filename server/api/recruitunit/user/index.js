@@ -11,5 +11,6 @@ authService.initUserAuthorization();
 //var acl = authService.acl();
 
 router.get('/getuserdetails/:userguid', authService.checkUserIsAuthorisedOperation('read'),controller.getUserFromGuid);//secured through acl
+router.post('/updateuser/:useremail', authService.checkUserIsAuthorisedOperation('update'),controller.updateUser);
 
 module.exports = router;

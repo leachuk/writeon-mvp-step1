@@ -31,7 +31,8 @@ var init = function (model, options) {
     createdDateFormatted: { type: String},
     lastUpdatedDate: { type: Number,  default: Math.floor(Date.now()/1000) },
     lastUpdatedDateFormatted: { type: String},
-    password: {type: String}
+    password: {type: String},
+    isComparisonFormEnabled : {type: Boolean, default : false }
   } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
     id: 		    { type: String}, //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
@@ -39,7 +40,8 @@ var init = function (model, options) {
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     userGuid:   { type: String},
     email:     	{ type: String},
-    displayName:{ type: String}
+    displayName:{ type: String},
+    isComparisonFormEnabled : {type: Boolean, default : false }
   };
 
   console.log("returnModelObj");

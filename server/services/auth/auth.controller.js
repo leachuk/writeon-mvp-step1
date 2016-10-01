@@ -119,6 +119,7 @@ AuthService.prototype.initUserAuthorization = function() {
       roles:['developer'],
       allows:[
         {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'], permissions: ['read']},
+        {resources: ['updateuser'], permissions: ['update']},
         {resources: ['createarticle'], permissions: ['create']}
       ]
     }
@@ -162,8 +163,8 @@ AuthService.prototype.checkUserIsAuthorisedOperation = function(operation){
             console.log("Error. User member ["+ username +"] does not have permission to ["+ operation +"] on ["+ reqParts[1]+"]");
 
             var error = new Error("Authorisation denied. Insufficient access privelages");
-            res.status(403).send(error);
-            //next(error);
+            //res.status(403).send(error);
+            next(error);
           }
         });
       } else {

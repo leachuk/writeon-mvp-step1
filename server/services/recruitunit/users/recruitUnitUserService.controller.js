@@ -89,57 +89,8 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
 
 };
 
-RecruitUnitUserService.prototype.getUser = function(req, username, func_callback){
-  console.log("RecruitUnitUserService getUser, username: " + username);
 
-  var returnAuthToken = null;
-  async.series({
-      authToken: function(callback){
-        _authUtils.authenticateToken(req, function(err, result){
-          //console.log("authToken result:");
-          //console.log(result);
-          returnAuthToken = result; //decoded json token
-          callback(err, result);
-        });
-      },
-      getUser: function(callback){
-        //check the requested username is the authenticated user. May need to change, but should provide sufficient security
-        //if (returnAuthToken.username == username) {
-        var userModelAuth = UserModel(null, null);
-        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
-          if (!err) {
-            console.log("RecruitUnitUserService getUser: success");
-            console.log(result);
-            var returnMessage = { //ensure success param returned to client
-              data: result,
-              success: true
-            };
-            callback(null, returnMessage);
-          } else {
-            console.log("CouchDBService getUser: error");
-            var returnMessage = {
-              "success": false,
-              "data": err,
-              "message": "UserModel error"
-            }
-            callback(returnMessage, null);
-          }
-        });
-        //}else{
-        //  var returnMessage = {
-        //    "success": false,
-        //    "message": "Unauthorised request for user details"
-        //  }
-        //  callback(returnMessage, null);
-        //}
-      }
-    },
-    function(err, results) {
-      console.log("getUser results:");
-      console.log(results);
-      func_callback(err, results.getUser);
-    });
-};
+
 
 //Allow an authenticated user to check if another user exists.
 //Use: A recruiter wants to view and submit a developers form at /developer/<dev userid>. This confirms the form is valid.
@@ -234,6 +185,76 @@ RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_
     console.log(results);
     func_callback(err, results.getUserFromGuid);
   });
+};
+
+RecruitUnitUserService.prototype.updateUser = function(req, username, updateData, func_callback){
+  console.log("couchdb service isUserValid, username: " + username);
+
+  var returnSuccess = null;
+  var userUpdateModel = null;
+
+  async.series({
+      //ensure current request has authentication token
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          //console.log("authToken result:");
+          //console.log(result);
+          returnSuccess = result; //decoded json token
+          callback(err, result);
+        });
+      },
+      getUser: function(callback){
+        if(returnSuccess.jobRole == "recruiter"){
+          var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+        }else if(returnSuccess.jobRole == "developer"){
+          var UserModel = require('server/models/RecruitUnit.User.Developer.js');
+        }
+        var userModelAuth = UserModel(returnSuccess.cookie, {returnAll: true});
+        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+          if (!err && result != null) {
+            console.log("RecruitUnitUserService getUser: success");
+            console.log(result);
+            userUpdateModel = result;
+            callback(null, returnMessage);
+          } else {
+            console.log("RecruitUnitUserService updateUser: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      },
+      updateUser: function(callback){
+        console.log("RecruitUnitUserService updateUser result");
+        console.log(userUpdateModel);
+        console.log("updateData")
+        console.log(updateData);
+        console.log(typeof updateData);
+        userUpdateModel.updateAttributes(updateData, function(err, body){
+          if(!err){
+            console.log("RecruitUnitUserService updateUser success");
+            //console.log(body);
+            var successReturn = { //ensure succees param returned to client
+              data: body,
+              success: true
+            };
+            callback(null, successReturn);
+          }else{
+            console.log("RecruitUnitUserService updateUser get error");
+            callback(err, null);
+          }
+        });
+
+      }
+    },
+    function(err, results) {
+      console.log("RecruitUnitUserService updateUser results:");
+      console.log(results);
+      func_callback(err, results.updateUser);
+    });
 };
 
 exports.Service = new RecruitUnitUserService;

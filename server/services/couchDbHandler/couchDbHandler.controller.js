@@ -163,6 +163,7 @@ CouchDBService.prototype.getUser = function(req, username, func_callback){
   });
 };
 
+//used in signin method, at server/api/user/user.controller.js
 CouchDBService.prototype.getUserNoAuthentication = function(req, username, func_callback){
   console.log("couchdb service getUserNoAuthentication, username: " + username);
 

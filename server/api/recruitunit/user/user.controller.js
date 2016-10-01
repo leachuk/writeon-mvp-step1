@@ -20,3 +20,17 @@ exports.getUserFromGuid = function(req, res){
   });
 };
 
+exports.updateUser = function(req, res){
+  console.log("in recruitUnit updateUser");
+  var useremail = req.param("useremail");
+  var updateData = req.body; //in POST body
+
+  recruitUnitUserService.updateUser(req, useremail, updateData, function(err, result){
+    if (!err){
+      res.send(result);
+    } else {
+      res.send(err);
+    }
+  });
+};
+
