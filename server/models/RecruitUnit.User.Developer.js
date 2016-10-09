@@ -21,7 +21,7 @@ var init = function (model, options) {
   var returnModelObj = returnAllData ? { //full model
     id: 		    { type: String},//TODO:use dbUtils to convert to valid name //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
-    roles:      { type: String, default: ["editor"]}, //couchdb requirement
+    roles:      { type: String, default: ["editor", "developer"]}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     userGuid:   { type: String},
     email:     	{ type: String},
@@ -36,7 +36,7 @@ var init = function (model, options) {
   } : { //partial model. Shouldn't be needed as the full model doesn't contain large data sets
     id: 		    { type: String}, //couchdb user document requirement
     name:       { type: String}, //couchdb requirement
-    roles:      { type: String, default: []}, //couchdb requirement
+    roles:      { type: String, default: ["editor", "developer"]}, //couchdb requirement
     type:       { type: String, default: "user"}, //couchdb requirement. Must be 'user'
     userGuid:   { type: String},
     email:     	{ type: String},

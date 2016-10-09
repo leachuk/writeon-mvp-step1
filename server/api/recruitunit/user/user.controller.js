@@ -4,9 +4,57 @@ require('rootpath')();
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
+var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchService = couchDbHandlers.Service;
 var recruitUnitHandler = require('server/services/recruitunit/users/recruitUnitUserService.controller');
 var recruitUnitUserService = recruitUnitHandler.Service;
 
+//generates jwt token to be stored on the client
+exports.signin = function(req, res){
+  console.log("in signin");
+  var username = req.body.username;
+  var password = req.body.password;
+  var clientip = req.ip;
+  var returnMessage = {};
+
+  couchService.authenticate(username, password, function(err, result, headers){
+    if (!err){
+      console.log("success");
+      console.log(headers);
+      var cookieheader = headers['set-cookie'];
+      var userObject = result;
+
+      //todo: refactor this to use proper async serial flow control rather than callback hell
+      //using non authed method as already within an authenticated call
+      recruitUnitUserService.getUserNoAuthentication(req, userObject, function (err, getUserResult) {
+        if (!err) {
+          //object passed back to client side as token. Currently jwt token is only signed, not encrypted, so the payload can be openly read. DO NOT place secure data in here.
+          var profile = {
+            username: userObject.name,
+            cookie: cookieheader[0],
+            ok: userObject.ok,
+            roles: userObject.roles,
+            isComparisonFormEnabled: getUserResult.data.isComparisonFormEnabled,
+            ip: clientip };
+          // We are encoding the profile inside the token
+          var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 5 });
+
+          returnMessage["success"] = true;
+          returnMessage["token"] = token;
+
+          res.send(returnMessage);
+        } else {
+          res.send(err);
+        }
+      });
+    }else{
+      console.log("error:" + err);
+      returnMessage["success"] = false;
+      returnMessage["message"] = err.reason;
+      res.status(401).send(returnMessage);
+    }
+  });
+};
 exports.getUserFromGuid = function(req, res){
   console.log("in recruitUnit getUserFromGuid");
   var userguid = req.param("userguid");

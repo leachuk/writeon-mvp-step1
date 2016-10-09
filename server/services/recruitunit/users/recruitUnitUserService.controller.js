@@ -22,6 +22,44 @@ function RecruitUnitUserService(){};
 //
 // ********************************************************************************************************************************** //
 
+RecruitUnitUserService.prototype.getUserNoAuthentication = function(req, userObj, func_callback){
+  console.log("couchdb service getUserNoAuthentication, username: " + userObj.name);
+
+  async.series({
+      getUser: function(callback){
+        //check the requested username is the authenticated user. May need to change, but should provide sufficient security
+        //if (returnAuthToken.username == username) {
+        var DeveloperUserModel = require('server/models/RecruitUnit.User.Developer.js');
+        var RecruiterUserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+        var userModelAuth = userObj.roles.indexOf('developer') === -1 ? RecruiterUserModel(null, null) : DeveloperUserModel(null, null);
+        userModelAuth.find("org.couchdb.user:" + userObj.name, function (err, result) {
+          if (!err) {
+            console.log("RecruitUnitUserService getUser: success");
+            console.log(result);
+            var returnMessage = { //ensure success param returned to client
+              data: result,
+              success: true
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("CouchDBService getUser: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log("getUserNoAuthentication results:");
+      console.log(results);
+      func_callback(err, results.getUser);
+    });
+};
+
 RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
 //When a user signs up, create the user
   var returnMessage = {};
