@@ -26,7 +26,6 @@ var init = function (model, options) {
     userGuid:   { type: String},
     email:     	{ type: String},
     displayName:{ type: String},
-    jobRole:    { type: String},
     createdDate:{ type: Number,  default: Math.floor(Date.now()/1000) },
     createdDateFormatted: { type: String},
     lastUpdatedDate: { type: Number,  default: Math.floor(Date.now()/1000) },

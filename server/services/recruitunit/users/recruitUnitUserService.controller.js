@@ -73,9 +73,9 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
     if (isValidKeyResult){
       async.series({
           createUser: function(callback){
-            if(req.body.jobRole == "recruiter"){
+            if(returnSuccess.roles.indexOf("recruiter") != -1){
               var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-            }else if(req.body.jobRole == "developer"){
+            }else if(returnSuccess.roles.indexOf("developer") != -1){
               var UserModel = require('server/models/RecruitUnit.User.Developer.js');
             }
             var userModel = UserModel(req.body, {});
@@ -201,7 +201,7 @@ RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_
             "success": true,
             "data": {
               "displayName" : resultData.displayName,
-              "jobRole" : resultData.jobRole,
+              "roles" : resultData.roles,
               "userGuid" : resultData.userGuid
             }
           };
@@ -242,9 +242,9 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
         });
       },
       getUser: function(callback){
-        if(returnSuccess.jobRole == "recruiter"){
+        if(returnSuccess.roles.indexOf("recruiter") != -1){
           var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-        }else if(returnSuccess.jobRole == "developer"){
+        }else if(returnSuccess.roles.indexOf("developer") != -1){
           var UserModel = require('server/models/RecruitUnit.User.Developer.js');
         }
         var userModelAuth = UserModel(returnSuccess.cookie, {returnAll: true});
