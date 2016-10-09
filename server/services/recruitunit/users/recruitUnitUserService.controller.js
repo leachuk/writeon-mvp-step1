@@ -1,6 +1,7 @@
 'use strict';
 
 require('rootpath')()
+var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var config = require('server/config/environment');
 //var couchnano = require("nano")(config.couchuri);
@@ -228,7 +229,7 @@ RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_
 RecruitUnitUserService.prototype.updateUser = function(req, username, updateData, func_callback){
   console.log("couchdb service isUserValid, username: " + username);
 
-  var returnSuccess = null;
+  var returnTokenSuccess = null;
   var userUpdateModel = null;
 
   async.series({
@@ -237,17 +238,17 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
         _authUtils.authenticateToken(req, function(err, result){
           //console.log("authToken result:");
           //console.log(result);
-          returnSuccess = result; //decoded json token
+          returnTokenSuccess = result; //decoded json token
           callback(err, result);
         });
       },
       getUser: function(callback){
-        if(returnSuccess.roles.indexOf("recruiter") != -1){
+        if(returnTokenSuccess.roles.indexOf("recruiter") != -1){
           var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-        }else if(returnSuccess.roles.indexOf("developer") != -1){
+        }else if(returnTokenSuccess.roles.indexOf("developer") != -1){
           var UserModel = require('server/models/RecruitUnit.User.Developer.js');
         }
-        var userModelAuth = UserModel(returnSuccess.cookie, {returnAll: true});
+        var userModelAuth = UserModel(returnTokenSuccess.cookie, {returnAll: true});
         userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
           if (!err && result != null) {
             console.log("RecruitUnitUserService getUser: success");
@@ -275,8 +276,14 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
           if(!err){
             console.log("RecruitUnitUserService updateUser success");
             //console.log(body);
-            var successReturn = { //ensure succees param returned to client
+            var updatedUserToken = returnTokenSuccess;
+            returnTokenSuccess.isComparisonFormEnabled = body.isComparisonFormEnabled;
+            // We are encoding the profile inside the token
+            var token = jwt.sign(updatedUserToken, req.app.get('secret'), { expiresInMinutes: 60 * 5 });//recreate the user profile with the updated attributes for sending and saving on the client.
+
+            var successReturn = { //ensure success param returned to client
               data: body,
+              token: token,
               success: true
             };
             callback(null, successReturn);
