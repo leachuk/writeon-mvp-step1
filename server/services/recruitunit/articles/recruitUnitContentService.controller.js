@@ -449,7 +449,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   var getAllData = requestParams.getAllData;
 
   var authCookie;
-  var searchJson = '{"authorEmail": "' + userEmail + '"}';
+  var searchJson = req.param('searchJson');//todo: need to debug here to make sure its returning the correct json
   var comparisonDocListArray = [];
 
   async.waterfall([
@@ -598,6 +598,8 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
       },
       createArticle: function(callback){
         var articleModelAuth = JobModel(returnSuccess.cookie);
+        //swap out user guid for their emil address
+        req.body.submitTo = "developer2@gmail.com";
         articleModelAuth.create(req.body, function(err, result){
           if(!err){
             console.log("RecruitUnitContentService createArticle: success");
