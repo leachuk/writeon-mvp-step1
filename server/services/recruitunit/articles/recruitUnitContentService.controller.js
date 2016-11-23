@@ -11,6 +11,7 @@ var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.con
 var couchService = couchDbHandlers.Service;
 
 var recruitUnitUtils = require('server/services/recruitunit/utils/RecruitUnitUtilityService.controller').Service;
+var recruitUnitUserUtils = require('server/services/recruitunit/users/RecruitUnitUserService.controller').Service;
 
 //var UserModel = require('server/models/User');
 var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
@@ -455,6 +456,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   async.waterfall([
     authToken,
     search,
+    getUserEmailFromGuid,
     getComparisonRulesDocs,
     injectTestResults
   ],function (err, result) {
@@ -485,14 +487,21 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
       }
     });
   }
-  function getComparisonRulesDocs(userDocResults, callback){
+  function getUserEmailFromGuid(userDocResults, callback){
+    recruitUnitUserUtils.getUserFromGuidNoAuth(userDocResults[0].submitTo, function(err, result){
+      if(!err){
+        callback(null, userDocResults, result.data.email);
+      }else{
+        console.log(err);
+      }
+    });
+  }
+  function getComparisonRulesDocs(userDocResults, userEmail, callback){
     console.log("RecruitUnitContentService getUserTestResults > getComparisonRulesDocs");
-
-    var testSourceAndComparisonDocList = [];
-    async.each(userDocResults, function(value, callback) {
+    async.each(userDocResults, function(value, callback) { //loop over userDocResults
       //get users unique comparison document
       var comparisonRulesModelAuth = ComparisonRulesModel(authCookie, {returnAll: true});
-      var comparisonSearchJson = '{"authorEmail": "' + value.submitTo + '"}';
+      var comparisonSearchJson = '{"authorEmail": "' + userEmail + '"}';
       comparisonRulesModelAuth.all({where: JSON.parse(comparisonSearchJson)}, function (err, comparisonDocResults) {
         if (!err) {
           console.log("comparisonRulesModelAuth success result");
@@ -508,10 +517,10 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     }, function (err) {
       if (err) { callback(err, null); }
       var uniqueComparisonDocListArray = _.uniqBy(comparisonDocListArray, 'authorName');
-      callback(null, userDocResults, uniqueComparisonDocListArray);
+      callback(null, userEmail, userDocResults, uniqueComparisonDocListArray);
     });
   }
-  function injectTestResults(testSearchResults, comparisonDocSearchResults, callback){
+  function injectTestResults(userEmail, testSearchResults, comparisonDocSearchResults, callback){
     console.log("RecruitUnitContentService getUserTestResults > injectTestResults");
 
     var testResult = [];
@@ -521,7 +530,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
       for(var i=0; i < comparisonDocSearchResults.length; i++){
         comparisonJsonArray.push(comparisonDocSearchResults[i].toJSON());//convert from model schema object to JSON object for lodash
       }
-      var comparisonJson = _.find(comparisonJsonArray,{ 'authorEmail': testDocItem.submitTo })
+      var comparisonJson = _.find(comparisonJsonArray,{ 'authorEmail': userEmail })
       if (comparisonJson !== undefined) {
         recruitUnitUtils.compare(comparisonJson, testDocItem.toJSON(), function (err, result) {
           // console.log("compare results:")

@@ -226,6 +226,47 @@ RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_
   });
 };
 
+RecruitUnitUserService.prototype.getUserFromGuidNoAuth = function(userGuid, func_callback){
+  console.log("RecruitUnitUserService getUserFromGuidNoAuth, userguid: " + userGuid);
+
+  async.series({
+      getUserFromGuid: function(callback){
+        var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+        var userModelNoAuth = UserModel(null, {returnAll: true});
+        userModelNoAuth.all({where: {userGuid: userGuid}}, function(err, result){
+          if (!err && result != null && result.length > 0) {
+            console.log("getUserFromGuid: success");
+            console.log(result);
+            var resultData = result[0];
+            var returnMessage = { //ensure success param returned to client
+              "success": true,
+              "data": {
+                "displayName" : resultData.displayName,
+                "email" : resultData.email,
+                "roles" : resultData.roles,
+                "userGuid" : resultData.userGuid
+              }
+            };
+            callback(null, returnMessage);
+          } else {
+            console.log("checkSubmitToUserExists: error");
+            var returnMessage = {
+              "success": false,
+              "data": err,
+              "message": "UserModel error"
+            }
+            callback(returnMessage, null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log("getUser results:");
+      console.log(results);
+      func_callback(err, results.getUserFromGuid);
+    });
+}
+
 RecruitUnitUserService.prototype.updateUser = function(req, username, updateData, func_callback){
   console.log("couchdb service isUserValid, username: " + username);
 
