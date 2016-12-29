@@ -607,8 +607,6 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
       },
       createArticle: function(callback){
         var articleModelAuth = JobModel(returnSuccess.cookie);
-        //swap out user guid for their emil address
-        req.body.submitTo = "developer2@gmail.com";
         articleModelAuth.create(req.body, function(err, result){
           if(!err){
             console.log("RecruitUnitContentService createArticle: success");
