@@ -22,7 +22,9 @@ module.exports = {
                       + ":" + _couch.port,
   seedDB: true,
   dbNameArticles: "article_documents",
-  dbNameProjects: "loom_project_files"
+  dbNameProjects: "loom_project_files",
+  redisHost: "127.0.0.1",
+  redisPort: "6379"
 };
 
 //console.log = function(){}; //disable all console output to speed up response time. Might not make much difference.

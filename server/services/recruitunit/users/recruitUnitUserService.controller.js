@@ -9,6 +9,10 @@ var config = require('server/config/environment');
 var async = require('async');
 var uuid = require('uuid');
 
+var acl = require('acl');
+var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});
+acl = new acl(new acl.redisBackend(redisClient));
+
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
@@ -74,9 +78,9 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
     if (isValidKeyResult){
       async.series({
           createUser: function(callback){
-            if(returnSuccess.roles.indexOf("recruiter") != -1){
+            if(req.body.jobRole.indexOf("recruiter") != -1){
               var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-            }else if(returnSuccess.roles.indexOf("developer") != -1){
+            }else if(req.body.jobRole.indexOf("developer") != -1){
               var UserModel = require('server/models/RecruitUnit.User.Developer.js');
             }
             var userModel = UserModel(req.body, {});
@@ -95,6 +99,8 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
                 //return res.status(error["status-code"]).send(error.message);
                 //response.send(error.message, error["status-code"]);
               } else {
+                acl.addUserRoles(req.body.email, req.body.jobRole.toLowerCase());
+
                 returnMessage["success"] = true;
                 callback(null,returnMessage);
               }

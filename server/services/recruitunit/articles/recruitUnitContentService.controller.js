@@ -488,13 +488,17 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     });
   }
   function getUserEmailFromGuid(userDocResults, callback){
-    recruitUnitUserUtils.getUserFromGuidNoAuth(userDocResults[0].submitTo, function(err, result){
-      if(!err){
-        callback(null, userDocResults, result.data.email);
-      }else{
-        console.log(err);
-      }
-    });
+    if (userDocResults.length > 0){
+      recruitUnitUserUtils.getUserFromGuidNoAuth(userDocResults[0].submitTo, function(err, result){
+        if(!err){
+          callback(null, userDocResults, result.data.email);
+        }else{
+          console.log(err);
+        }
+      });
+    } else {
+      callback(new Array()); //the first callback param returns error. Return empty array.
+    }
   }
   function getComparisonRulesDocs(userDocResults, userEmail, callback){
     console.log("RecruitUnitContentService getUserTestResults > getComparisonRulesDocs");
