@@ -79,23 +79,6 @@ AuthService.prototype.fulldecodetoken = function(req, res, callback) {
   }
 };
 
-//deprecated
-// AuthService.prototype.initAuthorization = function() {
-// 	//acl.addUserRoles('testuser', 'guest')
-// 	//acl.allow('guest', 'articles', ['edit','view']);
-//
-// 	//create roles
-// 	//TODO refactor this into a proper model/schema with jugglingDb
-//   //format is acl.allow('<role>,['<lowercase url endpoint>' OR '<lowercase modelname from model schema>']')
-// 	acl.allow('article-editor',['getarticle', 'listmyarticles', 'savearticle', 'article'],['edit', 'view', 'delete']);
-// 	acl.allow('article-viewer',['getarticle', 'listmyarticles', 'article'],['view']);
-//
-// 	//assign users to roles
-// 	acl.addUserRoles('writeonmvpstep1-1@test.com', 'article-editor');
-// 	acl.addUserRoles('writeonmvpstep1-2@test.com', 'article-viewer');
-// 	acl.addUserRoles('writeonmvpstep1-3@test.com', 'article-viewer');
-// };
-
 AuthService.prototype.initUserAuthorization = function() {
   //https://github.com/OptimalBits/node_acl
 
