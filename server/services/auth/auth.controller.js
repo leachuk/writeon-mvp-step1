@@ -7,7 +7,6 @@ var _utils = require('server/services/utils/utils.controller').Utils;
 var config = require('server/config/environment');
 
 var acl = require('acl');
-//acl = new acl(new acl.memoryBackend()); //TODO: Update to Redis backend
 var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});
 acl = new acl(new acl.redisBackend(redisClient));
 
@@ -127,12 +126,6 @@ AuthService.prototype.initUserAuthorization = function() {
       ]
     }
   ]);
-
-  //assign users to roles
-  acl.addUserRoles('recruiter1@gmail.com', 'recruiter');
-  acl.addUserRoles('recruiter2@gmail.com', 'recruiter');
-  acl.addUserRoles('writeonmvpstep1-1@test.com', 'developer');
-  acl.addUserRoles('developer2@gmail.com', 'developer');
 };
 
 //operation param maps to the role permissions of create, read, update, delete. Can be passed as an array i.e. ['create','read'], or single string 'create'
