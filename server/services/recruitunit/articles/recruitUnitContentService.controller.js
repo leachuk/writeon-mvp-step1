@@ -228,105 +228,103 @@ RecruitUnitContentService.prototype.listMyArticles = function(req, func_callback
 	});
 };
 
-RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callback){
-  //var listResultJson = null;
-  var listResultArray = [];
-  var _this = this;
-
-  var requestParams = req.query;
-  var getAllData = requestParams.getAllData;
-
-  var comparisonDocId = req.param('comparisonRulesDocId');
-
-  async.waterfall([
-        authenticate,
-        listMyArticles,
-        getTestAndComparisonResults,
-        appendComparisonResultsToArticleList,
-  ],function (err, result) {
-    // result now equals result of last run function
-  });
-  function authenticate(callback){
-    _authUtils.authenticateToken(req, function(err, result){
-      //console.log("authToken result:");
-      //console.log(result);
-      callback(null, result) //first callback param always reserved for error callbacks
-    });
-  }
-  function listMyArticles(returnSuccess, callback){
-    console.log("RecruitUnitContentService listMyTestContent: returnSuccess");
-    console.log(returnSuccess.cookie);
-    console.log(returnSuccess.username);
-    var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
-    articleModelAuth.all({where:{submitTo: returnSuccess.username, published: true}}, function(err, body){
-      if(!err){
-        console.log("success result");
-        listResultArray = body; //listResultArray used later for combining with test results
-        callback(null, listResultArray);
-      }else{
-        console.log("articleModelAuth error");
-        callback(err, null);
-      }
-    });
-  }
-  function getTestAndComparisonResults(articleList, callback){
-    var testSourceAndComparisonDocList = [];
-    async.each(articleList, function(value, callback) {
-      //console.log(value);
-      req.params.testsourceid = comparisonDocId;
-      req.params.comparisonid =  value.id;
-
-      _this.getTestSourceAndComparisonDocuments(req, function(err, result){
-        if (!err){
-          //console.log(result);
-          testSourceAndComparisonDocList.push(result);
-          callback();
-        } else {
-          console.log(err);
-          res.send(err);
-        }
-      });
-    }, function (err) {
-      if (err) { callback(err, null); }
-      callback(null, testSourceAndComparisonDocList);
-    });
-  }
-  function appendComparisonResultsToArticleList(comparisonAndTestList, callback) {
-    var testResult = [];
-
-    async.each(comparisonAndTestList, function(value, callback) {
-        recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
-          console.log("compare results:")
-          //console.log(result);
-          // _.forEach(result, function (value, key) {
-          //   console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
-          // });
-          if (!err) {
-            //console.log(result);
-            //callback(null, result);
-            testResult.push(result);
-            callback();
-          } else {
-            console.log(err);
-            callback(err, null);
-          }
-        });
-    }, function (err) {
-      if (err) { callback(err, null); }
-
-      var combinedTestResultWithDocList = [];
-      for (var i=0; i < listResultArray.length; i++){
-        var testResultItem = _.find(testResult,['docId',listResultArray[i].id]);
-        combinedTestResultWithDocList.push({"document": listResultArray[i], "testResult": testResultItem});
-      }
-      console.log(combinedTestResultWithDocList);
-      func_callback(null, combinedTestResultWithDocList);
-    });
-  }
-
-};
-
-
+// RecruitUnitContentService.prototype.listMyTestContent = function(req, func_callback){
+//   //var listResultJson = null;
+//   var listResultArray = [];
+//   var _this = this;
+//
+//   var requestParams = req.query;
+//   var getAllData = requestParams.getAllData;
+//
+//   var comparisonDocId = req.param('comparisonRulesDocId');
+//
+//   async.waterfall([
+//         authenticate,
+//         listMyArticles,
+//         getTestAndComparisonResults,
+//         appendComparisonResultsToArticleList,
+//   ],function (err, result) {
+//     // result now equals result of last run function
+//   });
+//   function authenticate(callback){
+//     _authUtils.authenticateToken(req, function(err, result){
+//       //console.log("authToken result:");
+//       //console.log(result);
+//       callback(null, result) //first callback param always reserved for error callbacks
+//     });
+//   }
+//   function listMyArticles(returnSuccess, callback){
+//     console.log("RecruitUnitContentService listMyTestContent: returnSuccess");
+//     console.log(returnSuccess.cookie);
+//     console.log(returnSuccess.username);
+//     var articleModelAuth = ContentItemModel(returnSuccess.cookie, {returnAll: getAllData});
+//     articleModelAuth.all({where:{submitTo: returnSuccess.username, published: true}}, function(err, body){
+//       if(!err){
+//         console.log("success result");
+//         listResultArray = body; //listResultArray used later for combining with test results
+//         callback(null, listResultArray);
+//       }else{
+//         console.log("articleModelAuth error");
+//         callback(err, null);
+//       }
+//     });
+//   }
+//   function getTestAndComparisonResults(articleList, callback){
+//     var testSourceAndComparisonDocList = [];
+//     async.each(articleList, function(value, callback) {
+//       //console.log(value);
+//       req.params.testsourceid = comparisonDocId;
+//       req.params.comparisonid =  value.id;
+//
+//       _this.getTestSourceAndComparisonDocuments(req, function(err, result){
+//         if (!err){
+//           //console.log(result);
+//           testSourceAndComparisonDocList.push(result);
+//           callback();
+//         } else {
+//           console.log(err);
+//           res.send(err);
+//         }
+//       });
+//     }, function (err) {
+//       if (err) { callback(err, null); }
+//       callback(null, testSourceAndComparisonDocList);
+//     });
+//   }
+//   function appendComparisonResultsToArticleList(comparisonAndTestList, callback) {
+//     var testResult = [];
+//
+//     async.each(comparisonAndTestList, function(value, callback) {
+//         recruitUnitUtils.compare(value.getTestSourceDoc, value.getComparisonDoc, function (err, result) {
+//           console.log("compare results:")
+//           //console.log(result);
+//           // _.forEach(result, function (value, key) {
+//           //   console.log("key[" + key + "], rule[" + value.rule + "], result[" + value.result + "]");
+//           // });
+//           if (!err) {
+//             //console.log(result);
+//             //callback(null, result);
+//             testResult.push(result);
+//             callback();
+//           } else {
+//             console.log(err);
+//             callback(err, null);
+//           }
+//         });
+//     }, function (err) {
+//       if (err) { callback(err, null); }
+//
+//       var combinedTestResultWithDocList = [];
+//       for (var i=0; i < listResultArray.length; i++){
+//         var testResultItem = _.find(testResult,['docId',listResultArray[i].id]);
+//         combinedTestResultWithDocList.push({"document": listResultArray[i], "testResult": testResultItem});
+//       }
+//       console.log(combinedTestResultWithDocList);
+//       func_callback(null, combinedTestResultWithDocList);
+//     });
+//   }
+//
+// };
 
 RecruitUnitContentService.prototype.updateArticle = function(req, func_callback) {
 	var returnSuccess = null;
@@ -450,7 +448,8 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   var getAllData = requestParams.getAllData;
 
   var authCookie;
-  var searchJson = req.param('searchJson');//todo: need to debug here to make sure its returning the correct json
+  var searchJson = JSON.parse(req.param('searchJson'));
+  searchJson.published = true;
   var comparisonDocListArray = [];
 
   async.waterfall([
@@ -477,7 +476,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
     console.log(authCookie);
     console.log(returnSuccess.username);
     var articleModelAuth = Model(authCookie, {returnAll: getAllData});
-    articleModelAuth.all({where: JSON.parse(searchJson)}, function(err, searchresults){
+    articleModelAuth.all({where: searchJson}, function(err, searchresults){
       if(!err){
         console.log("success result");
         callback(null, searchresults);
