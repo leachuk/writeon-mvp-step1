@@ -1,6 +1,7 @@
 'use strict';
 
-var _authService = require('server/services/auth/auth.controller').AuthService;;
+var _authService = require('server/services/auth/auth.controller').AuthService;
+var shortId = require('shortid');
 
 function AuthUtils(){};
 
@@ -43,5 +44,9 @@ AuthUtils.prototype.authenticateToken = function(req, callback){
 		callback(returnError,null);
 	}
 };
+
+AuthUtils.prototype.generateUUID = function(){
+  return shortId.generate();
+}
 
 exports.AuthUtils = new AuthUtils;

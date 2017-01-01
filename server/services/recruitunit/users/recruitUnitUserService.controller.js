@@ -4,10 +4,7 @@ require('rootpath')()
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var config = require('server/config/environment');
-//var couchnano = require("nano")(config.couchuri);
-//var dbNameArticles = config.dbNameArticles;
 var async = require('async');
-var uuid = require('uuid');
 
 var acl = require('acl');
 var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});
@@ -87,7 +84,7 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
 
             req.body.name = req.body.email; //couchdb requirement
             req.body.id = "org.couchdb.user:" + req.body.email; //couchdb requirement. the name part of _id and the name field must match.
-            req.body.userGuid = uuid.v1();
+            req.body.userGuid = _authUtils.generateUUID();
 
             userModel.create(req.body, function(error, result){
               if (error) {
