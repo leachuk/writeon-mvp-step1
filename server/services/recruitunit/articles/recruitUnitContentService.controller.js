@@ -568,7 +568,7 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
     function(err, result) {
       //console.log("toggleDevEmailDisplay results");
       //console.log(result);
-      func_callback(err, result.updateDisplayDevEmail.data.displayDevEmail);
+      func_callback(err, { "displayDevEmail": result.updateDisplayDevEmail.data.displayDevEmail });
     });
 }
 
