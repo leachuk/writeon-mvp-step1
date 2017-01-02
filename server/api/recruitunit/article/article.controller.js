@@ -30,5 +30,19 @@ exports.createJobSubmission = function(req, res) {
 	});
 };
 
+exports.toggleDevEmailDisplay = function(req, res) {
+  console.log("Recruitunit controller, toggleDevEmailDisplay");
+
+  appService.toggleDevEmailDisplay(req, function(err, result){
+    if (!err){
+      //console.log(result);
+      res.send(result);
+    } else {
+      console.log(err);
+      res.send(err);
+    }
+  });
+}
+
 
 

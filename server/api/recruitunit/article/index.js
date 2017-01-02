@@ -12,5 +12,7 @@ var acl = authService.acl();
 
 router.get('/', controller.index);
 router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('create'), controller.createJobSubmission);
+router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
+
 
 module.exports = router;

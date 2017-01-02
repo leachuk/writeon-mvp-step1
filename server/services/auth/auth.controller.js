@@ -104,7 +104,7 @@ AuthService.prototype.initUserAuthorization = function() {
       roles:['developer'],
       allows:[
         {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'], permissions: ['read']},
-        {resources: ['updateuser'], permissions: ['update']},
+        {resources: ['updateuser','toggledevemaildisplay'], permissions: ['update']},
         {resources: ['createarticle'], permissions: ['create']}
       ]
     }

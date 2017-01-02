@@ -235,11 +235,11 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 
 	var id = req.param("id");
   var Model = require(req.param("modelType"));
+  var updateData = req.param("updateData");
 
 	console.log("updateData");
 	console.log(req.param("updateData"));
 	console.log(typeof req.param("updateData"))
-	var updateData = req.param("updateData");
 	console.log("id:" + id);
 
 	async.series({
@@ -534,6 +534,43 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
       func_callback(err, results.createArticle);
     });
 };
+
+RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_callback) {
+  console.log("in RecruitUnitContentService, toggleDevEmailDisplay");
+
+  var _this = this;
+  var currentDisplayDevEmail = null;
+  req.params.modelType = 'server/models/RecruitUnit.Job.All.js';
+  req.params.updateData = null;
+
+  async.series({
+      getCurrentDisplayDevEmail: function(callback){
+        _this.getArticle(req, req.params.modelType, function(err, result){
+          if (!err){
+            currentDisplayDevEmail = result.displayDevEmail;
+            callback(err, result);
+          } else {
+            callback(err, result);
+          }
+        });
+      },
+      updateDisplayDevEmail: function(callback){
+        req.params.updateData = { displayDevEmail: !currentDisplayDevEmail };
+        _this.updateArticle(req, function(err, result){
+          if (!err){
+            callback(err, result);
+          } else {
+            callback(err, result);
+          }
+        });
+      }
+    },
+    function(err, result) {
+      //console.log("toggleDevEmailDisplay results");
+      //console.log(result);
+      func_callback(err, result.updateDisplayDevEmail.data.displayDevEmail);
+    });
+}
 
 // ********************************************************************************************************************************** //
 //
