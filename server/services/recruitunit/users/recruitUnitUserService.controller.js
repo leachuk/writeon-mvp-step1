@@ -12,9 +12,14 @@ acl = new acl(new acl.redisBackend(redisClient));
 
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
+var DeveloperUserModel = require('server/models/RecruitUnit.User.Developer.js');
+var RecruiterUserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+var JobDocumentModel = require('server/models/RecruitUnit.Job.All.js');
 
 var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
+var _recruitUnitUserUtils = require('server/services/recruitunit/users/RecruitUnitUserService.controller').Service;
+
 
 function RecruitUnitUserService(){};
 
@@ -271,7 +276,7 @@ RecruitUnitUserService.prototype.getUserFromGuidNoAuth = function(userGuid, func
 }
 
 RecruitUnitUserService.prototype.updateUser = function(req, username, updateData, func_callback){
-  console.log("couchdb service isUserValid, username: " + username);
+  console.log("RecruitUnitUserService updateUser, username: " + username + ", updateData" + updateData);
 
   var returnTokenSuccess = null;
   var userUpdateModel = null;
@@ -344,6 +349,63 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
       console.log(results);
       func_callback(err, results.updateUser);
     });
+};
+
+RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, func_callback){
+  console.log("RecruitUnitUserService getDevEmailFromDocId, docId: " + docId);
+
+  var returnSuccess = null;
+  var _this = this; //so we can re-use internal prototype functions
+  var authCookie;
+
+  async.waterfall([
+    authToken,
+    getUserGUIDFromDoc,
+    getUserEmailFromGuid
+  ],function (err, result) {
+    // result now equals result of last run function
+    //console.log(result);
+    func_callback(err, result);
+  });
+  function authToken(callback){
+    _authUtils.authenticateToken(req, function(err, result){
+      //console.log("authToken result:");
+      //console.log(result);
+      authCookie = result.cookie;
+      callback(null, result);
+    });
+  }
+  function getUserGUIDFromDoc(returnSuccess, callback){
+    console.log("RecruitUnitContentService getUserTestResults>search");
+    console.log(authCookie);
+    console.log(returnSuccess.username);
+    var jobModelAuth = JobDocumentModel(authCookie, {returnAll: true});
+    //only get if dev has set displayDevEmail to true
+    jobModelAuth.all({where: {id: docId, published: true, displayDevEmail: true}}, function(err, results){
+      if(!err){
+        console.log("success result");
+        var userGUID = results.length > 0 ? results[0].submitTo : "";
+        callback(null, userGUID);
+      }else{
+        console.log("articleModelAuth error");
+        callback(err, null);
+      }
+    });
+  }
+  function getUserEmailFromGuid(userGUID, callback){
+    if (userGUID.length > 0){
+      _recruitUnitUserUtils.getUserFromGuidNoAuth(userGUID, function(err, result){
+        if(!err){
+          callback(null, result.data);
+        }else{
+          console.log(err);
+          callback(err, null)
+        }
+      });
+    } else {
+      callback(new Array()); //the first callback param returns error. Return empty array.
+    }
+  }
 };
 
 exports.Service = new RecruitUnitUserService;

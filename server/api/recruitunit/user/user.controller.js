@@ -83,3 +83,17 @@ exports.updateUser = function(req, res){
   });
 };
 
+exports.getDevEmailFromDocId = function(req, res){
+  console.log("in recruitUnit getDevEmailFromDocId");
+  var docId = req.param("docid");
+
+  recruitUnitUserService.getDevEmailFromDocId(req, docId, function(err, result){
+    if (!err){
+      res.send(result);
+    } else {
+      res.send(err);
+    }
+  });
+};
+
+
