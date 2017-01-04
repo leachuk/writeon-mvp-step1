@@ -55,27 +55,33 @@ AuthService.prototype.fulldecodetoken = function(req, res, callback) {
   var err = null;
   var result = null;
   var token = null;
-  var parts = req.headers.authorization.split(' ');
 
-  if (parts.length == 2) {
-    var scheme = parts[0];
-    var credentials = parts[1];
+  if (typeof req.headers.authorization !== "undefined") {
+    var parts = req.headers.authorization.split(' ');
 
-    if (/^Bearer$/i.test(scheme)) {
+    if (parts.length == 2) {
+      var scheme = parts[0];
+      var credentials = parts[1];
+
+      if (/^Bearer$/i.test(scheme)) {
         token = credentials;
         result = jwt.decode(token, req.secret);
-  		callback(err,result);
+        callback(err, result);
+      } else {
+        console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
+        err = new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]');
+        callback(err, result);
+      }
     } else {
-      console.log("Invalid Authorization Header. Format is Authorization: Bearer [token]");
-      err = new Error('Invalid Authorization Header. Format is Authorization: Bearer [token]');
-      callback(err,result);
+      console.log("Format is Authorization: Bearer [token]");
+      err = new UnauthorizedError('credentials_bad_format', { //todo: need to fix exception thrown becuase ReferenceError: UnauthorizedError is not defined. This object needs defining.
+        message: 'Format is Authorization: Bearer [token]'
+      });
+      callback(err, result);
     }
   } else {
-    console.log("Format is Authorization: Bearer [token]");
-    err = new UnauthorizedError('credentials_bad_format', { //todo: need to fix exception thrown becuase ReferenceError: UnauthorizedError is not defined. This object needs defining.
-      message : 'Format is Authorization: Bearer [token]'
-    });
-    callback(err,result);
+    err = new Error("No Authorization header provided");
+    callback(err, null)
   }
 };
 
@@ -149,8 +155,8 @@ AuthService.prototype.checkUserIsAuthorisedOperation = function(operation){
       } else {
         console.log("fulldecodetoken error");
 
-        var error = new Error("Authorisation denied. Invalid token");
-	    	res.status(403).send(error);
+        var error = typeof err !== undefined ? err : new Error("Authorisation denied. Invalid token");
+        res.status(403).send(error);
       }
     });
 
