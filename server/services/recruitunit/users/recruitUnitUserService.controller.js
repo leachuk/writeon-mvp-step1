@@ -354,7 +354,6 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
 RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, func_callback){
   console.log("RecruitUnitUserService getDevEmailFromDocId, docId: " + docId);
 
-  var returnSuccess = null;
   var _this = this; //so we can re-use internal prototype functions
   var authCookie;
 
@@ -380,7 +379,7 @@ RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, fun
     console.log(authCookie);
     console.log(returnSuccess.username);
     var jobModelAuth = JobDocumentModel(authCookie, {returnAll: true});
-    //only get if dev has set displayDevEmail to true
+    //only get if dev has set displayDevEmail to true and the document was submitted by the user making the request
     jobModelAuth.all({where: {id: docId, published: true, displayDevEmail: true, authorEmail: returnSuccess.username }}, function(err, results){
       if(!err){
         console.log("success result");

@@ -33,8 +33,8 @@ var initCookie = function (setcookie, options) {
       displayDevEmail: 	{ type: Boolean, default: false, index: true }
 	}
 
-	console.log("returnModelObj");
-	console.log(returnModelObj);
+	//console.log("returnModelObj");
+	//console.log(returnModelObj);
 
     JobItem = schema.define('RecruitUnitJobItem', returnModelObj);
     return JobItem;
