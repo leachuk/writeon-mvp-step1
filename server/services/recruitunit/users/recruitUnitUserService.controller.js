@@ -381,7 +381,7 @@ RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, fun
     console.log(returnSuccess.username);
     var jobModelAuth = JobDocumentModel(authCookie, {returnAll: true});
     //only get if dev has set displayDevEmail to true
-    jobModelAuth.all({where: {id: docId, published: true, displayDevEmail: true}}, function(err, results){
+    jobModelAuth.all({where: {id: docId, published: true, displayDevEmail: true, authorEmail: returnSuccess.username }}, function(err, results){
       if(!err){
         console.log("success result");
         var userGUID = results.length > 0 ? results[0].submitTo : "";
@@ -403,7 +403,7 @@ RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, fun
         }
       });
     } else {
-      callback(new Array()); //the first callback param returns error. Return empty array.
+      callback(new Error("No results available")); //the first callback param returns error. Return empty array.
     }
   }
 };
