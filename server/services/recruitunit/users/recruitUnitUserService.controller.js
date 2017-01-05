@@ -4,6 +4,7 @@ require('rootpath')()
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var config = require('server/config/environment');
+var constants = require('server/config/constants');
 var async = require('async');
 
 var acl = require('acl');
@@ -276,6 +277,7 @@ RecruitUnitUserService.prototype.getUserFromGuidNoAuth = function(userGuid, func
 }
 
 RecruitUnitUserService.prototype.updateUser = function(req, username, updateData, func_callback){
+  //only allow update of the currently authenticated user
   console.log("RecruitUnitUserService updateUser, username: " + username + ", updateData" + updateData);
 
   var returnTokenSuccess = null;
@@ -292,28 +294,33 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
         });
       },
       getUser: function(callback){
-        if(returnTokenSuccess.roles.indexOf("recruiter") != -1){
-          var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-        }else if(returnTokenSuccess.roles.indexOf("developer") != -1){
-          var UserModel = require('server/models/RecruitUnit.User.Developer.js');
-        }
-        var userModelAuth = UserModel(returnTokenSuccess.cookie, {returnAll: true});
-        userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
-          if (!err && result != null) {
-            console.log("RecruitUnitUserService getUser: success");
-            console.log(result);
-            userUpdateModel = result;
-            callback(null, returnMessage);
-          } else {
-            console.log("RecruitUnitUserService updateUser: error");
-            var returnMessage = {
-              "success": false,
-              "data": err,
-              "message": "UserModel error"
-            }
-            callback(returnMessage, null);
+        if (returnTokenSuccess.username == username) {
+          if (returnTokenSuccess.roles.indexOf("recruiter") != -1) {
+            var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+          } else if (returnTokenSuccess.roles.indexOf("developer") != -1) {
+            var UserModel = require('server/models/RecruitUnit.User.Developer.js');
           }
-        });
+          var userModelAuth = UserModel(returnTokenSuccess.cookie, {returnAll: true});
+          userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
+            if (!err && result != null) {
+              console.log("RecruitUnitUserService getUser: success");
+              console.log(result);
+              userUpdateModel = result;
+              callback(null, returnMessage);
+            } else {
+              console.log("RecruitUnitUserService updateUser: error");
+              var returnMessage = {
+                "success": false,
+                "data": err,
+                "message": "UserModel error"
+              }
+              callback(returnMessage, null);
+            }
+          });
+        } else {
+          var error = new Error(constants.error.NOT_PERMITTED)
+          callback(error, null);
+        }
       },
       updateUser: function(callback){
         console.log("RecruitUnitUserService updateUser result");
