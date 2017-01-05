@@ -3,9 +3,11 @@
 require('rootpath')()
 var _ = require('lodash');
 var config = require('server/config/environment');
-//var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
+var constants = require('server/config/constants');
 var async = require('async');
+
+var BadJSONError = require('server/services/errors/badJSONError');
 
 var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
@@ -109,6 +111,7 @@ RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_c
 	});
 };
 
+//Todo: Deprecate. Should use jugglingDb model
 RecruitUnitContentService.prototype.deleteArticle = function(req, func_callback){
 	var returnSuccess = null;
 	var dbtable = dbNameArticles;
@@ -348,9 +351,13 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   var userEmail = req.param('authorEmail');
   var requestParams = req.query;
   var getAllData = requestParams.getAllData;
-
   var authCookie;
-  var searchJson = JSON.parse(req.param('searchJson'));
+
+  try {
+    var searchJson = JSON.parse(req.param('searchJson'));
+  } catch(e) {
+    throw new BadJSONError(constants.error.BAD_JSON_INPUT, e.stack);
+  }
   searchJson.published = true;
   var comparisonDocListArray = [];
 
