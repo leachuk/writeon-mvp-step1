@@ -7,8 +7,6 @@ var controller = require('./article.controller');
 var router = express.Router();
 
 var authService = require('server/services/auth/auth.controller').AuthService;
-//authService.initAuthorization();
-var acl = authService.acl();
 
 router.get('/', controller.index);
 router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read'), controller.getArticle);
@@ -23,11 +21,5 @@ router.post('/deleteArticle', controller.deleteArticle);
 router.post('/updateArticle/:id', controller.updateArticle);
 router.get('/compare/:testsourceid/:comparisonid', controller.compare);
 router.get('/search', controller.search); //optional todo: might want to secure endpoint with authService.checkUserIsAuthorisedUrl()
-router.get('/getUserTestResults', controller.getUserTestResults); //ToDo: Need to find a way of abstracting the endpoints so they can be specifically created for the application. I.e. This shouldn't be set here.
-
-router.get('/testcookie', controller.testCookie);
-router.post('/testmodel', controller.testModel);
-router.get('/testform', controller.testForm);
-router.get('/testcompare', controller.compare);
 
 module.exports = router;

@@ -42,7 +42,20 @@ exports.toggleDevEmailDisplay = function(req, res) {
       res.send(err);
     }
   });
-}
+};
+
+exports.getUserTestResults = function(req, res){
+  console.log("Recruitunit controller getUserTestResults");
+
+  appService.getUserTestResults(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 
 
 
