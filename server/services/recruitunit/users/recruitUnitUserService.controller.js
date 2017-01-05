@@ -294,7 +294,7 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
         });
       },
       getUser: function(callback){
-        if (returnTokenSuccess.username == username) {
+        if (returnTokenSuccess.username == username && typeof updateData !== "undefined") {
           if (returnTokenSuccess.roles.indexOf("recruiter") != -1) {
             var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
           } else if (returnTokenSuccess.roles.indexOf("developer") != -1) {
@@ -328,6 +328,8 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
         console.log("updateData")
         console.log(updateData);
         console.log(typeof updateData);
+        //update timestamp
+        updateData.lastUpdatedDate = Math.floor(Date.now()/1000);
         userUpdateModel.updateAttributes(updateData, function(err, body){
           if(!err){
             console.log("RecruitUnitUserService updateUser success");
