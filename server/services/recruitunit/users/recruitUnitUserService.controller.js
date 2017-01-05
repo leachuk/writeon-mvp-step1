@@ -409,7 +409,7 @@ RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, fun
         }
       });
     } else {
-      callback(new Error("No results available")); //the first callback param returns error. Return empty array.
+      callback(new Error(constants.error.NO_RESULTS)); //the first callback param returns error.
     }
   }
 };
