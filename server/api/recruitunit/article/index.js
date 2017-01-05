@@ -11,6 +11,6 @@ var authService = require('server/services/auth/auth.controller').AuthService;
 router.get('/', controller.index);
 router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('create'), controller.createJobSubmission);
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
-router.get('/getUserTestResults', controller.getUserTestResults);
+router.get('/getusertestresults', controller.getUserTestResults);
 
 module.exports = router;
