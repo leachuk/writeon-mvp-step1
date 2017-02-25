@@ -7,7 +7,7 @@ console.log("In RecruitUnit.Comparison model");
 var initCookie = function (setcookie, options) {
   // Initialize here
   cookie = setcookie;
-  schema = new Schema('nano', {url: config.couchuri + '/' + config.dbNameArticles, cookie: cookie}); //set couchdb documents directory
+  var schema = new Schema('nano', {url: config.couchuri + '/' + config.dbNameArticles, cookie: cookie}); //set couchdb documents directory
   console.log("cookie:" + cookie);
   console.log("options:");
   console.log(options);
@@ -17,7 +17,7 @@ var initCookie = function (setcookie, options) {
     model: 					  { type: String }, //auto populated. Doesn't require submitted data
     roleType:   			{ type: JSON   },
     locationDescription: { type: JSON   },
-    payBracketLower:  { type: JSON },
+    payBracketUpper:  { type: JSON },
     skills: 	        { type: JSON },
     authorEmail: 			{ type: String },
     published:        { type: Boolean },
@@ -27,7 +27,7 @@ var initCookie = function (setcookie, options) {
   console.log("returnModelObj");
   console.log(returnModelObj);
 
-  ComparisonTest = schema.define('RecruitUnitComparisonTest', returnModelObj);
+  var ComparisonTest = schema.define('RecruitUnitComparisonTest', returnModelObj);
   return ComparisonTest;
 };
 //module.exports = Article;
