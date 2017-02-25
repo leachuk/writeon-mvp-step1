@@ -21,6 +21,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   var comparisonTests = {
     "assertEqualTo" : assertEqualTo,
     "assertGreaterThan" : assertGreaterThan,
+    "assertBetweenRange" : assertBetweenRange,
     "assertLessThan" : assertLessThan,
     "assertStringContains" : assertStringContains,
     "assertArrayContains" : assertArrayContains
@@ -40,7 +41,11 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
       var sourceRule = sourceJson[key]['rule'];
       var sourceParam = key;
       var testMethod = comparisonTests[sourceRule];
-      results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
+      if(sourceRule=="assertBetweenRange"){
+        results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(comparisonJson['payBracketLower'],comparisonJson['payBracketUpper'],sourceJson[key]['value'])});
+      } else {
+        results.push({"field": sourceParam, "rule": sourceRule, "result": testMethod(sourceJson[key]['value'],foundJson)});
+      }
     }
   });
   //add isPass and isPartialPass property to test result
@@ -69,6 +74,12 @@ function assertLessThan(sourceValue, comparisonValue){
   console.log("assertLessThan: sourceValue["+ sourceValue +"], comparisonValue["+ comparisonValue +"], result["+ (sourceValue < comparisonValue) +"]");
 
   return (sourceValue <= comparisonValue);
+}
+
+function assertBetweenRange(sourceLowerValue, sourceUpperValue, comparisonValue){
+  console.log("assertBetweenRange: sourceLowerValue["+ sourceLowerValue +"], sourceUpperValue["+ sourceUpperValue +"], comparisonValue["+ comparisonValue +"], result["+ ((sourceLowerValue <= comparisonValue && sourceUpperValue >= comparisonValue) || sourceLowerValue >= comparisonValue) +"]");
+
+  return ((sourceLowerValue <= comparisonValue && sourceUpperValue >= comparisonValue) || sourceLowerValue >= comparisonValue);
 }
 
 function assertEqualTo(sourceValue, comparisonValue){
