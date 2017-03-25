@@ -7,15 +7,15 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    volumes:
-      - "./app:/src/app"
+#    volumes:
+#      - "./app:/src/app"
     ports:
-      - "8181:8080"
+      - "9000:9000"
     links:
-      - "db:redis"
+      - "redisdb:redis"
       - "couchdb:mycouchdb-1"
 
-  db:
+  redisdb:
     image: redis
 
   couchdb:
