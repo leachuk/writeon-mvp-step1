@@ -63,11 +63,11 @@ module.exports = function(app) {
 
 
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
-    app.use(express.static(path.join(config.root, 'public')));
-    app.set('appPath', config.root + '/public');
-    app.use(morgan('dev'));
-    //todo: do we need errorHandler() in prod?
+    app.use(express.static(path.join(config.root, '.tmp')));
+    app.use(express.static(path.join(config.root, 'client')));
+    app.set('appPath', 'client');
+    app.use(morgan('dev')); //whats this for?
+    app.use(errorHandler()); // Error handler - has to be last
   }
 
   if ('development' === env || 'test' === env) {

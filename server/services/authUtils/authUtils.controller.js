@@ -1,6 +1,7 @@
 'use strict';
+var appDir = require('path').dirname(require.main.filename);
 
-var _authService = require('server/services/auth/auth.controller').AuthService;
+var _authService = require(appDir + '/services/auth/auth.controller').AuthService;
 var shortId = require('shortid');
 
 function AuthUtils(){};

@@ -9,9 +9,10 @@
 
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
+
 var _ = require('lodash');
-var config = require('server/config/environment');
+var config = require(appDir + '/config/environment');
 
 // Get list of things
 exports.index = function(req, res) {

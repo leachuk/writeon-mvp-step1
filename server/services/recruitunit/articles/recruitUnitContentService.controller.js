@@ -1,27 +1,30 @@
 'use strict';
 
-require('rootpath')()
+var appDir = require('path').dirname(require.main.filename);
+
 var _ = require('lodash');
-var config = require('server/config/environment');
+var config = require(appDir + '/config/environment');
 var dbNameArticles = config.dbNameArticles;
-var constants = require('server/config/constants');
+var constants = require(appDir + '/config/constants');
 var async = require('async');
 
-var BadJSONError = require('server/services/errors/badJSONError');
+var BadJSONError = require(appDir + '/services/errors/badJSONError');
 
-var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-var recruitUnitUtils = require('server/services/recruitunit/utils/RecruitUnitUtilityService.controller').Service;
-var recruitUnitUserUtils = require('server/services/recruitunit/users/RecruitUnitUserService.controller').Service;
+var recruitUnitUtility = require(appDir + '/services/recruitunit/utils/recruitUnitUtilityService.controller');
+var recruitUnitUtils = recruitUnitUtility.Service;
+var recruitUnitUserService = require(appDir + '/services/recruitunit/users/recruitUnitUserService.controller');
+var recruitUnitUserUtils = recruitUnitUserService.Service;
 
 //var UserModel = require('server/models/User');
-var ContentItemModel = require('server/models/RecruitUnit.Job.All.js');
+var ContentItemModel = require(appDir + '/models/RecruitUnit.Job.All.js');
 //var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
-var ComparisonTestModel = require('server/models/RecruitUnit.ComparisonTest.js');
+var ComparisonTestModel = require(appDir + '/models/RecruitUnit.ComparisonTest.js');
 
-var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
-var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
+var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
+var _authUtils = require(appDir + '/services/authUtils/authUtils.controller').AuthUtils;
 
 function RecruitUnitContentService(){};
 

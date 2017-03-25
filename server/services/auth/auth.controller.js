@@ -1,10 +1,11 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
+
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
-var _utils = require('server/services/utils/utils.controller').Utils;
-var config = require('server/config/environment');
+var _utils = require(appDir + '/services/utils/utils.controller').Utils;
+var config = require(appDir + '/config/environment');
 
 var acl = require('acl');
 var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});

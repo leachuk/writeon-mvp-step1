@@ -1,25 +1,26 @@
 'use strict';
 
-require('rootpath')()
+var appDir = require('path').dirname(require.main.filename);
+
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
-var config = require('server/config/environment');
-var constants = require('server/config/constants');
+var config = require(appDir + '/config/environment');
+var constants = require(appDir + '/config/constants');
 var async = require('async');
 
 var acl = require('acl');
 var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});
 acl = new acl(new acl.redisBackend(redisClient));
 
-var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
-var DeveloperUserModel = require('server/models/RecruitUnit.User.Developer.js');
-var RecruiterUserModel = require('server/models/RecruitUnit.User.Recruiter.js');
-var JobDocumentModel = require('server/models/RecruitUnit.Job.All.js');
+var DeveloperUserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');
+var RecruiterUserModel = require(appDir + '/models/RecruitUnit.User.Recruiter.js');
+var JobDocumentModel = require(appDir + '/models/RecruitUnit.Job.All.js');
 
-var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
-var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
-var _recruitUnitUserUtils = require('server/services/recruitunit/users/RecruitUnitUserService.controller').Service;
+var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
+var _authUtils = require(appDir + '/services/authUtils/authUtils.controller').AuthUtils;
+var _recruitUnitUserUtils = require(appDir + '/services/recruitunit/users/recruitUnitUserService.controller').Service;
 
 
 function RecruitUnitUserService(){};

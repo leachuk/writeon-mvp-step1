@@ -1,12 +1,12 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
 
 var express = require('express');
 var controller = require('./article.controller');
 var router = express.Router();
 
-var authService = require('server/services/auth/auth.controller').AuthService;
+var authService = require(appDir + '/services/auth/auth.controller').AuthService;
 
 router.get('/', controller.index);
 router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read'), controller.getArticle);

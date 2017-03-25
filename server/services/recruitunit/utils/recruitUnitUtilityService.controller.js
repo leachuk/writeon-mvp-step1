@@ -1,6 +1,7 @@
 'use strict';
 
-require('rootpath')()
+var appDir = require('path').dirname(require.main.filename);
+
 var _ = require('lodash');
 
 function RecruitUnitUtilityService(){};

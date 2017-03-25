@@ -1,11 +1,12 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
+
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
-var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
-var authHandlers = require('server/services/auth/auth.controller');
+var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
+var authHandlers = require(appDir + '/services/auth/auth.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {

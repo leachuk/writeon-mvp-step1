@@ -1,15 +1,15 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
 
 var _ = require('lodash');
 var async = require('async');
 
-var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
 //var TestModel = require('server/models/JugglingModelTest');
-var ArticleModel = require('server/models/Article');
+var ArticleModel = require(appDir + '/models/Article');
 
 // Get list of articles
 exports.index = function(req, res) {

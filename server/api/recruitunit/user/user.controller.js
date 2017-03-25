@@ -1,12 +1,13 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
+
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 
-var couchDbHandlers = require('server/services/couchDbHandler/couchDbHandler.controller');
+var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
-var recruitUnitHandler = require('server/services/recruitunit/users/recruitUnitUserService.controller');
+var recruitUnitHandler = require(appDir + '/services/recruitunit/users/recruitUnitUserService.controller');
 var recruitUnitUserService = recruitUnitHandler.Service;
 
 //generates jwt token to be stored on the client

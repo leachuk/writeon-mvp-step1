@@ -1,10 +1,10 @@
 'use strict';
 
-require('rootpath')();
+var appDir = require('path').dirname(require.main.filename);
 
 var _ = require('lodash');
 
-var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
+var applicationHandler = require(appDir + '/services/recruitunit/articles/recruitUnitContentService.controller');
 var appService = applicationHandler.Service;
 
 exports.index = function(req, res) {

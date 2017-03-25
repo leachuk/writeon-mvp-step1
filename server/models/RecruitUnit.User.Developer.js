@@ -1,4 +1,6 @@
-var config = require('server/config/environment');
+var appDir = require('path').dirname(require.main.filename);
+
+var config = require(appDir + '/config/environment');
 var Schema = require('jugglingdb').Schema;
 
 console.log("In User model");

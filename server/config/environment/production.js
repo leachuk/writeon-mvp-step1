@@ -1,23 +1,27 @@
 'use strict';
 
+var path = require('path');
+
 // Production specific configuration
 // =================================
+var _couch = {
+  "adminusername" : "admin",
+  "adminpassword" : "admin",
+  "hostname" : "127.0.0.1",
+  "port" : 5984
+};
+
 module.exports = {
-  // Server IP
-  ip:       process.env.OPENSHIFT_NODEJS_IP ||
-            process.env.IP ||
-            undefined,
-
-  // Server port
-  port:     process.env.OPENSHIFT_NODEJS_PORT ||
-            process.env.PORT ||
-            8080,
-
-  // MongoDB connection options
-  mongo: {
-    uri:    process.env.MONGOLAB_URI ||
-            process.env.MONGOHQ_URL ||
-            process.env.OPENSHIFT_MONGODB_DB_URL+process.env.OPENSHIFT_APP_NAME ||
-            'mongodb://localhost/writeonmvpstep1'
-  }
+  root: path.normalize(__dirname + '/../../../..'),
+  couchuriadmin: "http://" + _couch.adminusername
+                           + ":" + _couch.adminpassword
+                           + "@" + _couch.hostname
+                           + ":" + _couch.port,
+  couchuri: "http://" + _couch.hostname
+                      + ":" + _couch.port,
+  seedDB: true,
+  dbNameArticles: "article_documents",
+  dbNameProjects: "loom_project_files",
+  redisHost: "127.0.0.1",
+  redisPort: "6379"
 };

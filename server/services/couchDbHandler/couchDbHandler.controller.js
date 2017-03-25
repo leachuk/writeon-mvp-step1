@@ -2,18 +2,19 @@
 
 // ******* This is the sample handler, which uses the 'Article' model. ******** //
 // ******* Each application will have it's own, which in turn calls the specific app model ****** //
-require('rootpath')()
+var appDir = require('path').dirname(require.main.filename);
+
 var _ = require('lodash');
-var config = require('server/config/environment');
+var config = require(appDir + '/config/environment');
 var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
-var UserModel = require('server/models/User');
-var ArticleModel = require('server/models/Article');
+var UserModel = require(appDir + '/models/User');
+var ArticleModel = require(appDir + '/models/Article');
 
-var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
-var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
+var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
+var _authUtils = require(appDir + '/services/authUtils/authUtils.controller').AuthUtils;
 
 function CouchDBService(){};
 
