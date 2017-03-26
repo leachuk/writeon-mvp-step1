@@ -3,7 +3,7 @@
  */
 
 'use strict';
-
+var couchdbBootstrap = require('couchdb-bootstrap');
 var express = require('express');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
@@ -77,5 +77,14 @@ module.exports = function(app) {
     app.set('appPath', 'client');
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
+
+    console.log("attempting couchdb bootstrap");
+    couchdbBootstrap('http://admin:admin@localhost:5984', 'couchdb', function(error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    })
   }
 };

@@ -1,4 +1,12 @@
 #FROM couchdb:1.6.1
 FROM klaemo/couchdb:1.6.1
 
+RUN sed -e '/^\[admins\]$/a admin=-pbkdf2-a68a0db1e18b9d57c462271163124cd93ef08c9c,2ad519368d7fe05d96110e292d81d8ef,10\n' -i /usr/local/etc/couchdb/local.ini
+RUN sed -e '/^\[couch_httpd_auth\]$/a require_valid_user = true\n' -i /usr/local/etc/couchdb/local.ini
+RUN sed -e 's/^;WWW-Authenticate/WWW-Authenticate/' -i /usr/local/etc/couchdb/local.ini
+
+#init db
+RUN curl -X PUT http://admin:admin@127.0.0.1:5984/loom_project_files
+RUN curl -X PUT http://admin:admin@127.0.0.1:5984/loom_project_files/recruitUnit-project -d '{"docs": [ {"_id":"recruitUnit-project","key":123456789,"validHosts":"localhost","isEnabled":true,"validIps":"127.0.0.1,::1,::ffff:127.0.0.1"}]}'
+
 EXPOSE 5984
