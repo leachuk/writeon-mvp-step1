@@ -10,6 +10,7 @@ RUN cd /tmp && npm install --production
 RUN mkdir -p /app/server && cp -a /tmp/node_modules /app/
 #copy package.json to app so npm run-script can be called
 ADD /package.json /app/
+ADD /couchdb /app/couchdb
 
 # Define working directory
 WORKDIR /app
