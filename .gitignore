@@ -9,3 +9,4 @@ dist
 *.sublime-workspace
 nohup.out
 dump.rdb
+npm-debug.log
