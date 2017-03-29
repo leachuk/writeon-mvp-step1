@@ -665,6 +665,8 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
   var token = null;
   var clientip = req.ip;
   var host = req.headers.host;
+  console.log("current client ip: " + clientip);
+  console.log("current hostname: " + host);
 
   var returnSuccess = null;
   var returnError = null;
