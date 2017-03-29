@@ -22,6 +22,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-couchdb
-    # ports:
-    #   - "5984:5984"
+    ports:
+      - "5984:5984"
     image: mycouchdb-1:latest

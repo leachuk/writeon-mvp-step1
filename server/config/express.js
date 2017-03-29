@@ -68,6 +68,15 @@ module.exports = function(app) {
     app.set('appPath', 'client');
     app.use(morgan('dev')); //whats this for?
     app.use(errorHandler()); // Error handler - has to be last
+
+    console.log("attempting couchdb bootstrap");
+    couchdbBootstrap('http://admin:admin@localhost:5984', 'couchdb', function(error, response) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(response);
+      }
+    })
   }
 
   if ('development' === env || 'test' === env) {
