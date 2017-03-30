@@ -7,12 +7,12 @@ var couchnano = require("nano")(config.couchuri);
 var dbNameArticles = config.dbNameArticles;
 var async = require('async');
 
-var UserModel = require('server/models/User');
-var SocialListModel = require('server/models/SocialList.ListItem.All.js');
-var SocialListPartialModelConverter = require('server/models/SocialList.ListItem.Partial.js');
+var UserModel = require(appDir + '/models/User');
+var SocialListModel = require(appDir + '/models/SocialList.ListItem.All.js');
+var SocialListPartialModelConverter = require(appDir + '/models/SocialList.ListItem.Partial.js');
 
-var _dbUtils = require('server/services/dbUtils/dbUtils.controller').DbUtils;
-var _authUtils = require('server/services/authUtils/authUtils.controller').AuthUtils;
+var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
+var _authUtils = require(appDir + '/services/authUtils/authUtils.controller').AuthUtils;
 
 function SocialListArticleService(){};
 

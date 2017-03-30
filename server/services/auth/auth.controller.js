@@ -97,7 +97,7 @@ AuthService.prototype.initUserAuthorization = function() {
   //TODO refactor this into a proper model/schema with jugglingDb
   //TODO specify specific CRUD permissions (get(r), put(c), delete(d), post(u)), i.e. get should be replaced with read
   //acl.allow('recruiter',['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'],['view']);
-  //acl.allow('recruiter',['server/models/recruitunit.job.all.js'],['create']);
+  //acl.allow('recruiter',[appDir + '/models/recruitunit.job.all.js'],['create']);
 
   acl.allow([
     {

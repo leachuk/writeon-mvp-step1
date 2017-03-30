@@ -681,7 +681,9 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
             var appHost = body.validHosts; //host can be easily spoofed in /etc/hosts. Also using IP
             var appIp = body.validIps;
             var isEnabled = body.isEnabled;
-            if (appKey == key && host.indexOf(appHost) != -1 && appIp.indexOf(clientip) != -1 && isEnabled){
+            //until I can find a way to do this properly, I'm relaxing the conditions here. The JWT and appKey should suffice for security and control
+            //if (appKey == key && host.indexOf(appHost) != -1 && appIp.indexOf(clientip) != -1 && isEnabled){
+            if (appKey == key && isEnabled){
               var returnMessage = {
                 "success": true
               }

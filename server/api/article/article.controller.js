@@ -8,7 +8,7 @@ var async = require('async');
 var couchDbHandlers = require(appDir + '/services/couchDbHandler/couchDbHandler.controller');
 var couchService = couchDbHandlers.Service;
 
-//var TestModel = require('server/models/JugglingModelTest');
+//var TestModel = require(appDir + '/models/JugglingModelTest');
 var ArticleModel = require(appDir + '/models/Article');
 
 // Get list of articles
@@ -88,9 +88,9 @@ exports.compare = function(req, res) {
   // Pass require path from client in req.query.modelId
   // for now make it the literal path to the controller, to be an id with a lookup on the server.
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require('server/services/recruitunit/articles/recruitUnitContentService.controller');
+  var applicationHandler = require(appDir + '/services/recruitunit/articles/recruitUnitContentService.controller');
   var appService = applicationHandler.Service;
-  var recruitUnitUtils = require('server/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
+  var recruitUnitUtils = require(appDir + '/services/recruitunit/utils/recruitUnitUtilityService.controller').Service;
 
   var testSourceDoc = {};
   var comparisonDoc = {};

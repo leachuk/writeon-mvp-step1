@@ -18,9 +18,9 @@ var recruitUnitUtils = recruitUnitUtility.Service;
 var recruitUnitUserService = require(appDir + '/services/recruitunit/users/recruitUnitUserService.controller');
 var recruitUnitUserUtils = recruitUnitUserService.Service;
 
-//var UserModel = require('server/models/User');
+//var UserModel = require(appDir + '/models/User');
 var ContentItemModel = require(appDir + '/models/RecruitUnit.Job.All.js');
-//var ContentItemListPartialModelConverter = require('server/models/RecruitUnit.Job.Partial.js');
+//var ContentItemListPartialModelConverter = require(appDir + '/models/RecruitUnit.Job.Partial.js');
 var ComparisonTestModel = require(appDir + '/models/RecruitUnit.ComparisonTest.js');
 
 var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
@@ -349,8 +349,8 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
   var returnSuccess = null;
   var _this = this; //so we can re-use internal prototype functions
 
-  var Model = require('server/models/RecruitUnit.Job.All.js');
-  var ComparisonRulesModel = require('server/models/RecruitUnit.ComparisonTest.js');
+  var Model = require(appDir + '/models/RecruitUnit.Job.All.js');
+  var ComparisonRulesModel = require(appDir + '/models/RecruitUnit.ComparisonTest.js');
   var userEmail = req.param('authorEmail');
   var requestParams = req.query;
   var getAllData = requestParams.getAllData;
@@ -499,7 +499,7 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
         });
       },
       checkSubmitToUserExists: function(callback){
-        var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+        var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
         var userModel = UserModel(returnSuccess.cookie, {returnAll: true});
         userModel.all({where: {userGuid: req.body.submitTo}}, function(err, result){
           if (!err && result != null && result.length > 0) {
@@ -550,7 +550,7 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
 
   var _this = this;
   var currentDisplayDevEmail = null;
-  req.params.modelType = 'server/models/RecruitUnit.Job.All.js';
+  req.params.modelType = appDir + '/models/RecruitUnit.Job.All.js';
   req.params.updateData = null;
 
   async.series({

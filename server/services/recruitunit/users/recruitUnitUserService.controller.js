@@ -38,8 +38,8 @@ RecruitUnitUserService.prototype.getUserNoAuthentication = function(req, userObj
       getUser: function(callback){
         //check the requested username is the authenticated user. May need to change, but should provide sufficient security
         //if (returnAuthToken.username == username) {
-        var DeveloperUserModel = require('server/models/RecruitUnit.User.Developer.js');
-        var RecruiterUserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+        var DeveloperUserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');
+        var RecruiterUserModel = require(appDir + '/models/RecruitUnit.User.Recruiter.js');
         var userModelAuth = userObj.roles.indexOf('developer') === -1 ? RecruiterUserModel(null, null) : DeveloperUserModel(null, null);
         userModelAuth.find("org.couchdb.user:" + userObj.name, function (err, result) {
           if (!err) {
@@ -83,9 +83,9 @@ RecruitUnitUserService.prototype.createNewUser = function(req, func_callback){
       async.series({
           createUser: function(callback){
             if(req.body.jobRole.indexOf("recruiter") != -1){
-              var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+              var UserModel = require(appDir + '/models/RecruitUnit.User.Recruiter.js');
             }else if(req.body.jobRole.indexOf("developer") != -1){
-              var UserModel = require('server/models/RecruitUnit.User.Developer.js');
+              var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');
             }
             var userModel = UserModel(req.body, {});
 
@@ -201,7 +201,7 @@ RecruitUnitUserService.prototype.getUserFromGuid = function(req, userguid, func_
       });
     },
     getUserFromGuid: function(callback){
-      var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+      var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
       var userModelAuthenticated = UserModel(returnSuccess.cookie, {returnAll: true});
       userModelAuthenticated.all({where: {userGuid: userguid}}, function(err, result){
         if (!err && result != null && result.length > 0) {
@@ -241,7 +241,7 @@ RecruitUnitUserService.prototype.getUserFromGuidNoAuth = function(userGuid, func
 
   async.series({
       getUserFromGuid: function(callback){
-        var UserModel = require('server/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
+        var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
         var userModelNoAuth = UserModel(null, {returnAll: true});
         userModelNoAuth.all({where: {userGuid: userGuid}}, function(err, result){
           if (!err && result != null && result.length > 0) {
@@ -297,9 +297,9 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
       getUser: function(callback){
         if (returnTokenSuccess.username == username && typeof updateData !== "undefined") {
           if (returnTokenSuccess.roles.indexOf("recruiter") != -1) {
-            var UserModel = require('server/models/RecruitUnit.User.Recruiter.js');
+            var UserModel = require(appDir + '/models/RecruitUnit.User.Recruiter.js');
           } else if (returnTokenSuccess.roles.indexOf("developer") != -1) {
-            var UserModel = require('server/models/RecruitUnit.User.Developer.js');
+            var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');
           }
           var userModelAuth = UserModel(returnTokenSuccess.cookie, {returnAll: true});
           userModelAuth.find("org.couchdb.user:" + username, function (err, result) {
