@@ -2,6 +2,11 @@
   "views": {
     "by_published": {
       "map": "function (doc) { if (doc.model === 'RecruitUnitJobItem') return emit(doc.published, null); }"
+    },
+    "by_displayDevEmail":{
+      "map":"function (doc) { if (doc.model === 'RecruitUnitJobItem') return emit(doc.displayDevEmail, null); }"
     }
   }
 }
+
+
