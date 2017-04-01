@@ -10,3 +10,4 @@ dist
 nohup.out
 dump.rdb
 npm-debug.log
+web-volume

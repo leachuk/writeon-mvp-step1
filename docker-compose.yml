@@ -1,6 +1,8 @@
 version: '2'
 services:
   redisdb:
+    ports:
+      - "6379:6379" #enabled for local debugging
     image: redis
 
   couchdb:
@@ -8,8 +10,10 @@ services:
       context: .
       dockerfile: Dockerfile-couchdb
     ports:
-      - "5984:5984"
+      - "5984:5984" #enabled for local debugging
     image: mycouchdb-1:latest
+    volumes:
+      - "./web-volume/couchdb:/usr/local/var/lib/couchdb"
 
   web:
     build:
@@ -25,3 +29,5 @@ services:
     links:
       - "redisdb:redis"
       - "couchdb:mycouchdb-1"
+#    volumes:
+#      - "./web-volume/web:/app/couchdb"
