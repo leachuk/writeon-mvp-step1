@@ -33,11 +33,3 @@ services:
       - "couchdb:mycouchdb-1"
 #    volumes:
 #      - "./web-volume/web:/app/couchdb"
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
-    links:
-        - "web:web"
-    ports:
-        - "80:80"
