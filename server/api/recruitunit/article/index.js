@@ -9,6 +9,7 @@ var router = express.Router();
 var authService = require(appDir + '/services/auth/auth.controller').AuthService;
 
 router.get('/', controller.index);
+router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read'), controller.getArticle);
 router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('create'), controller.createJobSubmission);
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
 router.get('/getusertestresults', controller.getUserTestResults);
