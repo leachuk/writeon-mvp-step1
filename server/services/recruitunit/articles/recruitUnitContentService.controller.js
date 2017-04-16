@@ -485,7 +485,7 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
   console.log("in RecruitUnitContentService, createArticle");
   console.log(req.body);
 
-  var JobModel = require("server/models/RecruitUnit.Job.All.js");
+  var JobModel = require(appDir + "/models/RecruitUnit.Job.All.js");
 
   var returnSuccess = null;
 
@@ -593,8 +593,8 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
   console.log(req.body);
 
   var _this = this; //so we can re-use internal prototype functions
-  var sourceTestModelPath = "server/models/RecruitUnit.ComparisonTest.js";
-  var comparisonModelPath = "server/models/RecruitUnit.Job.All.js";
+  var sourceTestModelPath = appDir + "/models/RecruitUnit.ComparisonTest.js";
+  var comparisonModelPath = appDir + "/models/RecruitUnit.Job.All.js";
   var testSourceDocId = req.param("testsourceid"); //the document which contains the comparison test rules and values
   var comparisonDocId = req.param("comparisonid"); //the submitted recruiters document
   //console.log("testSourceDocId:" + testSourceDocId);
