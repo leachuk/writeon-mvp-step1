@@ -23,7 +23,7 @@ exports.getArticle = function(req, res, next) {
 	// console.log("getArticle type: " + type);
 	// console.log("getArticle id: " + id);
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.param('modelId'));
+  var applicationHandler = require(appDir + req.param('modelId'));
   var appService = applicationHandler.Service;
 
   var modelPath = req.param("model");
@@ -66,7 +66,7 @@ exports.saveComparison = function(req, res) {
   // Pass require path from client in req.query.modelId
   // for now make it the literal path to the controller, to be an id with a lookup on the server.
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(appDir + req.query.modelId);
   var appService = applicationHandler.Service;
 
   appService.createComparison(req, {}, "", function(err, result){
@@ -145,7 +145,7 @@ exports.compare = function(req, res) {
 
 exports.updateArticle = function(req,res){
     console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-    var applicationHandler = require(req.query.modelId);
+    var applicationHandler = require(appDir + req.query.modelId);
     var appService = applicationHandler.Service;
 
     appService.updateArticle(req, function(err, result){
@@ -190,7 +190,7 @@ exports.listMyArticles = function(req, res){
 exports.listMyTestContent = function(req, res){
   console.log("article.controller listMyTestContent");
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(appDir + req.query.modelId);
   var appService = applicationHandler.Service;
 
   appService.listMyTestContent(req, function(err, result){
@@ -223,7 +223,7 @@ exports.deleteArticle = function(req, res){
 exports.search = function(req, res){
   console.log("article.controller search");
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(appDir + req.query.modelId);
   var appService = applicationHandler.Service;
 
   appService.search(req, function(err, result){

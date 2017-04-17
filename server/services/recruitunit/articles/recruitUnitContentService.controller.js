@@ -304,7 +304,7 @@ RecruitUnitContentService.prototype.search = function(req, func_callback){
   //var listResultArray = [];
   var returnSuccess = null;
 
-  var Model = require(req.param('modelType'));
+  var Model = require(appDir + req.param('modelType'));
   var searchJson = req.param('searchJson');
   var requestParams = req.query;
   var getAllData = requestParams.getAllData;
