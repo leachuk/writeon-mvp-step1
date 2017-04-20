@@ -10,7 +10,7 @@ var authHandlers = require(appDir + '/services/auth/auth.controller');
 
 //create user database on signup
 exports.signup = function(req, res) {
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(appDir + req.query.modelId); //todo: this will fail as path will be incorrect
   var appService = applicationHandler.Service;
 
   appService.createNewUser(req, function(err, result){
