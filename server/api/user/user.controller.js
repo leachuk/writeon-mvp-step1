@@ -17,7 +17,7 @@ exports.signup = function(req, res) {
     if (!err){
       res.send(result);
     } else {
-      res.send(err);
+      res.status(401).send(err);
     }
   });
 };
