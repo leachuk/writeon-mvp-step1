@@ -125,7 +125,7 @@ AuthService.prototype.initUserAuthorization = function() {
 //operation param maps to the role permissions of create, read, update, delete. Can be passed as an array i.e. ['create','read'], or single string 'create'
 AuthService.prototype.checkUserIsAuthorisedOperation = function(operation){
   var self = this;
-  var middleware = false;
+  var middleware = false; //todo: wtf is this for?
 
   return function(req, res, next){
     // check if this is a middleware call
