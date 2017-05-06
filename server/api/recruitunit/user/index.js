@@ -7,10 +7,11 @@ var controller = require('./user.controller');
 var router = express.Router();
 
 var authService = require(appDir + '/services/auth/auth.controller').AuthService;
+var userValidationService = require(appDir + '/services/recruitunit/validation/user').UserValidationService;
 authService.initUserAuthorization();
 //var acl = authService.acl();
 
-router.post('/signin', controller.signin);
+router.post('/signin', userValidationService.signin(), controller.signin);
 router.get('/getuserdetails/:userguid', authService.checkUserIsAuthorisedOperation('read'),controller.getUserFromGuid);//secured through acl
 router.post('/updateuser/:useremail', authService.checkUserIsAuthorisedOperation('update'),controller.updateUser);
 router.get('/getdevemailfromdocid/:docid', authService.checkUserIsAuthorisedOperation('read'),controller.getDevEmailFromDocId);

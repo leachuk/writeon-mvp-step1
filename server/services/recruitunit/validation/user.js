@@ -10,13 +10,27 @@ var signUpSchema = Joi.object().keys({
   key: Joi.string().min(3).max(100).required()
 });
 
+var signInSchema = Joi.object().keys({
+  username: Joi.string().email().min(3).max(100).required(),
+  password: Joi.string().min(3).max(100).required()
+});
+
 function UserValidationService(){};
 
 UserValidationService.prototype.signup = function(){
-  return function(req, res, next) {
-    console.log("UserValidationService: signup");
+  console.log("UserValidationService: signup");
+  return validatePost(signUpSchema);
+}
 
-    Joi.validate(req.body, signUpSchema, function (err, value) {
+UserValidationService.prototype.signin = function(){
+  console.log("UserValidationService: signin");
+  return validatePost(signInSchema);
+}
+
+// **** Private ***** //
+function validatePost(schema){
+  return function(req, res, next) {
+    Joi.validate(req.body, schema, function (err, value) {
       if (!err){
         next();
       } else {

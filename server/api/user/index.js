@@ -13,7 +13,7 @@ authService.initUserAuthorization();
 var userValidationService = require(appDir + '/services/recruitunit/validation/user').UserValidationService;
 
 router.post('/signup', userValidationService.signup(), controller.signup);
-router.post('/signin', controller.signin);
+//router.post('/signin', controller.signin);
 router.get('/getuser/:username', controller.getthisuser);//secured to specific user making the request
 router.get('/getspecifieduser/:username', authService.checkUserIsAuthorisedOperation('read'),controller.getuser);//secured through acl
 router.post('/authenticate', controller.authenticate);
