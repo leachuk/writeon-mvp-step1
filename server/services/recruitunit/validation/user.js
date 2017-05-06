@@ -2,6 +2,7 @@
 var Joi = require('joi');
 var errorMessage400 = "Invalid request parameters";
 
+// ***** Schemas ***** //
 var signUpSchema = Joi.object().keys({
   email: Joi.string().email().max(100).required(),
   jobRole: Joi.string().valid(['developer','recruiter']).required(),
@@ -15,6 +16,7 @@ var signInSchema = Joi.object().keys({
   password: Joi.string().min(3).max(100).required()
 });
 
+// ***** Middleware Service ****** //
 function UserValidationService(){};
 
 UserValidationService.prototype.signup = function(){
@@ -27,7 +29,7 @@ UserValidationService.prototype.signin = function(){
   return validatePost(signInSchema);
 }
 
-// **** Private ***** //
+// **** Private Functions ***** //
 function validatePost(schema){
   return function(req, res, next) {
     Joi.validate(req.body, schema, function (err, value) {
