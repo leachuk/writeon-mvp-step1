@@ -2,4 +2,4 @@ writeon-mvp-step1
 =================
 
 basic MVP using angular-fullstack
-new 2
+new 1
