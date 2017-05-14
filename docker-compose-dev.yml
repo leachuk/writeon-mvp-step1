@@ -1,0 +1,36 @@
+version: '2'
+services:
+  redisdb:
+    ports:
+      - "6379:6379" #enabled for local debugging
+    image: redis
+    volumes:
+      - "./web-volume/redis:/data"
+
+  couchdb:
+    build:
+      context: .
+      dockerfile: Dockerfile-couchdb
+    ports:
+      - "5984:5984" #enabled for local debugging
+    image: mycouchdb-1:latest
+    volumes:
+      - "./web-volume/couchdb:/usr/local/var/lib/couchdb"
+
+#  web:
+#    build:
+#      context: .
+#      args:
+#        - http_proxy
+#        - https_proxy
+#        - no_proxy
+##    volumes:
+##      - "./app:/src/app"
+#    ports:
+#      - "9000:9000"
+#      - "9615:9615" #expose pm2 --web monitor port
+#    links:
+#      - "redisdb:redis"
+#      - "couchdb:mycouchdb-1"
+##    volumes:
+##      - "./web-volume/web:/app/couchdb"
