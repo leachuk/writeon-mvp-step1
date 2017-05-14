@@ -12,10 +12,16 @@ RUN mkdir -p /app/server && cp -a /tmp/node_modules /app/
 ADD /package.json /app/
 ADD /couchdb /app/couchdb
 
+#install pm2 globally
+RUN npm install -g pm2
+
 # Define working directory
 WORKDIR /app
 ADD server /app/server
 
 EXPOSE 9000
 
-CMD ["npm", "run", "start-prod"]
+ENV NODE_ENV production
+CMD ["pm2-docker", "server/app.js", "--web"]
+#CMD ["npm", "run", "start-prod"]
+#CMD ["npm", "start"]

@@ -69,7 +69,7 @@ module.exports = function(app) {
     app.use(morgan('dev')); //whats this for?
     app.use(errorHandler()); // Error handler - has to be last
 
-    console.log("attempting couchdb bootstrap");
+    console.log("attempting couchdb production bootstrap");
     couchdbBootstrap('http://admin:admin@mycouchdb-1:5984', 'couchdb', function(error, response) {
       if (error) {
         console.log("couchdb bootstrap error:");
@@ -89,7 +89,7 @@ module.exports = function(app) {
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
 
-    console.log("attempting couchdb bootstrap");
+    console.log("attempting couchdb development bootstrap");
     couchdbBootstrap('http://admin:admin@localhost:5984', 'couchdb', function(error, response) {
       if (error) {
         console.log(error);
