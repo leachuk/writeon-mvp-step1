@@ -26,6 +26,6 @@ ADD server /app/server
 EXPOSE 9000
 
 ENV NODE_ENV production
-CMD ["pm2-docker", "--public", "lira4uhnz1iqo21", "--secret", "2a1aiec0svvgtf0",  "server/app.js", "--web"]
+CMD ["pm2-docker", "--public", "2a1aiec0svvgtf0", "--secret", "lira4uhnz1iqo21",  "server/app.js", "--web"]
 #CMD ["npm", "run", "start-prod"]
 #CMD ["npm", "start"]
