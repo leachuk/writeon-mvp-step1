@@ -1,9 +1,13 @@
 #FROM node:7.7.3
 FROM mhart/alpine-node:7.7.3
 
+#Install git for nano-adaptor dependency install. Could change to use a git submodule which might negate this.
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
 # Provides cached layer for node_modules
 ADD package.json /tmp/package.json
-ADD dependencies/nano-adapter/ /tmp/dependencies/nano-adapter
+#ADD dependencies/nano-adapter/ /tmp/dependencies/nano-adapter
 ENV NODE_PATH /app
 RUN cd /tmp && npm install --production
 
