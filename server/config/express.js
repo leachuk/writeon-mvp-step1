@@ -49,6 +49,15 @@ module.exports = function(app) {
     next();
   });
 
+  //digital dog
+  var dd_options = {
+    'response_code':true,
+    'tags': ['app:writeon']
+  }
+  var connect_datadog = require('connect-datadog')(dd_options);
+  //Add the datadog-middleware before your router
+  app.use(connect_datadog);
+
   //Set secured routes which require authentication
   app.use('/api', expressJwt({secret : JWT_SECRET}).unless({path: ['/api/things',
                                                                    '/api/users/authenticate',
@@ -63,14 +72,6 @@ module.exports = function(app) {
 
 
   if ('production' === env) {
-    var dd_options = {
-      'response_code':true,
-      'tags': ['app:writeon']
-    }
-    var connect_datadog = require('connect-datadog')(dd_options);
-    //Add the datadog-middleware before your router
-    app.use(connect_datadog);
-
     app.use(express.static(path.join(config.root, '.tmp')));
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', 'client');
