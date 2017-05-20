@@ -20,6 +20,13 @@ var JWT_SECRET = "wqfl3rlk2l4kRED";
 module.exports = function(app) {
   var env = app.get('env');
 
+  //datadog
+  const dd_options = {
+    'response_code':true,
+    'tags': ['app:writeon-api']
+  };
+  const connect_datadog = require('connect-datadog')(dd_options);
+
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
   app.set('secret', JWT_SECRET);
@@ -28,6 +35,8 @@ module.exports = function(app) {
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
+
+  app.use(connect_datadog);
 
   // Add headers to allow remote API calls
   app.use(function (req, res, next) {

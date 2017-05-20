@@ -12,6 +12,9 @@ var config = require('./config/environment');
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
+
+app.use(require('express-status-monitor')());
+
 require('./config/express')(app);
 require('./routes')(app);
 
