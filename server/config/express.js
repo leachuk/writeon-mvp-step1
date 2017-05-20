@@ -23,7 +23,7 @@ module.exports = function(app) {
   //datadog
   const dd_options = {
     'response_code':true,
-    'tags': ['app:writeon-api']
+    'tags': ['app:writeon-api-node']
   };
   const connect_datadog = require('connect-datadog')(dd_options);
 
@@ -33,10 +33,9 @@ module.exports = function(app) {
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  app.use(connect_datadog);
   app.use(methodOverride());
   app.use(cookieParser());
-
-  app.use(connect_datadog);
 
   // Add headers to allow remote API calls
   app.use(function (req, res, next) {
