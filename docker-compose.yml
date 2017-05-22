@@ -29,6 +29,7 @@ services:
     ports:
       - "9000:9000"
       - "9615:9615" #expose pm2 --web monitor port
+      - "8125:8125" #node-datadog node monitor port
     links:
       - "redisdb:redis"
       - "couchdb:mycouchdb-1"
