@@ -34,6 +34,7 @@ services:
       - "couchdb:mycouchdb-1"
 #    volumes:
 #      - "./web-volume/web:/app/couchdb"
+    image: writeon_web
     environment:
          - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
 
