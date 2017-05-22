@@ -39,7 +39,9 @@ services:
 
   #datadog integration
   datadog:
-      image: datadog/docker-dd-agent:latest-alpine
+      build:
+        context: .
+        dockerfile: Dockerfile-dogstatd
       links:
        - web # ensures that the web app can send metrics
       environment:

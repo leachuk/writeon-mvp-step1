@@ -1,0 +1,4 @@
+FROM datadog/docker-dogstatsd
+
+# Set your API key
+RUN sed -i -e"s/^.*api_key:.*$/api_key: 20b3ad2b6be21daf2a90bb6b4acecdb7/" /etc/dd-agent/datadog.conf
