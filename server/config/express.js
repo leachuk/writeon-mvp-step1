@@ -22,6 +22,7 @@ module.exports = function(app) {
 
   //datadog
   const dd_options = {
+    'dogstatd':  new (require("node-dogstatsd")).StatsD("datadog", null, null, {}),
     'response_code':true,
     'tags': ['app:writeon-api-node']
   };
