@@ -36,7 +36,7 @@ services:
 #      - "./web-volume/web:/app/couchdb"
     image: writeon_web
     environment:
-         - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
+      - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
 
   #datadog integration
   datadog:
@@ -44,9 +44,10 @@ services:
         context: .
         dockerfile: Dockerfile-dogstatd
       links:
-       - "web:writeon_web" # ensures that the web app can send metrics
+       - web # ensures that the web app can send metrics
       environment:
        - API_KEY=20b3ad2b6be21daf2a90bb6b4acecdb7
+       - DD_HOSTNAME=compose-datadog-alpine-prod
       volumes:
        - /var/run/docker.sock:/var/run/docker.sock
        - /proc/mounts:/host/proc/mounts:ro

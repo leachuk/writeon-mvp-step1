@@ -19,7 +19,7 @@ require('./config/express')(app);
 
 //setup datadog before routes
 const dd_options = {
-  'dogstatsd':  new (require("node-dogstatsd")).StatsD("localhost", null, null, {}),
+  'dogstatsd':  new (require("node-dogstatsd")).StatsD(process.env.DATADOG_HOST, null, null, {}),
   'response_code':true,
   'tags': ['app:writeon-api-node-local']
 };
@@ -30,7 +30,7 @@ require('./routes')(app);
 // Start server
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
-  console.log('DATADOG_HOST env var:' + process.env.DATADOG_HOST);
+  console.log('DATADOG_HOST env var: ' + process.env.DATADOG_HOST);
 });
 
 // Expose app

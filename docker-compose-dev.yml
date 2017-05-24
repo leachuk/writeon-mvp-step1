@@ -34,3 +34,18 @@ services:
 #      - "couchdb:mycouchdb-1"
 ##    volumes:
 ##      - "./web-volume/web:/app/couchdb"
+
+  #datadog integration
+  datadog:
+      build:
+        context: .
+        dockerfile: Dockerfile-dogstatd
+#      links:
+#       - "web:writeon_web" # ensures that the web app can send metrics
+      environment:
+       - API_KEY=20b3ad2b6be21daf2a90bb6b4acecdb7
+       - DD_HOSTNAME=compose-datadog-alpine
+      volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - /proc/mounts:/host/proc/mounts:ro
+       - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
