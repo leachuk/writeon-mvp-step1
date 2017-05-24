@@ -20,21 +20,12 @@ var JWT_SECRET = "wqfl3rlk2l4kRED";
 module.exports = function(app) {
   var env = app.get('env');
 
-  //datadog
-  const dd_options = {
-    'dogstatd':  new (require("node-dogstatsd")).StatsD("datadog", null, null, {}),
-    'response_code':true,
-    'tags': ['app:writeon-api-node']
-  };
-  const connect_datadog = require('connect-datadog')(dd_options);
-
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
   app.set('secret', JWT_SECRET);
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  app.use(connect_datadog);
   app.use(methodOverride());
   app.use(cookieParser());
 

@@ -16,6 +16,15 @@ var server = require('http').createServer(app);
 app.use(require('express-status-monitor')());
 
 require('./config/express')(app);
+
+//setup datadog before routes
+const dd_options = {
+  'dogstatsd':  new (require("node-dogstatsd")).StatsD("localhost", null, null, {}),
+  'response_code':true,
+  'tags': ['app:writeon-api-node-local']
+};
+app.use(require('connect-datadog')(dd_options));
+
 require('./routes')(app);
 
 // Start server
