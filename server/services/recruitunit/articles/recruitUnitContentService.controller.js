@@ -38,7 +38,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, func_callback)
 	console.log("in RecruitUnitContentService, createArticle");
 	console.log(req.body);
 
-  var Model = require(req.param('modelType'));
+  var Model = require(appDir + req.param('modelType'));
 
 	var returnSuccess = null;
 

@@ -45,7 +45,7 @@ exports.createArticle = function(req, res) {
   // Pass require path from client in req.query.modelId
   // for now make it the literal path to the controller, to be an id with a lookup on the server.
   console.log("setting app handler to use methods defined by controller:" + req.query.modelId);
-  var applicationHandler = require(req.query.modelId);
+  var applicationHandler = require(appDir + req.query.modelId);
   var appService = applicationHandler.Service;
 
 	appService.createArticle(req, function(err, result){
