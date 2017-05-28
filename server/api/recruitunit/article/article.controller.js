@@ -15,7 +15,7 @@ exports.getArticle = function(req, res, next) {
   console.log("in recruitunit getArticle");
   var applicationHandler = require(appDir + '/services/recruitunit/articles/recruitUnitContentService.controller.js');
   var appService = applicationHandler.Service;
-  var modelPath = appDir + '/models/RecruitUnit.Job.All.js';
+  var modelPath = '/models/RecruitUnit.Job.All.js'; //appDir is appended in subsequent calls
 
   appService.getArticle(req, modelPath, function(err, result){
     if (!err){
