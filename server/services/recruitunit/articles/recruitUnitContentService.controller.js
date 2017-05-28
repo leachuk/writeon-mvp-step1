@@ -78,7 +78,7 @@ RecruitUnitContentService.prototype.createArticle = function(req, func_callback)
 
 RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_callback){
 	var returnSuccess = null;
-  var Model = require(modelPath); //def needed (should refactor so consistent. Get from req modelType), passed in from other functions, eg in getTestSourceAndComparisonDocuments
+  var Model = require(appDir + modelPath); //def needed (should refactor so consistent. Get from req modelType), passed in from other functions, eg in getTestSourceAndComparisonDocuments
 	var requestParams = req.query;
 	var getAllData = requestParams.getAllData;
 	console.log("getAllData:" + getAllData);
@@ -550,7 +550,7 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
 
   var _this = this;
   var currentDisplayDevEmail = null;
-  req.params.modelType = appDir + '/models/RecruitUnit.Job.All.js';
+  req.params.modelType = '/models/RecruitUnit.Job.All.js'; //appDir is appended in subsequent calls
   req.params.updateData = null;
 
   async.series({
