@@ -240,7 +240,7 @@ RecruitUnitContentService.prototype.updateArticle = function(req, func_callback)
 	//var dbtable = dbNameArticles;
 
 	var id = req.param("id");
-  var Model = require(req.param("modelType"));
+  var Model = require(appDir + req.param("modelType"));
   var updateData = req.param("updateData");
 
 	console.log("updateData");
