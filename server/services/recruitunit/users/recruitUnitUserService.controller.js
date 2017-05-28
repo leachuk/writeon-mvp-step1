@@ -20,8 +20,6 @@ var JobDocumentModel = require(appDir + '/models/RecruitUnit.Job.All.js');
 
 var _dbUtils = require(appDir + '/services/dbUtils/dbUtils.controller').DbUtils;
 var _authUtils = require(appDir + '/services/authUtils/authUtils.controller').AuthUtils;
-var _recruitUnitUserUtils = require(appDir + '/services/recruitunit/users/recruitUnitUserService.controller').Service;
-
 
 function RecruitUnitUserService(){};
 
@@ -403,7 +401,7 @@ RecruitUnitUserService.prototype.getDevEmailFromDocId = function(req, docId, fun
   }
   function getUserEmailFromGuid(userGUID, callback){
     if (userGUID.length > 0){
-      _recruitUnitUserUtils.getUserFromGuidNoAuth(userGUID, function(err, result){
+      _this.getUserFromGuidNoAuth(userGUID, function(err, result){
         if(!err){
           callback(null, result.data);
         }else{
