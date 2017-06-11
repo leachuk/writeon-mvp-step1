@@ -11,8 +11,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-couchdb
-#    ports:
-#      - "5984:5984" #enabled for local debugging
+    ports:
+      - "5984:5984" #enabled for local debugging
     image: mycouchdb-1:latest
     volumes:
       - "./web-volume/couchdb:/usr/local/var/lib/couchdb"
