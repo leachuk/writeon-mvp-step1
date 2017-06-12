@@ -37,8 +37,8 @@ services:
     image: writeon_web
     environment:
       - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
-      - COUCH_REPLICATION_SOURCE=foo
-      - COUCH_REPLICATION_TARGET=bar
+      - COUCH_REPLICATION_SOURCE=${COUCH_REPLICATION_SOURCE}
+      - COUCH_REPLICATION_TARGET=${COUCH_REPLICATION_TARGET}
 
   #datadog integration
   datadog:
