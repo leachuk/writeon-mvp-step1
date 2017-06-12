@@ -26,8 +26,8 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
   if (targetHost !== null && targetHost !== undefined && targetHost !== "") {
     var articleDb = config.dbNameArticles;
     var usersDb = config.dbNameUsers;
-    var targetDbArticleUrl = targetHost + "/" + articleDb;
-    var targetDbUserUrl = targetHost + "/" + usersDb;
+    var targetDbArticleUrl = "http://" + targetHost + "/" + articleDb;
+    var targetDbUserUrl = "http://" + config.couchadminusername + ":" + config.couchadminpassword + "@" + targetHost + "/" + usersDb;
 
     nano.db.replicate(usersDb, targetDbUserUrl,
       {

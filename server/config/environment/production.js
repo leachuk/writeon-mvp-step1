@@ -13,6 +13,8 @@ var _couch = {
 
 module.exports = {
   root: path.normalize(__dirname + '/../../../..'),
+  couchadminusername: _couch.adminusername,
+  couchadminpassword: _couch.adminpassword,
   couchuriadmin: "http://" + _couch.adminusername
                            + ":" + _couch.adminpassword
                            + "@" + _couch.hostname
