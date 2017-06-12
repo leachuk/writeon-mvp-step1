@@ -8,11 +8,16 @@ DbUtils.prototype.convertToDbName = function(inName){
 
 	var dbName = inName;
 	//dbName is to be the email address with @ converted to $ (couchdb requirement)
-	var dbName = dbName.replace("@","$"); 
+	var dbName = dbName.replace("@","$");
 	//replace '.' with '+'
 	var dbName = dbName.replace(".","+");
 
 	return dbName;
+};
+
+DbUtils.prototype.enableDatabaseContinuousReplication = function(sourceHost, targetHost){
+  console.log("in enableDatabaseContinuousReplication");
+  console.log("sourceHost:" + sourceHost + ", targetHost:" + targetHost);
 };
 
 exports.DbUtils = new DbUtils;

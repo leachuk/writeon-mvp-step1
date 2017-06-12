@@ -3,6 +3,7 @@
  */
 
 'use strict';
+var appDir = require('path').dirname(require.main.filename);
 var couchdbBootstrap = require('couchdb-bootstrap');
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -15,7 +16,9 @@ var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
 var expressJwt = require('express-jwt');
+var dbUtils = require(appDir + '/services/dbUtils');
 var JWT_SECRET = "wqfl3rlk2l4kRED";
+
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -79,6 +82,11 @@ module.exports = function(app) {
         console.log(response);
       }
     })
+
+    //setup couchdb continuous replication
+    var couchReplicationSource = app.get('COUCH_REPLICATION_SOURCE');
+    var couchReplicationTarget = app.get('COUCH_REPLICATION_TARGET');
+    dbUtils.enableDatabaseContinuousReplication(couchReplicationSource, couchReplicationTarget);
   }
 
   if ('development' === env || 'test' === env) {
