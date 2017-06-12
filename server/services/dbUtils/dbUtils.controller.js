@@ -23,7 +23,7 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
   console.log("in enableDatabaseContinuousReplication");
   console.log("targetHost:" + targetHost);
 
-  if (targetHost !== null) {
+  if (targetHost !== null && targetHost !== undefined && targetHost !== "") {
     var articleDb = config.dbNameArticles;
     var usersDb = config.dbNameUsers;
     var targetDbArticleUrl = targetHost + "/" + articleDb;
