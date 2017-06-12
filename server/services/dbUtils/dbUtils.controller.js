@@ -21,7 +21,7 @@ DbUtils.prototype.convertToDbName = function(inName){
 
 DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
   console.log("in enableDatabaseContinuousReplication");
-  console.log("sourceHost:" + sourceHost + ", targetHost:" + targetHost);
+  console.log("targetHost:" + targetHost);
 
   var articleDb = config.dbNameArticles;
   var usersDb = config.dbNameUsers;
