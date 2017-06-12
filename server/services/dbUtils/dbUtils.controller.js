@@ -29,6 +29,7 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
     var targetDbArticleUrl = "http://" + targetHost + "/" + articleDb;
     var targetDbUserUrl = "http://" + config.couchadminusername + ":" + config.couchadminpassword + "@" + targetHost + "/" + usersDb;
 
+    //replicate users
     nano.db.replicate(usersDb, targetDbUserUrl,
       {
         create_target: true,
@@ -41,6 +42,21 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
           console.log(err);
         }
       });
+
+    //replicate main test documents
+    nano.db.replicate(articleDb, targetDbArticleUrl,
+      {
+        create_target: true,
+        continuous: true
+      },
+      function (err, body) {
+        if (!err) {
+          console.log(body);
+        } else {
+          console.log(err);
+        }
+      });
+
   }
 };
 
