@@ -23,21 +23,25 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
   console.log("in enableDatabaseContinuousReplication");
   console.log("targetHost:" + targetHost);
 
-  var articleDb = config.dbNameArticles;
-  var usersDb = config.dbNameUsers;
-  var targetDbArticleUrl = targetHost + "/" + articleDb;
-  var targetDbUserUrl = targetHost + "/" + userDb;
+  if (targetHost !== null) {
+    var articleDb = config.dbNameArticles;
+    var usersDb = config.dbNameUsers;
+    var targetDbArticleUrl = targetHost + "/" + articleDb;
+    var targetDbUserUrl = targetHost + "/" + usersDb;
 
-  nano.db.replicate(usersDb, targetDbUserUrl,
-    { create_target: true,
-      continuous: true },
-    function(err, body) {
-      if (!err) {
-        console.log(body);
-      } else {
-        console.log(err);
-      }
-  });
+    nano.db.replicate(usersDb, targetDbUserUrl,
+      {
+        create_target: true,
+        continuous: true
+      },
+      function (err, body) {
+        if (!err) {
+          console.log(body);
+        } else {
+          console.log(err);
+        }
+      });
+  }
 };
 
 exports.DbUtils = new DbUtils;
