@@ -85,10 +85,10 @@ module.exports = function(app) {
 
     //setup couchdb continuous replication
     console.log("attempting couchdb replication");
-    var couchReplicationSource = process.env.COUCH_REPLICATION_SOURCE;
+
     var couchReplicationTarget = process.env.COUCH_REPLICATION_TARGET;
-    console.log("couchReplicationSource [" + couchReplicationSource + "], couchReplicationTarget[" + couchReplicationTarget + "]");
-    dbUtils.enableDatabaseContinuousReplication(couchReplicationSource, couchReplicationTarget);
+    console.log("couchReplicationTarget[" + couchReplicationTarget + "]");
+    dbUtils.enableDatabaseContinuousReplication(couchReplicationTarget);
   }
 
   if ('development' === env || 'test' === env) {
