@@ -1,0 +1,13 @@
+- name: this is a play at the top level of a file
+  hosts: all
+  remote_user: appadmin
+
+  tasks:
+
+  - name: say hi
+    tags: foo
+    shell: echo "hi..."
+    register: hello
+
+  - debug: msg="{{ hello.stdout }}"
+
