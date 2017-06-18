@@ -4,10 +4,13 @@
 
   tasks:
 
-  - name: say hi
+  - name: Say hi
     tags: foo
     shell: echo "hi..."
     register: hello
 
   - debug: msg="{{ hello.stdout }}"
 
+
+  - name: Log current timestamp
+    shell: date >> ansible-runs.txt
