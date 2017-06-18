@@ -11,6 +11,5 @@
 
   - debug: msg="{{ hello.stdout }}"
 
-
   - name: Log current timestamp
     shell: date >> ansible-runs.txt
