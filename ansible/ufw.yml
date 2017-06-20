@@ -19,8 +19,10 @@
     ufw:
       state: enabled
       policy: deny
+    become: true
 
   - name: ufw allow ssh
     ufw:
       rule: allow
       port: ssh
+    become: true
