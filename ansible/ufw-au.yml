@@ -1,0 +1,43 @@
+- name: this is a play at the top level of a file
+  hosts: all
+  remote_user: appadmin
+
+  tasks:
+
+  - name: Say hi
+    tags: foo
+    shell: echo "hi..."
+    register: hello
+
+  - debug: msg="{{ hello.stdout }}"
+
+  - name: Log current timestamp
+    shell: date >> ansible-runs.txt
+
+#configure ufw. Break up into roles later.
+  - name: ufw enabled and set initial deny all
+    ufw:
+      state: enabled
+      policy: deny
+    become: true
+
+  - name: ufw allow ssh
+    ufw:
+      rule: allow
+      name: OpenSSH
+    become: true
+
+  - name: ufw allow all on bardly app port
+    ufw:
+      rule: allow
+      port: 9000
+    become: true
+
+  - name: ufw allow au (108.61.251.93) to us (104.207.151.30) couchdb port
+    ufw:
+      rule: allow
+      src: 104.207.151.30
+      from_port: 5984
+      dest: 108.61.251.93
+      to_port: 5984
+    become: true
