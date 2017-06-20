@@ -13,3 +13,14 @@
 
   - name: Log current timestamp
     shell: date >> ansible-runs.txt
+
+#configure ufw. Break up into roles later.
+  - name: ufw enabled and set initial deny all
+    ufw:
+      state: enabled
+      policy: deny
+
+  - name: ufw allow ssh
+    ufw:
+      rule: allow
+      port: ssh
