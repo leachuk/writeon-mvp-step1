@@ -24,5 +24,11 @@
   - name: ufw allow ssh
     ufw:
       rule: allow
-      port: ssh
+      name: OpenSSH
+    become: true
+
+  - name: ufw allow bardly app port
+    ufw:
+      rule: allow
+      port: 9000
     become: true
