@@ -36,8 +36,8 @@
   - name: ufw allow us (104.207.151.30) to au (108.61.251.93) couchdb port for replication
     ufw:
       rule: allow
-      src: 108.61.251.93
+      src: 104.207.151.30
       from_port: 5984
-      dest: 104.207.151.30
+      dest: 108.61.251.93
       to_port: 5984
     become: true
