@@ -1,0 +1,14 @@
+#Setup docker config so ufw rules take affect
+- name: configure docker so ufw rules work
+  hosts: all
+  remote_user: appadmin
+
+  tasks:
+
+  - name: Set DEFAULT_FORWARD_POLICY config
+    shell: sed -i '$a DEFAULT_FORWARD_POLICY="ACCEPT"' /etc/default/docker
+    become: true
+
+  - name: Update ufw rules.before with nat update
+    shell: sed -i 's/.*filter.*/\n*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT\n\n&/' /etc/ufw/before.rules
+    become: true
