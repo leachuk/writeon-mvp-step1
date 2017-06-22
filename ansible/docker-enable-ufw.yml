@@ -14,7 +14,7 @@
     become: true
 
   - name: Create docker daemon config and set iptables to false
-    shell: echo '{ "iptables": false }' | sudo tee --append /etc/docker/daemon.json
+    shell: "echo '{ \"iptables\": false }' | sudo tee --append /etc/docker/daemon.json"
     become: true
 
   - name: ufw reload
