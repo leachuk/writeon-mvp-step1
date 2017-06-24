@@ -5,19 +5,43 @@
 
   tasks:
 
-  - name: Set DEFAULT_FORWARD_POLICY config
-    shell: sed -i '$a DEFAULT_FORWARD_POLICY="ACCEPT"' /etc/default/docker
+#  - name: Set DEFAULT_FORWARD_POLICY config
+#    shell: sed -i '$a DEFAULT_FORWARD_POLICY="ACCEPT"' /etc/default/docker
+#    become: true
+  - name: Test for DEFAULT_FORWARD_POLICY in docker
+    shell: grep "DEFAULT_FORWARD_POLICY=\"ACCEPT\"" /etc/default/docker
+    register: test_default_forward_policy
     become: true
 
-  - name: Update ufw rules.before with nat update
-    shell: sed -i 's/.*filter.*/\n*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT\n\n&/' /etc/ufw/before.rules
+  - name: Set DEFAULT_FORWARD_POLICY config if it doesn't already exist
+    lineinfile: dest=/etc/default/docker line="DEFAULT_FORWARD_POLICY=\"ACCEPT\""
+    when: test_default_forward_policy.stdout == ""
     become: true
 
-  - name: Create docker daemon config and set iptables to false
-    shell: "echo '{ \"iptables\": false }' | sudo tee --append /etc/docker/daemon.json"
+
+  - name: Test for POSTROUTING ACCEPT in ufw/before.rules
+    shell: grep -Pzl "*nat.*\n.*:POSTROUTING ACCEPT [0:0].*\n.*-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE.*\n.*COMMIT" /etc/ufw/before.rules
+    register: test_ufw_postrouting
     become: true
 
-  - name: ufw reload
-    ufw:
-      state: reloaded
-    become: true
+  - name: Update ufw rules.before with nat update if not already present
+    lineinfile:
+      state   : present
+      dest    : /etc/ufw/before.rules
+      line    : '*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT'
+      regexp  : ''
+      insertbefore: 's/.*filter.*/'
+    when: checkIfLineIsHere.changed
+
+#  - name: Update ufw rules.before with nat update
+#    shell: sed -i 's/.*filter.*/\n*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT\n\n&/' /etc/ufw/before.rules
+#    become: true
+#
+#  - name: Create docker daemon config and set iptables to false
+#    shell: "echo '{ \"iptables\": false }' | sudo tee --append /etc/docker/daemon.json"
+#    become: true
+#
+#  - name: ufw reload
+#    ufw:
+#      state: reloaded
+#    become: true
