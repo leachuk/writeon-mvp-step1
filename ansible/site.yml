@@ -1,0 +1,21 @@
+---
+- name: ufw rules config for au servers
+  hosts: au-webservers
+  remote_user: appadmin
+
+  roles:
+    - au-webservers
+
+- name: ufw rules config for us servers
+  hosts: us-webservers
+  remote_user: appadmin
+
+  roles:
+    - us-webservers
+
+- name: apply common config to all servers
+  hosts: all
+  remote_user: appadmin
+
+  roles:
+    - webservers

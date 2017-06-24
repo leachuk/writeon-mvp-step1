@@ -1,6 +1,6 @@
-[bardly-webservers]
-#au
-#108.61.251.93
-#us
+[au-webservers]
+108.61.251.93
+
+[us-webservers]
 104.207.151.30
 
