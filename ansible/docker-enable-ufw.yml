@@ -5,9 +5,6 @@
 
   tasks:
 
-#  - name: Set DEFAULT_FORWARD_POLICY config
-#    shell: sed -i '$a DEFAULT_FORWARD_POLICY="ACCEPT"' /etc/default/docker
-#    become: true
   - name: Test for DEFAULT_FORWARD_POLICY in docker
     shell: grep "DEFAULT_FORWARD_POLICY=\"ACCEPT\"" /etc/default/docker
     register: test_default_forward_policy
@@ -18,30 +15,47 @@
     when: test_default_forward_policy.stdout == ""
     become: true
 
-
-  - name: Test for POSTROUTING ACCEPT in ufw/before.rules
-    shell: grep -Pzl "*nat.*\n.*:POSTROUTING ACCEPT [0:0].*\n.*-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE.*\n.*COMMIT" /etc/ufw/before.rules
-    register: test_ufw_postrouting
+  - name: Update ufw rules.before with nat update if not already present
+    blockinfile:
+      path: /etc/ufw/before.rules
+      marker: "## {mark} added by ansible configuration"
+      backup: yes
+      insertbefore: BOF
+      block: |
+        *nat
+        :POSTROUTING ACCEPT [0:0]
+        -A POSTROUTING ! -o docker0 -s 172.17.0.0/16 -j MASQUERADE
+        COMMIT
     become: true
 
-  - name: Update ufw rules.before with nat update if not already present
-    lineinfile:
-      state   : present
-      dest    : /etc/ufw/before.rules
-      line    : '*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT'
-      regexp  : ''
-      insertbefore: 's/.*filter.*/'
-    when: checkIfLineIsHere.changed
+  - name: Test that /etc/docker/daemon.json exists
+    stat:
+      path: /etc/docker/daemon.json
+    register: stat_result
+    become: true
 
-#  - name: Update ufw rules.before with nat update
-#    shell: sed -i 's/.*filter.*/\n*nat\n:POSTROUTING ACCEPT [0:0]\n-A POSTROUTING ! -o docker0 -s 172.17.0.0\/16 -j MASQUERADE\nCOMMIT\n\n&/' /etc/ufw/before.rules
-#    become: true
-#
+  - name: Test for iptables json in docker daemon
+    shell: "grep '\"iptables\": false' /etc/docker/daemon.json"
+    register: test_iptables
+    become: true
+    when: stat_result.stat.exists == True
+
+  - name: Create docker daemon config and set iptables to false
+    blockinfile:
+      path: /etc/docker/daemon.json
+      create: yes
+      insertbefore: BOF
+      marker: ""
+      block: |
+        { "iptables": false }
+    become: true
+    when: (test_iptables.stdout is defined) and (test_iptables.stdout == "") or stat_result.stat.exists == False
+
 #  - name: Create docker daemon config and set iptables to false
 #    shell: "echo '{ \"iptables\": false }' | sudo tee --append /etc/docker/daemon.json"
 #    become: true
 #
-#  - name: ufw reload
-#    ufw:
-#      state: reloaded
-#    become: true
+  - name: ufw reload
+    ufw:
+      state: reloaded
+    become: true
