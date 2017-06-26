@@ -64,3 +64,14 @@
       name: docker
       state: restarted
     become: true
+
+  - name: docker-compose up for bardly project
+    shell: "docker-compose up &"
+    args:
+      chdir: /home/appadmin/projects/bardly
+
+  #requires pip install docker-py on the server. Try using shell module instead
+#  - name: docker-compose up for bardly project
+#    docker_service:
+#      project_src: /projects/bardly
+#      state: present
