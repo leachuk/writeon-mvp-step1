@@ -23,5 +23,6 @@ Built with nodejs and express. Provides user authentication and authorisation. J
 Deploy to pre-configured remote repo with: 
 
 ```
-git push prod-deploy master
+git push prod-deploy-vultr-au master
+git push prod-deploy-vultr-us master
 ```
