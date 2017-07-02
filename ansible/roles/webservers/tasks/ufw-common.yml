@@ -16,3 +16,9 @@
       rule: allow
       port: 9000
     become: true
+
+#  - name: ufw open couchdb port for testing
+#    ufw:
+#      rule: allow
+#      port: 5984
+#    become: true
