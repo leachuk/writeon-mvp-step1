@@ -6,7 +6,7 @@ var errorMessage400 = "Invalid request parameters";
 var signUpSchema = Joi.object().keys({
   email: Joi.string().email().max(100).required(),
   jobRole: Joi.string().valid(['developer','recruiter']).required(),
-  displayName: Joi.string().alphanum().min(3).max(100).required(),
+  displayName: Joi.string().regex(/^[A-Za-z0-9 _-]+$/).min(3).max(100).required(),
   password: Joi.string().min(3).max(100).required(),
   key: Joi.string().min(3).max(100).required()
 });
