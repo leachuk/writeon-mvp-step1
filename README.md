@@ -15,8 +15,8 @@ Built with nodejs and express. Provides user authentication and authorisation. J
   * run app `docker-compose up`
 * Docker Dev
   * build and run development instance (couchdb and redis dependencies are launched with ports mapped locally)
-  * `docker-compose build -f docker-compose-dev.yml`
-  * `docker-compose up -f docker-compose-dev.yml`
+  * `docker-compose -f docker-compose-dev.yml build`
+  * `docker-compose -f docker-compose-dev.yml up`
 
 #Deploy
 
