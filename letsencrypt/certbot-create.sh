@@ -4,7 +4,7 @@ docker pull pierreprinetti/certbot:latest
 
 GetCert() {
         docker run \
-          -v $(pwd)/letsencrypt/nginx-certs:/etc/letsencrypt \
+          -v $(pwd)/web-volume/letsencrypt/nginx-certs:/etc/letsencrypt \
           -e http_proxy=$http_proxy \
           -e domains="bardly.net, www.bardly.net" \
           -e email="stewartleachuk@hotmail.com" \

@@ -44,6 +44,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-nginx
+    volumes:
+      - "./web-volume/letsencrypt/nginx-certs:/etc/letsencrypt"
     links:
         - "web:web"
     ports:
