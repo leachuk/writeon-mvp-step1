@@ -40,6 +40,15 @@ services:
       - COUCH_REPLICATION_SOURCE=${COUCH_REPLICATION_SOURCE}
       - COUCH_REPLICATION_TARGET=${COUCH_REPLICATION_TARGET}
 
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    links:
+        - "web:web"
+    ports:
+        - "80:80"
+
   #datadog integration
   datadog:
       build:
@@ -55,11 +64,3 @@ services:
        - /proc/mounts:/host/proc/mounts:ro
        - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
-    links:
-        - "web:web"
-    ports:
-        - "80:80"
