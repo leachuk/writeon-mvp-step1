@@ -40,17 +40,17 @@ services:
       - COUCH_REPLICATION_SOURCE=${COUCH_REPLICATION_SOURCE}
       - COUCH_REPLICATION_TARGET=${COUCH_REPLICATION_TARGET}
 
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
-    volumes:
-      - "./web-volume/letsencrypt/nginx-certs:/etc/nginx/certs"
-    links:
-        - "web:web"
-    ports:
-        - "80:80"
-        - "443:443"
+#  nginx:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-nginx
+#    volumes:
+#      - "./web-volume/letsencrypt/nginx-certs:/etc/nginx/certs"
+#    links:
+#        - "web:web"
+#    ports:
+#        - "80:80"
+#        - "443:443"
 
   #datadog integration
   datadog:
