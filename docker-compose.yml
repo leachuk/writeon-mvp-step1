@@ -11,8 +11,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-couchdb
-    ports:
-      - "5984:5984" #enabled for local debugging
+#    ports:
+#      - "5984:5984" #enabled for local debugging
     image: mycouchdb-1:latest
     volumes:
       - "./web-volume/couchdb:/usr/local/var/lib/couchdb"
@@ -27,7 +27,7 @@ services:
 #    volumes:
 #      - "./app:/src/app"
     ports:
-      - "9000:9000"
+      #- "9000:9000"
       - "9615:9615" #expose pm2 --web monitor port
     links:
       - "redisdb:redis"
