@@ -1,8 +1,8 @@
 version: '2'
 services:
   redisdb:
-#    ports:
-#      - "6379:6379" #enabled for local debugging
+    ports:
+      - "6379:6379" #enabled for local debugging
     image: redis
     volumes:
       - "./web-volume/redis:/data"
