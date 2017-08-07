@@ -45,11 +45,12 @@ services:
       context: .
       dockerfile: Dockerfile-nginx
     volumes:
-      - "./web-volume/letsencrypt/nginx-certs:/etc/letsencrypt"
+      - "./web-volume/letsencrypt/nginx-certs/:/etc/letsencrypt"
     links:
         - "web:web"
     ports:
         - "80:80"
+        - "443:443"
 
   #datadog integration
   datadog:
