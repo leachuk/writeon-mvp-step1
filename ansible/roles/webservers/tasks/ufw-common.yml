@@ -17,13 +17,19 @@
       port: 443
     become: true
 
+  - name: ufw allow all on bardly port 80 for http
+    ufw:
+      rule: allow
+      port: 80
+    become: true
+
   - name: ufw allow all on bardly api app port
     ufw:
       rule: allow
       port: 9000
     become: true
 
-#  - name: ufw open couchdb port for testing
+#  - name: ufw open all couchdb port for testing
 #    ufw:
 #      rule: allow
 #      port: 5984
