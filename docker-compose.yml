@@ -27,7 +27,7 @@ services:
 #    volumes:
 #      - "./app:/src/app"
     ports:
-      - "9000:9000"
+#      - "9000:9000" #disable when nginx is enabled
       - "9615:9615" #expose pm2 --web monitor port
     links:
       - "redisdb:redis"
