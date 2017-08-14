@@ -16,9 +16,9 @@ GetCert() {
 echo "Getting certificates for www.bardly.net..."
 GetCert
 
-echo "Rebuilding frontend docker with certs..."
-docker-compose down
-docker-compose build
-docker-compose up
+#echo "Rebuilding frontend docker with certs..."
+#docker-compose down
+#docker-compose build
+#docker-compose up
 
 echo "Done"
