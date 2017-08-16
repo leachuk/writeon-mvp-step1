@@ -52,6 +52,10 @@ services:
         - "80:80"
         - "443:443"
 
+  acme.sh:
+    image: neilpang/acme.sh
+    volumes:
+      - "./web-volume/letsencrypt/certs/live/bardly.net:/acme.sh"
   #datadog integration
 #  datadog:
 #      build:
