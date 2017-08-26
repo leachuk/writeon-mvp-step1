@@ -1,14 +1,21 @@
 ---
 #setup ssl certs to enable https
 #  - name: issue ssl certs with docker acme.sh
-#    shell: docker run --rm -it -v "$(pwd)/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+#    command: docker run --rm -d -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
 #    args:
 #      chdir: /home/appadmin/projects/bardly
 
+  - name: check if letsencrypt issue files exist
+    stat:
+      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue/
+    register: stat_result
+    become: true
+
+  - debug: msg="Does the issue directory exist {{ stat_result.stat.exists }}"
+
+  - debug: msg="Directory owner {{ stat_result.stat.pw_name }}"
+
   - name: set permissions of created files to local user
-    file:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue
-      owner: appadmin
-      group: appadmin
-      state: directory
-      recurse: yes
+    command: chown -R appadmin:appadmin /home/appadmin/projects/bardly/web-volume
+    when: "stat_result.stat.exists and 'root' in stat_result.stat.pw_name"
+    become: true #execute as sudo, default become_user=root
