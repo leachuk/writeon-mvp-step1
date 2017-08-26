@@ -1,0 +1,14 @@
+---
+#setup ssl certs to enable https
+#  - name: issue ssl certs with docker acme.sh
+#    shell: docker run --rm -it -v "$(pwd)/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+#    args:
+#      chdir: /home/appadmin/projects/bardly
+
+  - name: set permissions of created files to local user
+    file:
+      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue
+      owner: appadmin
+      group: appadmin
+      state: directory
+      recurse: yes
