@@ -1,9 +1,5 @@
 ---
 #setup ssl certs to enable https
-#  - name: issue ssl certs with docker acme.sh
-#    command: docker run --rm -d -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
-#    args:
-#      chdir: /home/appadmin/projects/bardly
 
   - name: check if letsencrypt issue files exist
     stat:
@@ -14,7 +10,25 @@
   - debug: msg="Does the issue directory exist {{ stat_result.stat.exists }}"
 
   - debug: msg="Directory owner {{ stat_result.stat.pw_name }}"
+    when: "stat_result.stat.exists"
 
+  - name: issue ssl certs with docker acme.sh
+    command: docker run --rm -d -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+    args:
+      chdir: /home/appadmin/projects/bardly
+    register: docker_result
+    when: "not stat_result.stat.exists"
+
+  - name: wait for docker letsencrypt cert issue to complete if it ran
+    wait_for:
+      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue/bardly.net
+      state: present
+    when: "not stat_result.stat.exists and not docker_result.skipped"
+
+  - debug: msg="Docker result {{ docker_result.stdout }}"
+    when: "not stat_result.stat.exists"
+
+  #docker letsencrypt has run for the first time
   - name: set permissions of created files to local user
     command: chown -R appadmin:appadmin /home/appadmin/projects/bardly/web-volume
     when: "stat_result.stat.exists and 'root' in stat_result.stat.pw_name"
