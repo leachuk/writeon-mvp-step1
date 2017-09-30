@@ -30,7 +30,7 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
     var targetDbUserUrl = "http://" + config.couchadminusername + ":" + config.couchadminpassword + "@" + targetHost + "/" + usersDb;
 
     //replicate users
-    nano.db.replicate(usersDb, targetDbUserUrl,
+    nano.db.replication.enable(usersDb, targetDbUserUrl,
       {
         create_target: true,
         continuous: true
@@ -44,7 +44,7 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
       });
 
     //replicate main test documents
-    nano.db.replicate(articleDb, targetDbArticleUrl,
+    nano.db.replication.enable(articleDb, targetDbArticleUrl,
       {
         create_target: true,
         continuous: true
