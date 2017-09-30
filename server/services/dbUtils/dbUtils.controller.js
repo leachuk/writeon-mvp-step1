@@ -46,7 +46,7 @@ DbUtils.prototype.enableDatabaseContinuousReplication = function(targetHost){
     //replicate main test documents
     nano.db.replication.enable(articleDb, targetDbArticleUrl,
       {
-        create_target: true,
+        //create_target: true,
         continuous: true
       },
       function (err, body) {
