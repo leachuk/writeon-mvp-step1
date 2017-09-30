@@ -21,6 +21,7 @@ module.exports = {
                            + ":" + _couch.port,
   couchuri: "http://" + _couch.hostname
                       + ":" + _couch.port,
+  couchport: _couch.port,
   seedDB: true,
   dbNameArticles: "article_documents",
   dbNameProjects: "loom_project_files",
