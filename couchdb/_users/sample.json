@@ -1,1 +1,14 @@
-{"_id": "sample"}
+{
+  "_id": "org.couchdb.user:john.smith@example.com",
+  "name": "john.smith@example.com",
+  "roles": [
+    "editor",
+    "developer"
+  ],
+  "type": "user",
+  "userGuid": "BJ0jxt3Sf",
+  "email": "john.smith@example.com",
+  "displayName": "john",
+  "isComparisonFormEnabled": false,
+  "model": "RecruitUnitUser"
+}
