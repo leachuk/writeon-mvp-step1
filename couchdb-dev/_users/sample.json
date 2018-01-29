@@ -1,0 +1,21 @@
+{
+  "_id": "org.couchdb.user:john.smith@example.com",
+  "_rev": "1-162a74d19b467c5606a8fffc6607025f",
+  "name": "john.smith@example.com",
+  "roles": [
+    "editor",
+    "developer"
+  ],
+  "type": "user",
+  "userGuid": "BJ0jxt3Sf",
+  "email": "john.smith@example.com",
+  "displayName": "john",
+  "createdDate": 1517224102,
+  "lastUpdatedDate": 1517224102,
+  "isComparisonFormEnabled": false,
+  "model": "RecruitUnitUser",
+  "password_scheme": "pbkdf2",
+  "iterations": 10,
+  "derived_key": "b065adfaa4ac8d13774a702f99e8c0c515b4fe3f",
+  "salt": "0b0589149d770e6d6883c20ef38a9fb7"
+}

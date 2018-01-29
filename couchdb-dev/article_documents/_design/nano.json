@@ -1,0 +1,7 @@
+{
+  "views": {
+    "by_model": {
+      "map": "function (doc) { if (doc.model) return emit(doc.model, null); }"
+    }
+  }
+}
