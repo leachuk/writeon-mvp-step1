@@ -3,12 +3,12 @@ FROM couchdb:2.1.1
 COPY local.ini /opt/couchdb/etc/
 
 # Could add these directly into the local.ini, keeping for reference
-RUN sed -e '/^\[admins\]$/a admin=-pbkdf2-a68a0db1e18b9d57c462271163124cd93ef08c9c,2ad519368d7fe05d96110e292d81d8ef,10\n' -i /usr/local/etc/couchdb/local.ini
-#RUN sed -e '/^\[couch_httpd_auth\]$/a require_valid_user = true\n' -i /usr/local/etc/couchdb/local.ini
-#RUN sed -e 's/^;WWW-Authenticate/WWW-Authenticate/' -i /usr/local/etc/couchdb/local.ini
-RUN sed -e '/^\[httpd\]$/a authentication_handlers = {couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}' -i /usr/local/etc/couchdb/local.ini
+RUN sed -e '/^\[admins\]$/a admin=-pbkdf2-a68a0db1e18b9d57c462271163124cd93ef08c9c,2ad519368d7fe05d96110e292d81d8ef,10\n' -i /opt/couchdb/etc/local.ini
+#RUN sed -e '/^\[couch_httpd_auth\]$/a require_valid_user = true\n' -i /opt/couchdb/etc/local.ini
+#RUN sed -e 's/^;WWW-Authenticate/WWW-Authenticate/' -i /opt/couchdb/etc/local.ini
+RUN sed -e '/^\[httpd\]$/a authentication_handlers = {couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}' -i /opt/couchdb/etc/local.ini
 #setup bind_address to allow remote replication
-RUN sed -e '/^\[httpd\]$/a bind_address = 0.0.0.0' -i /usr/local/etc/couchdb/local.ini
-RUN sed -e '/^\[couch_httpd_auth\]$/a secret = 56f6cf45-84d5-4840-b874-7cfac463d85c' -i /usr/local/etc/couchdb/local.ini
+RUN sed -e '/^\[httpd\]$/a bind_address = 0.0.0.0' -i /opt/couchdb/etc/local.ini
+RUN sed -e '/^\[couch_httpd_auth\]$/a secret = 56f6cf45-84d5-4840-b874-7cfac463d85c' -i /opt/couchdb/etc/local.ini
 
 EXPOSE 5984
