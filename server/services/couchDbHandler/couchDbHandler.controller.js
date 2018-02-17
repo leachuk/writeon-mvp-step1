@@ -722,14 +722,14 @@ CouchDBService.prototype.find = function(req, func_callback){
       "skills": {
         "value": {
           "$elemMatch": {
-            "$regex": "(?i)node"
+            "$regex": "(?i)aem"
           }
         }
       },
       "roleType": {
         "value": {
           "$elemMatch": {
-            "$regex": "(?i)permanent"
+            "$regex": "(?i)contract"
           }
         }
       }
@@ -745,7 +745,8 @@ CouchDBService.prototype.find = function(req, func_callback){
       },
       find: function(callback){
         //probably need to use admin version
-        db.find(selector, function (err, body) {
+        var selectorJson = JSON.parse(JSON.stringify(selector));
+        db.find(selectorJson, function (err, body) {
           console.log("in couchnano.find");
           if (!err) {
             console.log(body);
