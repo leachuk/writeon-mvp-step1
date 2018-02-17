@@ -714,6 +714,8 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
 //Note: mango queries may have performance issues with large data sets. Also create map/reduce version.
 CouchDBService.prototype.find = function(req, func_callback){
   var returnSuccess = null;
+  var dbtable = dbNameArticles;
+  var db = couchnano.use(dbtable);
 
   var selector = {
     "selector": {
@@ -743,7 +745,7 @@ CouchDBService.prototype.find = function(req, func_callback){
       },
       find: function(callback){
         //probably need to use admin version
-        couchnano.find(selector, function (err, body) {
+        db.find(selector, function (err, body) {
           console.log("in couchnano.find");
           if (!err) {
             console.log(body);
