@@ -13,5 +13,6 @@ router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read')
 router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('create'), controller.createJobSubmission);
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
 router.get('/getusertestresults', controller.getUserTestResults);
+router.post('/find', authService.checkUserIsAuthorisedOperation('read'), controller.find);
 
 module.exports = router;

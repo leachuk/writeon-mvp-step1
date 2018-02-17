@@ -73,6 +73,18 @@ exports.getUserTestResults = function(req, res){
   });
 };
 
+exports.find = function(req, res){
+  console.log("Recruitunit controller find");
+
+  appService.find(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 
 
 

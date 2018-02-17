@@ -93,19 +93,19 @@ RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_c
 		    });
 	    },
 	    getArticle: function(callback){
-			var docModel = Model(returnSuccess.cookie, {returnAll: getAllData});
+			  var docModel = Model(returnSuccess.cookie, {returnAll: getAllData});
         docModel.find(id, function(err, body){
-				if(!err){
-					console.log("success result");
-					//console.log(body);
-          var jsonBody = JSON.parse(JSON.stringify(body));
+          if(!err){
+            console.log("success result");
+            //console.log(body);
+            var jsonBody = JSON.parse(JSON.stringify(body));
 
-					callback(null, jsonBody);
-				}else{
-					console.log("articleModelAuth error");
-					callback(err, null);
-				}
-			});
+            callback(null, jsonBody);
+          }else{
+            console.log("articleModelAuth error");
+            callback(err, null);
+          }
+        });
 	    }
 	},
 	function(err, results) {
@@ -582,6 +582,28 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
     });
 }
 
+//support for couchdb2.0 mango query which was added to nano
+RecruitUnitContentService.prototype.find = function(req, func_callback){
+  console.log("in RecruitUnitContentService, createComparison");
+  console.log(req.body);
+
+  var returnSuccess = null;
+
+  couchService.find(req, function(err, body){
+    if(!err){
+      console.log("success result");
+      //console.log(body);
+      var jsonBody = JSON.parse(JSON.stringify(body));
+
+      func_callback(null, jsonBody);
+    }else{
+      console.log("articleModelAuth error");
+
+      func_callback(err, null);
+    }
+  });
+};
+
 // ********************************************************************************************************************************** //
 //
 // Comparison Services
@@ -616,7 +638,7 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
         req.params.id = comparisonDocId;
         _this.getArticle(req, comparisonModelPath, function(err, result){
           if (!err){
-            callback(err, result);
+            callback(err, result);//shouldn't these two callbacks be different
           } else {
             callback(err, result);
           }
