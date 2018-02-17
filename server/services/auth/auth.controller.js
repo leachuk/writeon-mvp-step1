@@ -103,14 +103,14 @@ AuthService.prototype.initUserAuthorization = function() {
     {
       roles:['recruiter'],
       allows:[
-        {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem', 'getuserdetails', 'getdevemailfromdocid'], permissions: ['read']},
+        {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem', 'getuserdetails', 'getdevemailfromdocid', 'find'], permissions: ['read']},
         {resources: ['createarticle', 'createjobsubmission'], permissions: ['create']}
       ]
     },
     {
       roles:['developer'],
       allows:[
-        {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem'], permissions: ['read']},
+        {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem', 'find'], permissions: ['read']},
         {resources: ['updateuser','toggledevemaildisplay'], permissions: ['update']},
         {resources: ['createarticle'], permissions: ['create']}
       ]
