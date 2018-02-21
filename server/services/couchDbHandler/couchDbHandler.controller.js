@@ -717,24 +717,7 @@ CouchDBService.prototype.find = function(req, func_callback){
   var dbtable = dbNameArticles;
   var db = couchnano.use(dbtable);
 
-  var selector = {
-    "selector": {
-      "skills": {
-        "value": {
-          "$elemMatch": {
-            "$regex": "(?i)aem"
-          }
-        }
-      },
-      "roleType": {
-        "value": {
-          "$elemMatch": {
-            "$regex": "(?i)contract"
-          }
-        }
-      }
-    }
-  }
+  var selector = req.body;
 
   async.series({
       authToken: function(callback){
