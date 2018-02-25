@@ -482,7 +482,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
 }
 
 RecruitUnitContentService.prototype.createJobSubmission = function(req, func_callback){
-  console.log("in RecruitUnitContentService, createArticle");
+  console.log("in RecruitUnitContentService, createJobSubmission");
   console.log(req.body);
 
   var JobModel = require(appDir + "/models/RecruitUnit.Job.All.js");
@@ -496,28 +496,6 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
           //console.log(result);
           returnSuccess = result;
           callback(err, result);
-        });
-      },
-      checkSubmitToUserExists: function(callback){
-        var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
-        var userModel = UserModel(returnSuccess.cookie, {returnAll: true});
-        userModel.all({where: {userGuid: req.body.submitTo}}, function(err, result){
-          if (!err && result != null && result.length > 0) {
-            console.log("checkSubmitToUserExists: success");
-            console.log(result);
-            var returnMessage = { //ensure success param returned to client
-              success: true
-            };
-            callback(null, returnMessage);
-          } else {
-            console.log("checkSubmitToUserExists: error");
-            var returnMessage = {
-              "success": false,
-              "data": err,
-              "message": "UserModel error"
-            }
-            callback(returnMessage, null);
-          }
         });
       },
       createArticle: function(callback){
