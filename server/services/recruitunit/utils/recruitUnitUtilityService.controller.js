@@ -65,7 +65,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
 //
 // ********************************************************************************************************************************** //
 
-RecruitUnitUtilityService.prototype.getJobItemSpecDocs = function(userEmail, authCookie){
+RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEmail, authCookie, callback){
   console.log("RecruitUnitUtilityService getJobItemSpecDocs");
 
   //get recruiters job item documents list
@@ -76,22 +76,26 @@ RecruitUnitUtilityService.prototype.getJobItemSpecDocs = function(userEmail, aut
       console.log("jobItemModelAuth success result. jobItemDocResults:");
       if (jobItemDocResults.length > 0) {
         console.log(jobItemDocResults);
-        return (null, jobItemDocResults)
+        callback (null, jobItemDocResults)
       }
     } else {
       console.log("jobItemModelAuth error");
-      return(err, null);
+      callback(err, null);
     }
   });
 }
 
-RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItem){
+RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
-  if(jobItem.model !== undefined || jobItem.model == "RecruitUnitJobItem") {
-
+  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobItem") {
+    _.forEach(jobItemResults, function(value, key) {
+      console.log("key:" + key, "value:" + value);
+    });
+    return(null, "temp getMangoSelectorFromJobItem success")
   } else {
     console.log("getMangoSelectorFromJobItem error. Incorrect model");
+    return("Incorrect model", null)
   }
 }
 

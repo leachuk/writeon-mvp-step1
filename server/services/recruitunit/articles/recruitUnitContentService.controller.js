@@ -675,6 +675,7 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
 
 RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = function(req, func_callback) {
   var returnAuthSuccess = null;
+  var jobDescriptionResults = null;
 
   async.series({
       authToken: function(callback){
@@ -683,9 +684,20 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
           callback(err, result);
         });
       },
-      getJobItemResults: function(callback){
-        var jobItemResults = recruitUnitUtils.getJobItemSpecDocs(returnAuthSuccess.username, returnAuthSuccess.cookie);
-        callback(null, jobItemResults);
+      getJobDescriptionDocResults: function(callback){
+        recruitUnitUtils.getJobDescriptionSpecDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            console.log(results);
+            jobDescriptionResults = results;
+            callback(null, jobDescriptionResults);
+          } else {
+            console.log(err);
+            callback("getJobDescriptionDocResults error", null);
+          }
+        });
+      },
+      getJobSpecsSearch: function(callback){
+        var tempResults = recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults)
       }
     },
     function(err, results) {
