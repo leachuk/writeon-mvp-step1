@@ -76,12 +76,23 @@ RecruitUnitUtilityService.prototype.getJobItemSpecDocs = function(userEmail, aut
       console.log("jobItemModelAuth success result. jobItemDocResults:");
       if (jobItemDocResults.length > 0) {
         console.log(jobItemDocResults);
+        return (null, jobItemDocResults)
       }
     } else {
       console.log("jobItemModelAuth error");
-      callback(err, null);
+      return(err, null);
     }
   });
+}
+
+RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItem){
+  console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
+  var selector = "";
+  if(jobItem.model !== undefined || jobItem.model == "RecruitUnitJobItem") {
+
+  } else {
+    console.log("getMangoSelectorFromJobItem error. Incorrect model");
+  }
 }
 
 // ********************************************************************************************************************************** //

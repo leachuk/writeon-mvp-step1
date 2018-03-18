@@ -104,6 +104,7 @@ AuthService.prototype.initUserAuthorization = function() {
       roles:['recruiter'],
       allows:[
         {resources: ['getarticle', 'getspecifieduser', 'listmyarticles', 'listmytestcontent', 'recruitunitjobitem', 'getuserdetails', 'getdevemailfromdocid', 'find', 'getjobitemspecdocs'], permissions: ['read']},
+        {resources: ['updateuser'], permissions: ['update']},
         {resources: ['createarticle', 'createjobsubmission'], permissions: ['create']}
       ]
     },
