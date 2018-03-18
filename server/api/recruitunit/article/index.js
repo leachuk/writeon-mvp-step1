@@ -14,5 +14,6 @@ router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('c
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
 router.get('/getusertestresults', controller.getUserTestResults);
 router.post('/find', authService.checkUserIsAuthorisedOperation('read'), controller.find);
+router.post('/getJobItemSpecDocs', authService.checkUserIsAuthorisedOperation('read'), controller.getJobItemSpecDocs);
 
 module.exports = router;

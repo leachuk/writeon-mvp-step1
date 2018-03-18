@@ -567,6 +567,8 @@ RecruitUnitContentService.prototype.find = function(req, func_callback){
 
   var returnSuccess = null;
 
+  //todo: Need to wrap this in an authenticateToken function so only authenticated users can run queries against their own documents
+  //currently this is open to allow anyone to query the whole db!
   couchService.find(req, function(err, body){
     if(!err){
       console.log("success result");
@@ -671,6 +673,26 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
     });
 };
 
+RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = function(req, func_callback) {
+  var returnAuthSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getJobItemResults: function(callback){
+        var jobItemResults = recruitUnitUtils.getJobItemSpecDocs(returnAuthSuccess.username, returnAuthSuccess.cookie);
+        callback(null, jobItemResults);
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, "getDevJobRequirementsFromRecruiterJobSpec temp result");
+    });
+}
 
 exports.Service = new RecruitUnitContentService;
 

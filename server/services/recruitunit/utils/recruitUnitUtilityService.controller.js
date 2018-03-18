@@ -1,7 +1,7 @@
 'use strict';
 
 var appDir = require('path').dirname(require.main.filename);
-
+var RecruitUnitJobItemModel = require(appDir + '/models/RecruitUnit.Job.All.js');
 var _ = require('lodash');
 
 function RecruitUnitUtilityService(){};
@@ -58,6 +58,31 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   //console.log(results);
   func_callback(null, results);//do error check
 };
+
+// ********************************************************************************************************************************** //
+//
+// Search Services
+//
+// ********************************************************************************************************************************** //
+
+RecruitUnitUtilityService.prototype.getJobItemSpecDocs = function(userEmail, authCookie){
+  console.log("RecruitUnitUtilityService getJobItemSpecDocs");
+
+  //get recruiters job item documents list
+  var jobItemModelAuth = RecruitUnitJobItemModel(authCookie, {returnAll: true}); //only allow recruiter to retrieve their own documents
+  var jobItemSearchJson = '{"authorEmail": "' + userEmail + '"}';
+  jobItemModelAuth.all({where: JSON.parse(jobItemSearchJson)}, function (err, jobItemDocResults) {
+    if (!err) {
+      console.log("jobItemModelAuth success result. jobItemDocResults:");
+      if (jobItemDocResults.length > 0) {
+        console.log(jobItemDocResults);
+      }
+    } else {
+      console.log("jobItemModelAuth error");
+      callback(err, null);
+    }
+  });
+}
 
 // ********************************************************************************************************************************** //
 //

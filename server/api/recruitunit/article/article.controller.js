@@ -85,6 +85,18 @@ exports.find = function(req, res){
   });
 };
 
+exports.getJobItemSpecDocs = function(req, res){
+  console.log("Recruitunit controller getJobItemSpecDocs");
+
+  appService.getDevJobRequirementsFromRecruiterJobSpec(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
 
 
 
