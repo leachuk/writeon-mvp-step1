@@ -687,7 +687,7 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
       getJobDescriptionDocResults: function(callback){
         recruitUnitUtils.getJobDescriptionSpecDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
           if(!err){
-            console.log(results);
+            //console.log(results);
             jobDescriptionResults = results;
             callback(null, jobDescriptionResults);
           } else {
@@ -697,9 +697,19 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
         });
       },
       getJobSpecsSearch: function(callback){
-        var tempResults = recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults)
+        var tempResults = ""
+        recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
+          if(!err){
+            console.log(null, result);
+            callback(null, result);
+          } else {
+            console.log(err, null);
+            callback(err, null);
+          }
+        })
       }
     },
+    //todo: continue here with hardcoded selector
     function(err, results) {
       console.log(results);
       func_callback(err, "getDevJobRequirementsFromRecruiterJobSpec temp result");

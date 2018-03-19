@@ -1,7 +1,7 @@
 'use strict';
 
 var appDir = require('path').dirname(require.main.filename);
-var RecruitUnitJobItemModel = require(appDir + '/models/RecruitUnit.Job.All.js');
+var RecruitUnitJobDescriptionModel = require(appDir + '/models/RecruitUnit.JobDescription.js');
 var _ = require('lodash');
 
 function RecruitUnitUtilityService(){};
@@ -69,7 +69,7 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
   console.log("RecruitUnitUtilityService getJobItemSpecDocs");
 
   //get recruiters job item documents list
-  var jobItemModelAuth = RecruitUnitJobItemModel(authCookie, {returnAll: true}); //only allow recruiter to retrieve their own documents
+  var jobItemModelAuth = RecruitUnitJobDescriptionModel(authCookie, {returnAll: true}); //only allow recruiter to retrieve their own documents
   var jobItemSearchJson = '{"authorEmail": "' + userEmail + '"}';
   jobItemModelAuth.all({where: JSON.parse(jobItemSearchJson)}, function (err, jobItemDocResults) {
     if (!err) {
@@ -85,17 +85,21 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
   });
 }
 
-RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults){
+RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
-  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobItem") {
-    _.forEach(jobItemResults, function(value, key) {
-      console.log("key:" + key, "value:" + value);
-    });
-    return(null, "temp getMangoSelectorFromJobItem success")
+  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobDescription") {
+    for(var i=0; i < jobItemResults.length; i++) {
+      var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
+      _.forEach(jsonResult, function (value, key) {
+        console.log("key:" + key, "value:" + value);
+      });
+    }
+    selector = "{\"selector\": {\"roleType\": {\"value\": {\"$elemMatch\": {\"$eq\": \"contract\"} }, \"disabled\": false }, \"payBracketLower\": {\"value\": {\"$gte\": 650 }, \"disabled\": false }, \"skills\": {\"value\": {\"$all\": [\"javascript\", \"es6\"] }, \"disabled\": false }, \"published\": true } }"
+    callback(null, selector)
   } else {
     console.log("getMangoSelectorFromJobItem error. Incorrect model");
-    return("Incorrect model", null)
+    callback("Incorrect model", null)
   }
 }
 
