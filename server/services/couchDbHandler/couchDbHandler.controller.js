@@ -728,7 +728,7 @@ CouchDBService.prototype.find = function(req, func_callback){
       },
       find: function(callback){
         //probably need to use admin version
-        var selectorJson = JSON.parse(JSON.stringify(selector));
+        var selectorJson = JSON.parse(selector);
         db.find(selectorJson, function (err, body) {
           console.log("in couchnano.find");
           if (!err) {

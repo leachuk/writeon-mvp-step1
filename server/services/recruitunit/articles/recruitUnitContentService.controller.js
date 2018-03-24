@@ -569,6 +569,7 @@ RecruitUnitContentService.prototype.find = function(req, func_callback){
 
   //todo: Need to wrap this in an authenticateToken function so only authenticated users can run queries against their own documents
   //currently this is open to allow anyone to query the whole db!
+  req.body = JSON.stringify(req.body)
   couchService.find(req, function(err, body){
     if(!err){
       console.log("success result");
@@ -676,6 +677,8 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
 RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = function(req, func_callback) {
   var returnAuthSuccess = null;
   var jobDescriptionResults = null;
+  var selectorResults = null;
+  var searchResults = null;
 
   async.series({
       authToken: function(callback){
@@ -696,17 +699,33 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
           }
         });
       },
-      getJobSpecsSearch: function(callback){
-        var tempResults = ""
+      getJobSpecsSearchSelector: function(callback){
         recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
           if(!err){
             console.log(null, result);
+            selectorResults = result;
             callback(null, result);
           } else {
             console.log(err, null);
             callback(err, null);
           }
         })
+      },
+      searchJobSpecs: function(callback){
+        req.body = selectorResults;
+        couchService.find(req, function(err, body){
+          if(!err){
+            console.log("success result");
+            //console.log(body);
+            var jsonBody = JSON.parse(JSON.stringify(body));
+
+            func_callback(null, jsonBody);
+          }else{
+            console.log("articleModelAuth error");
+
+            func_callback(err, null);
+          }
+        });
       }
     },
     //todo: continue here with hardcoded selector
