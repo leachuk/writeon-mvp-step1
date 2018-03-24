@@ -95,6 +95,7 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
         console.log("key:" + key, "value:" + value);
       });
     }
+    //todo: update selector to dynamically generate from the jobItemResults
     selector = "{\"selector\": {\"roleType\": {\"value\": {\"$elemMatch\": {\"$eq\": \"contract\"} }, \"disabled\": false }, \"payBracketLower\": {\"value\": {\"$gte\": 650 }, \"disabled\": false }, \"skills\": {\"value\": {\"$all\": [\"javascript\", \"es6\"] }, \"disabled\": false }, \"published\": true } }"
     callback(null, selector)
   } else {

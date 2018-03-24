@@ -728,7 +728,6 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
         });
       }
     },
-    //todo: continue here with hardcoded selector
     function(err, results) {
       console.log(results);
       func_callback(err, "getDevJobRequirementsFromRecruiterJobSpec temp result");
