@@ -99,6 +99,13 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
           switch (itemvalue.value.constructor.name){
             case 'Array':
               console.log("   Array");
+              if (itemname == "roleType") {
+                selectorJson.roleType = JSON.parse('{"value":{"$elemMatch":{"$eq": "' + itemvalue.value[0] + '"}}}');
+              } else if (itemname == "skills") {
+                var addArray = JSON.parse('{"value":{"$all":[]}}');
+                Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
+                selectorJson.skills = addArray;
+              }
               break;
             case 'String':
               console.log("   String");
