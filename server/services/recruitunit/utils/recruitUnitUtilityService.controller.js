@@ -88,11 +88,29 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
 RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
+  var selectorJson = JSON.parse("{\"selector\":{}}");
   if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobDescription") {
+    //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
-      _.forEach(jsonResult, function (value, key) {
-        console.log("key:" + key, "value:" + value);
+      _.forEach(jsonResult, function (itemvalue, itemname) {
+        if (itemvalue.value !== undefined) {
+          console.log("value type:" + itemvalue.value.constructor.name, "value:" + itemvalue.value);
+          switch (itemvalue.value.constructor.name){
+            case 'Array':
+              console.log("   Array");
+              break;
+            case 'String':
+              console.log("   String");
+              break;
+            case 'Number':
+              console.log("   Number");
+              break;
+            default:
+              console.log("   Not recognised:" + itemvalue.value.constructor.name);
+          }
+        }
+        console.log("key:" + itemname, "value:" + itemvalue);
       });
     }
     //todo: update selector to dynamically generate from the jobItemResults
