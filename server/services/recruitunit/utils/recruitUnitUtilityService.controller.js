@@ -88,13 +88,13 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
 RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
-  var selectorJson = JSON.parse("{\"selector\":{}}");
+  var selectorJson = {};
   if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobDescription") {
     //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
       _.forEach(jsonResult, function (itemvalue, itemname) {
-        if (itemvalue.value !== undefined) {
+        if (itemvalue.value !== undefined && !itemvalue.disabled) {
           console.log("value type:" + itemvalue.value.constructor.name, "value:" + itemvalue.value);
           switch (itemvalue.value.constructor.name){
             case 'Array':
@@ -105,6 +105,10 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
                 var addArray = JSON.parse('{"value":{"$all":[]}}');
                 Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
                 selectorJson.skills = addArray;
+              } else if (itemname == "locationDescription") {
+                var addArray = JSON.parse('{"value":{"$eq": []}}');
+                Array.prototype.push.apply(addArray.value.$eq,[itemvalue.value[0]]);
+                selectorJson.locationDescription = addArray;
               }
               break;
             case 'String':
@@ -112,6 +116,9 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
               break;
             case 'Number':
               console.log("   Number");
+              if (itemname == "payBracketLower") {
+                selectorJson.payBracketLower = JSON.parse('{"value":{"$gte":'+ itemvalue.value +'}}');
+              }
               break;
             default:
               console.log("   Not recognised:" + itemvalue.value.constructor.name);
@@ -120,8 +127,7 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
         console.log("key:" + itemname, "value:" + itemvalue);
       });
     }
-    //todo: update selector to dynamically generate from the jobItemResults
-    selector = "{\"selector\": {\"roleType\": {\"value\": {\"$elemMatch\": {\"$eq\": \"contract\"} }, \"disabled\": false }, \"payBracketLower\": {\"value\": {\"$gte\": 650 }, \"disabled\": false }, \"skills\": {\"value\": {\"$all\": [\"javascript\", \"es6\"] }, \"disabled\": false }, \"published\": true } }"
+    selector = "{\"selector\":"+ JSON.stringify(selectorJson) +"}";
     callback(null, selector)
   } else {
     console.log("getMangoSelectorFromJobItem error. Incorrect model");
