@@ -719,7 +719,7 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
             //console.log(body);
             var jsonBody = JSON.parse(JSON.stringify(body));
 
-            func_callback(null, jsonBody);
+            func_callback(null, jsonBody.docs);
           }else{
             console.log("articleModelAuth error");
 
