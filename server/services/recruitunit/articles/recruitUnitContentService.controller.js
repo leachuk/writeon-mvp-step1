@@ -562,7 +562,7 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
 
 //support for couchdb2.0 mango query which was added to nano
 RecruitUnitContentService.prototype.find = function(req, func_callback){
-  console.log("in RecruitUnitContentService, createComparison");
+  console.log("in RecruitUnitContentService find");
   console.log(req.body);
 
   var returnSuccess = null;

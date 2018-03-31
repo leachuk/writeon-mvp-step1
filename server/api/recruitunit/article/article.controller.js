@@ -85,6 +85,7 @@ exports.find = function(req, res){
   });
 };
 
+//return list of developer JobItem documents which match the criteria from the recruiters JobSpecification documents
 exports.getJobItemSpecDocs = function(req, res){
   console.log("Recruitunit controller getJobItemSpecDocs");
 
