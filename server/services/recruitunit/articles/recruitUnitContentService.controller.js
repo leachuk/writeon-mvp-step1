@@ -715,7 +715,10 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
         req.body = selectorResults;
         couchService.find(req, function(err, body){
           if(!err){
-            console.log("success result");
+            console.log("success searchJobSpecs");
+            _.forEach(body.docs, function(item) {
+              delete item.authorEmail ///remove personal info before returning to client
+            });
             //console.log(body);
             var jsonBody = JSON.parse(JSON.stringify(body));
 

@@ -66,7 +66,7 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
 // ********************************************************************************************************************************** //
 
 RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEmail, authCookie, callback){
-  console.log("RecruitUnitUtilityService getJobItemSpecDocs");
+  console.log("RecruitUnitUtilityService getJobDescriptionSpecDocs");
 
   //get recruiters job item documents list
   var jobItemModelAuth = RecruitUnitJobDescriptionModel(authCookie, {returnAll: true}); //only allow recruiter to retrieve their own documents
@@ -89,23 +89,25 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
   var selectorJson = {};
-  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model == "RecruitUnitJobDescription") {
+  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model === "RecruitUnitJobDescription") {
     //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
       _.forEach(jsonResult, function (itemvalue, itemname) {
         if (itemvalue.value !== undefined && !itemvalue.disabled) {
+          //add model type so only RecruitUnitComparisonTest are returned
+          selectorJson.model = "RecruitUnitComparisonTest";
           console.log("value type:" + itemvalue.value.constructor.name, "value:" + itemvalue.value);
           switch (itemvalue.value.constructor.name){
             case 'Array':
               console.log("   Array");
-              if (itemname == "roleType") {
+              if (itemname === "roleType") {
                 selectorJson.roleType = JSON.parse('{"value":{"$elemMatch":{"$eq": "' + itemvalue.value[0] + '"}}}');
-              } else if (itemname == "skills") {
+              } else if (itemname === "skills") {
                 var addArray = JSON.parse('{"value":{"$all":[]}}');
                 Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
                 selectorJson.skills = addArray;
-              } else if (itemname == "locationDescription") {
+              } else if (itemname === "locationDescription") {
                 var addArray = JSON.parse('{"value":{"$eq": []}}');
                 Array.prototype.push.apply(addArray.value.$eq,[itemvalue.value[0]]);
                 selectorJson.locationDescription = addArray;
@@ -116,7 +118,7 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
               break;
             case 'Number':
               console.log("   Number");
-              if (itemname == "payBracketLower") {
+              if (itemname === "payBracketLower") {
                 selectorJson.payBracketLower = JSON.parse('{"value":{"$gte":'+ itemvalue.value +'}}');
               }
               break;
