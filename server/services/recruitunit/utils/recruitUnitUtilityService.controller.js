@@ -2,6 +2,7 @@
 
 var appDir = require('path').dirname(require.main.filename);
 var RecruitUnitJobDescriptionModel = require(appDir + '/models/RecruitUnit.JobDescription.js');
+var RecruitUnitComparisonTestModel = require(appDir + '/models/RecruitUnit.ComparisonTest.js');
 var _ = require('lodash');
 
 function RecruitUnitUtilityService(){};
@@ -85,11 +86,31 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
   });
 }
 
+RecruitUnitUtilityService.prototype.getComparisonTestDocs = function(userEmail, authCookie, callback){
+  console.log("RecruitUnitUtilityService getComparisonTestDocs");
+
+  //get recruiters job item documents list
+  var jobItemModelAuth = RecruitUnitComparisonTestModel(authCookie, {returnAll: true}); //only allow developer to retrieve their own documents
+  var jobItemSearchJson = '{"authorEmail": "' + userEmail + '"}';
+  jobItemModelAuth.all({where: JSON.parse(jobItemSearchJson)}, function (err, jobItemDocResults) {
+    if (!err) {
+      console.log("jobItemModelAuth success result. jobItemDocResults:");
+      if (jobItemDocResults.length > 0) {
+        console.log(jobItemDocResults);
+        callback (null, jobItemDocResults)
+      }
+    } else {
+      console.log("jobItemModelAuth error");
+      callback(err, null);
+    }
+  });
+}
+
 RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
   var selectorJson = {};
-  if(jobItemResults !== 'undefined' && jobItemResults !== null && jobItemResults[0].model === "RecruitUnitJobDescription") {
+  if(jobItemResults !== 'undefined' && jobItemResults !== null && (jobItemResults[0].model === "RecruitUnitJobDescription" || jobItemResults[0].model === "RecruitUnitComparisonTest")) {
     //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));

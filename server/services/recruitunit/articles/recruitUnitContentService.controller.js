@@ -737,6 +737,69 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
     });
 }
 
+RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = function(req, func_callback) {
+  var returnAuthSuccess = null;
+  var jobDescriptionResults = null;
+  var selectorResults = null;
+  var searchResults = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getJobDescriptionDocResults: function(callback){
+        recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            //console.log(results);
+            jobDescriptionResults = results;
+            callback(null, jobDescriptionResults);
+          } else {
+            console.log(err);
+            callback("getJobDescriptionDocResults error", null);
+          }
+        });
+      },
+      getJobSpecsSearchSelector: function(callback){
+        recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
+          if(!err){
+            console.log(null, result);
+            selectorResults = result;
+            callback(null, result);
+          } else {
+            console.log(err, null);
+            callback(err, null);
+          }
+        })
+      },
+      searchJobSpecs: function(callback){
+        req.body = selectorResults;
+        couchService.find(req, function(err, body){
+          if(!err){
+            console.log("success searchJobSpecs");
+            _.forEach(body.docs, function(item) {
+              delete item.authorEmail ///remove personal info before returning to client
+            });
+            //console.log(body);
+            var jsonBody = JSON.parse(JSON.stringify(body));
+
+            func_callback(null, jsonBody.docs);
+          }else{
+            console.log("articleModelAuth error");
+
+            func_callback(err, null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, "getDevJobRequirementsFromRecruiterJobSpec temp result");
+    });
+}
+
 exports.Service = new RecruitUnitContentService;
 
 

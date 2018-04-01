@@ -13,6 +13,8 @@ router.get('/getarticle/:id', authService.checkUserIsAuthorisedOperation('read')
 router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('create'), controller.createJobSubmission);
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
 router.get('/getusertestresults', authService.checkUserIsAuthorisedOperation('read'), controller.getJobItemSpecDocs);
+router.get('/getusercomparisontestresults', authService.checkUserIsAuthorisedOperation('read'), controller.getUserComparisonTests);
+
 router.post('/find', authService.checkUserIsAuthorisedOperation('read'), controller.find);
 
 module.exports = router;
