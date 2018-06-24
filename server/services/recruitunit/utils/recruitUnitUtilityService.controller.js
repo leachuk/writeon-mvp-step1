@@ -114,10 +114,13 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
     //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
+      //hacky mchack hack. Basically hardcoding the model types to developer=RecruitUnitJobDescription and recruiter=RecruitUnitComparisonTest
+      //todo: revisit and make this more flexible, if it's ever worth the effort.
+      var selectorModel = jsonResult.model == "RecruitUnitComparisonTest" ? "RecruitUnitJobDescription" : "RecruitUnitComparisonTest";
       _.forEach(jsonResult, function (itemvalue, itemname) {
         if (itemvalue.value !== undefined && !itemvalue.disabled) {
-          //add model type so only RecruitUnitComparisonTest are returned
-          selectorJson.model = "RecruitUnitComparisonTest";
+          //add model type to work for both recruiters and developers
+          selectorJson.model = selectorModel;
           console.log("value type:" + itemvalue.value.constructor.name, "value:" + itemvalue.value);
           switch (itemvalue.value.constructor.name){
             case 'Array':

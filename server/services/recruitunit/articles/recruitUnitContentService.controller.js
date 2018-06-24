@@ -753,7 +753,8 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
       getJobDescriptionDocResults: function(callback){
         recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
           if(!err){
-            //console.log(results);
+            console.log("getRecruiterJobSpecFromDevJobRequirements > getComparisonTestDocs:")
+            console.log(results);
             jobDescriptionResults = results;
             callback(null, jobDescriptionResults);
           } else {
