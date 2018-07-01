@@ -128,12 +128,15 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
               if (itemname === "roleType") {
                 selectorJson.roleType = JSON.parse('{"value":{"$elemMatch":{"$eq": "' + itemvalue.value[0] + '"}}}');
               } else if (itemname === "skills") {
-                var addArray = JSON.parse('{"value":{"$all":[]}}');
-                Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
-                selectorJson.skills = addArray;
+                if (itemvalue.rule == "assertArrayContains") {
+                  var addSkillsCombinationOperator = JSON.parse(getCombinationOperatorJson("$or","skills",itemvalue));
+                  _.assignIn(selectorJson, addSkillsCombinationOperator);
+                  //Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
+                  //selectorJson.skills = addCombinationOperator;
+                }
               } else if (itemname === "locationDescription") {
-                var addArray = JSON.parse('{"value":{"$eq": []}}');
-                Array.prototype.push.apply(addArray.value.$eq,[itemvalue.value[0]]);
+                var addArray = JSON.parse('{"value":{"$all": []}}');
+                Array.prototype.push.apply(addArray.value.$all,[itemvalue.value[0]]);
                 selectorJson.locationDescription = addArray;
               }
               break;
@@ -227,6 +230,12 @@ function assertArrayContains(sourceValue, comparisonValue){
   })
   console.log("   returning:" + matchExists);
   return matchExists;
+}
+
+function getCombinationOperatorJson(operator, key, valueArray) {
+  console.log("getCombinationOperatorJson operator["+operator+"], key["+key+"], valueArray["+valueArray+"]");
+  var combOpJson = "{\"$or\":[{\"skills\":{\"value\":{\"$all\":[\"javascript\"]}}},{\"skills\":{\"value\":{\"$all\":[\"java\"]}}}]}";
+  return combOpJson;
 }
 
 exports.Service = new RecruitUnitUtilityService;
