@@ -78,6 +78,8 @@ RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEma
       if (jobItemDocResults.length > 0) {
         console.log(jobItemDocResults);
         callback (null, jobItemDocResults)
+      } else {
+        callback ("no results returned", null);
       }
     } else {
       console.log("jobItemModelAuth error");
@@ -97,7 +99,17 @@ RecruitUnitUtilityService.prototype.getComparisonTestDocs = function(userEmail, 
       console.log("jobItemModelAuth success result. jobItemDocResults:");
       if (jobItemDocResults.length > 0) {
         console.log(jobItemDocResults);
-        callback (null, jobItemDocResults)
+        var dataCopy = [];
+        _.forEach(jobItemDocResults, function(item) {
+          var jsonItem = JSON.parse(JSON.stringify(item));
+          delete jsonItem.authorEmail ///remove personal info before returning to client
+          //Array.prototype.push.apply(dataCopy,jsonItem);
+          dataCopy.push(jsonItem);
+        });
+
+        callback (null, dataCopy)
+      } else {
+        callback ("no results returned", null);
       }
     } else {
       console.log("jobItemModelAuth error");

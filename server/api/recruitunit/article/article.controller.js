@@ -98,7 +98,7 @@ exports.getJobItemSpecDocs = function(req, res){
   });
 };
 
-//return list of developers ComparisonTest documents
+//return list of developers documents which match their criteria in their ComparisonTest documents
 exports.getUserComparisonTests = function(req, res){
   console.log("Recruitunit controller getUserComparisonTests");
 
@@ -111,6 +111,18 @@ exports.getUserComparisonTests = function(req, res){
   });
 };
 
+//return list of developers ComparisonTest documents which defines their search criteria
+exports.getComparisonTestDocs = function(req, res){
+  console.log("Recruitunit controller getComparisonTestDocs");
+
+  appService.getDevComparisonTestDocs(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
 
 
 

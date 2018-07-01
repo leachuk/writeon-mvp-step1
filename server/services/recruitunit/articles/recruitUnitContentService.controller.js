@@ -801,6 +801,36 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
     });
 }
 
+RecruitUnitContentService.prototype.getDevComparisonTestDocs = function(req, func_callback) {
+  var returnAuthSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getComparisonTestDocs: function(callback){
+        recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            console.log("getDevComparisonTestDocs > getComparisonTestDocs:")
+            console.log(results);
+
+            func_callback(null, results);
+          } else {
+            console.log(err);
+            func_callback("getComparisonTestDocs error", null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, "getDevComparisonTestDocs temp result");
+    });
+}
+
 exports.Service = new RecruitUnitContentService;
 
 

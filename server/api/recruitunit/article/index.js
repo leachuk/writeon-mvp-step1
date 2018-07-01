@@ -14,6 +14,7 @@ router.put('/createjobsubmission', authService.checkUserIsAuthorisedOperation('c
 router.post('/toggledevemaildisplay', authService.checkUserIsAuthorisedOperation('update'), controller.toggleDevEmailDisplay);
 router.get('/getusertestresults', authService.checkUserIsAuthorisedOperation('read'), controller.getJobItemSpecDocs);
 router.get('/getusercomparisontestresults', authService.checkUserIsAuthorisedOperation('read'), controller.getUserComparisonTests);
+router.get('/getusercomparisontestdocs', authService.checkUserIsAuthorisedOperation('read'), controller.getComparisonTestDocs);
 
 router.post('/find', authService.checkUserIsAuthorisedOperation('read'), controller.find);
 
