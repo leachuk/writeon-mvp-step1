@@ -129,10 +129,8 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
                 selectorJson.roleType = JSON.parse('{"value":{"$elemMatch":{"$eq": "' + itemvalue.value[0] + '"}}}');
               } else if (itemname === "skills") {
                 if (itemvalue.rule == "assertArrayContains") {
-                  var addSkillsCombinationOperator = JSON.parse(getCombinationOperatorJson("$or","skills",itemvalue));
-                  _.assignIn(selectorJson, addSkillsCombinationOperator);
-                  //Array.prototype.push.apply(addArray.value.$all,itemvalue.value);
-                  //selectorJson.skills = addCombinationOperator;
+                  var addSkillsCombinationOperatorJson = getCombinationOperatorJson("$or","skills",itemvalue.value);
+                  _.assignIn(selectorJson, addSkillsCombinationOperatorJson);
                 }
               } else if (itemname === "locationDescription") {
                 var addArray = JSON.parse('{"value":{"$all": []}}');
@@ -234,8 +232,17 @@ function assertArrayContains(sourceValue, comparisonValue){
 
 function getCombinationOperatorJson(operator, key, valueArray) {
   console.log("getCombinationOperatorJson operator["+operator+"], key["+key+"], valueArray["+valueArray+"]");
-  var combOpJson = "{\"$or\":[{\"skills\":{\"value\":{\"$all\":[\"javascript\"]}}},{\"skills\":{\"value\":{\"$all\":[\"java\"]}}}]}";
-  return combOpJson;
+  var operatorJson = JSON.parse('{"'+ operator +'": []}');
+
+  for (var i=0; i < valueArray.length; i++) {
+    console.log("   valueArray value["+valueArray[i]+"]");
+    var json = {};
+    json[key] = {"value":{"$all":{}}};
+    json[key].value.$all = [valueArray[i]];
+    Array.prototype.push.apply(operatorJson[operator], [json]);
+  };
+
+  return operatorJson;
 }
 
 exports.Service = new RecruitUnitUtilityService;
