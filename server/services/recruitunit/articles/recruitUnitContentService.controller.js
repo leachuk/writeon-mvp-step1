@@ -756,10 +756,14 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
             console.log("getRecruiterJobSpecFromDevJobRequirements > getComparisonTestDocs:")
             console.log(results);
             jobDescriptionResults = results;
-            callback(null, jobDescriptionResults);
+            if (jobDescriptionResults.length == 0){
+              func_callback(null, []);
+            } else {
+              callback(null, jobDescriptionResults);
+            }
           } else {
             console.log(err);
-            callback("getJobDescriptionDocResults error", null);
+            callback("getComparisonTestDocs error", null);
           }
         });
       },

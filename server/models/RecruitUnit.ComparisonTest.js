@@ -16,6 +16,8 @@ var initCookie = function (setcookie, options) {
 
   var returnModelObj = {
     id: 					    { type: String },
+    title:       			{ type: String },
+    description: 			{ type: String },
     model: 					  { type: String }, //auto populated. Doesn't require submitted data
     roleType:   			{ type: JSON   },
     locationDescription: { type: JSON   },

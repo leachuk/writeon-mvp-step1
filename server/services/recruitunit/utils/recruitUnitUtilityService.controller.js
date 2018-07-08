@@ -107,9 +107,11 @@ RecruitUnitUtilityService.prototype.getComparisonTestDocs = function(userEmail, 
           dataCopy.push(jsonItem);
         });
 
-        callback (null, dataCopy)
+        callback(null, dataCopy)
+      } else if (jobItemDocResults.length == 0){
+        callback(null, []);
       } else {
-        callback ("no results returned", null);
+        callback(err, null);
       }
     } else {
       console.log("jobItemModelAuth error");
@@ -122,7 +124,9 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
   var selector = "";
   var selectorJson = {};
-  if(jobItemResults !== 'undefined' && jobItemResults !== null && (jobItemResults[0].model === "RecruitUnitJobDescription" || jobItemResults[0].model === "RecruitUnitComparisonTest")) {
+  if (jobItemResults.length == 0) {
+    callback(null, [])
+  } else if(jobItemResults !== 'undefined' && jobItemResults !== null && (jobItemResults[0].model === "RecruitUnitJobDescription" || jobItemResults[0].model === "RecruitUnitComparisonTest")) {
     //todo: don't forget to handle multiple job description documents from the recruiter.
     for(var i=0; i < jobItemResults.length; i++) {
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
