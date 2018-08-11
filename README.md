@@ -5,6 +5,11 @@ Basic MVP content api server.
 
 Built with nodejs and express. Provides user authentication and authorisation. Json Web Tokens (JWTs) are used for authentication of api calls.
 
+##versions
+Current global version dependencies:
+* node -v `v7.5.0`
+* npm -v `4.1.2`
+
 #Usage 
 
 * Docker Prod
