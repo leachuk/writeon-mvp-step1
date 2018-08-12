@@ -15,16 +15,16 @@ var initCookie = function (setcookie, options) {
   console.log(options);
 
   var returnModelObj = {
-    id: 					    { type: String },
-    model: 					  { type: String }, //auto populated. Doesn't require submitted data
-    roleType:   			{ type: JSON   },
-    locationDescription: { type: JSON   },
-    jobDescription: 	{ type: JSON },
-    payBracketLower:  { type: JSON },
-    skills: 	        { type: JSON },
-    authorEmail: 			{ type: String },
-    published:        { type: Boolean },
-    createdDate: 			{ type: Number,  default: Date.now }
+    id: 					       { type: String },
+    model: 					     { type: String }, //auto populated. Doesn't require submitted data
+    roleType:   			   { type: JSON },
+    locationDescription: { type: JSON },
+    description: 	       { type: JSON },
+    payBracketLower:     { type: JSON },
+    skills: 	           { type: JSON },
+    authorEmail: 			   { type: String },
+    published:           { type: Boolean },
+    createdDate: 			   { type: Number, default: Date.now }
   }
 
   console.log("returnModelObj");
