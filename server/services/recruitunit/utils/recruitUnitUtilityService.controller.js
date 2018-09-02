@@ -122,15 +122,17 @@ RecruitUnitUtilityService.prototype.getComparisonTestDocs = function(userEmail, 
 
 RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
   console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
-  var selector = "";
   var selectorJson = {};
   if (jobItemResults.length == 0) {
     callback(null, [])
   } else if(jobItemResults !== 'undefined' && jobItemResults !== null && (jobItemResults[0].model === "RecruitUnitJobDescription" || jobItemResults[0].model === "RecruitUnitComparisonTest")) {
     //todo: don't forget to handle multiple job description documents from the recruiter.
+    //doing now.
+    //hacky mchack hack. Basically hardcoding the model types to developer=RecruitUnitJobDescription and recruiter=RecruitUnitComparisonTest
+    var selectorArray = [];
     for(var i=0; i < jobItemResults.length; i++) {
+      var selector = "";
       var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
-      //hacky mchack hack. Basically hardcoding the model types to developer=RecruitUnitJobDescription and recruiter=RecruitUnitComparisonTest
       //todo: revisit and make this more flexible, if it's ever worth the effort.
       var selectorModel = jsonResult.model == "RecruitUnitComparisonTest" ? "RecruitUnitJobDescription" : "RecruitUnitComparisonTest";
       _.forEach(jsonResult, function (itemvalue, itemname) {
@@ -169,9 +171,10 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
         }
         console.log("key:" + itemname, "value:" + itemvalue);
       });
+      selector = "{\"selector\":"+ JSON.stringify(selectorJson) +"}";
+      selectorArray.push(selector);
     }
-    selector = "{\"selector\":"+ JSON.stringify(selectorJson) +"}";
-    callback(null, selector)
+    callback(null, selectorArray)
   } else {
     console.log("getMangoSelectorFromJobItem error. Incorrect model");
     callback("Incorrect model", null)

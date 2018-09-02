@@ -712,23 +712,31 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
         })
       },
       searchJobSpecs: function(callback){
-        req.body = selectorResults;
-        couchService.find(req, function(err, body){
-          if(!err){
-            console.log("success searchJobSpecs");
-            _.forEach(body.docs, function(item) {
-              delete item.authorEmail ///remove personal info before returning to client
-            });
-            //console.log(body);
-            var jsonBody = JSON.parse(JSON.stringify(body));
+        var searchResultsArray = [];
+        for (let i=0; i <= selectorResults.length; i++) {
+          req.body = selectorResults[i];
+          couchService.find(req, function(err, body){
+            if(!err){
+              console.log("success searchJobSpecs");
+              _.forEach(body.docs, function(item) {
+                delete item.authorEmail ///remove personal info before returning to client
+              });
+              //console.log(body);
+              var jsonBody = JSON.parse(JSON.stringify(body));
+              searchResultsArray.push(jsonBody);
 
-            func_callback(null, jsonBody.docs);
-          }else{
-            console.log("articleModelAuth error");
+              if (i == selectorResults.length - 1 ){
+                console.log("returning searchResultsArray for i=" + i);
+                func_callback(null, searchResultsArray);
+              }
+            }else{
+              console.log("articleModelAuth error");
 
-            func_callback(err, null);
-          }
-        });
+              func_callback(err, null);
+            }
+          });
+        }
+
       }
     },
     function(err, results) {
