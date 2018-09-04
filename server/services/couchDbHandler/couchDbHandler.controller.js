@@ -729,7 +729,7 @@ CouchDBService.prototype.find = function(req, func_callback){
       find: function(callback){
         //probably need to use admin version
         var selectorJson = JSON.parse(selector);
-        db.find(selectorJson, function (err, body) {
+        db.find(_.omit(selectorJson,"jobSpecDocId"), function (err, body) {
           console.log("in couchnano.find");
           if (!err) {
             console.log(body);
@@ -742,7 +742,7 @@ CouchDBService.prototype.find = function(req, func_callback){
     },
     function(err, results) {
       console.log(results);
-      func_callback(err, results.find);
+      func_callback(err, results.find.docs);
     });
 };
 

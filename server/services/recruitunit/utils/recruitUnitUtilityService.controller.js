@@ -171,7 +171,7 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
         }
         console.log("key:" + itemname, "value:" + itemvalue);
       });
-      selector = "{\"selector\":"+ JSON.stringify(selectorJson) +"}";
+      selector = "{\"jobSpecDocId\":"+ JSON.stringify(jsonResult.id) + ",\"selector\":"+ JSON.stringify(selectorJson) +"}";
       selectorArray.push(selector);
     }
     callback(null, selectorArray)
@@ -181,6 +181,9 @@ RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobIt
   }
 }
 
+RecruitUnitUtilityService.prototype.combineJobSpecsWithSearchResults = function(jobSpecResults, jobSearchResults){
+  console.log("RecruitUnitUtilityService combineJobSpecsWithSearchResults");
+}
 // ********************************************************************************************************************************** //
 //
 // Private Test Functions

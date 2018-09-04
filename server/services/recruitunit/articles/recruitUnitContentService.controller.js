@@ -703,6 +703,10 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
         recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
           if(!err){
             console.log(null, result);
+            // for(var i=0; i < result.length; i++){
+            //   console.log(jobDescriptionResults[i].id);
+            //   _.assignIn(result[i], JSON.parse("{\"jobSpecDocId\":\"" + jobDescriptionResults[i].id + "\"}"));
+            // }
             selectorResults = result;
             callback(null, result);
           } else {
@@ -713,7 +717,7 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
       },
       searchJobSpecs: function(callback){
         var searchResultsArray = [];
-        for (let i=0; i <= selectorResults.length; i++) {
+        for (let i=0; i < selectorResults.length; i++) {
           req.body = selectorResults[i];
           couchService.find(req, function(err, body){
             if(!err){
@@ -726,8 +730,10 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
               searchResultsArray.push(jsonBody);
 
               if (i == selectorResults.length - 1 ){
+                console.log(jobDescriptionResults);
                 console.log("returning searchResultsArray for i=" + i);
-                func_callback(null, searchResultsArray);
+                var combinedArrays = recruitUnitUtils.combineJobSpecsWithSearchResults(jobDescriptionResults,searchResultsArray);
+                func_callback(null, combinedArrays);
               }
             }else{
               console.log("articleModelAuth error");
