@@ -726,14 +726,18 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
                 delete item.authorEmail ///remove personal info before returning to client
               });
               //console.log(body);
-              var jsonBody = JSON.parse(JSON.stringify(body));
-              searchResultsArray.push(jsonBody);
-
+              if (body.length > 0) {
+                var jsonBody = JSON.parse(JSON.stringify(body));
+                var combined = {};
+                combined.jobSpec = _.find(jobDescriptionResults, {"id": JSON.parse(selectorResults[i]).jobSpecDocId});
+                combined.searchResult = jsonBody[0];
+                searchResultsArray.push(combined);
+              }
               if (i == selectorResults.length - 1 ){
                 console.log(jobDescriptionResults);
                 console.log("returning searchResultsArray for i=" + i);
-                var combinedArrays = recruitUnitUtils.combineJobSpecsWithSearchResults(jobDescriptionResults,searchResultsArray);
-                func_callback(null, combinedArrays);
+
+                func_callback(null, searchResultsArray);
               }
             }else{
               console.log("articleModelAuth error");
