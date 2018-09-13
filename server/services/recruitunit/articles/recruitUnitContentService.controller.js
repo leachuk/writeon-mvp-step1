@@ -678,9 +678,7 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
   var returnAuthSuccess = null;
   var jobDescriptionResults = null;
   var selectorResults = null;
-  var searchResults = null;
-
-
+  
   async.series({
       authToken: function(callback){
         _authUtils.authenticateToken(req, function(err, result){
@@ -721,13 +719,11 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
           req.body = selectorResults[n];
 
           couchService.find(req, function(err, body){
-            var searchResultsArray = [];
             if(!err){
               console.log("success searchJobSpecs n=" + n);
               _.forEach(body, function(item) {
                 delete item.authorEmail ///remove personal info before returning to client
               });
-              //console.log(body);
               if (body.length > 0) {
                 var jsonBody = JSON.parse(JSON.stringify(body));
                 var combined = {};
@@ -737,20 +733,13 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
               }else{
                 next();
               }
-              if (n === selectorResults.length-1 ){
-                //console.log(jobDescriptionResults);
-                console.log("returning searchResultsArray for n=" + n);
-              }
             }else{
               console.log("articleModelAuth error");
-
               callback(err, null);
             }
           });
         }, function(err, searchResultsTotal) {
-          console.log("ASYNC times test:");
-          console.log(searchResultsTotal);
-          var filteredResults = _.pull(searchResultsTotal,undefined)
+          var filteredResults = _.pull(searchResultsTotal,undefined); //remove undefined from array
           func_callback(err, filteredResults);
         });
       }
