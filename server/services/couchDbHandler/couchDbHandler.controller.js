@@ -742,7 +742,11 @@ CouchDBService.prototype.find = function(req, func_callback){
     },
     function(err, results) {
       console.log(results);
-      func_callback(err, results.find.docs);
+      if (err) {
+        func_callback(err, {}); //return empty
+      } else {
+        func_callback(err, results.find.docs);
+      }
     });
 };
 

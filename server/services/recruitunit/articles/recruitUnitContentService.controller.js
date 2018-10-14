@@ -678,7 +678,7 @@ RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = 
   var returnAuthSuccess = null;
   var jobDescriptionResults = null;
   var selectorResults = null;
-  
+
   async.series({
       authToken: function(callback){
         _authUtils.authenticateToken(req, function(err, result){
@@ -754,7 +754,6 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
   var returnAuthSuccess = null;
   var jobDescriptionResults = null;
   var selectorResults = null;
-  var searchResults = null;
 
   async.series({
       authToken: function(callback){
@@ -763,7 +762,7 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
           callback(err, result);
         });
       },
-      getJobDescriptionDocResults: function(callback){
+      getComparisonDocResults: function(callback){
         recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
           if(!err){
             console.log("getRecruiterJobSpecFromDevJobRequirements > getComparisonTestDocs:")
@@ -784,6 +783,10 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
         recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
           if(!err){
             console.log(null, result);
+            // for(var i=0; i < result.length; i++){
+            //   console.log(jobDescriptionResults[i].id);
+            //   _.assignIn(result[i], JSON.parse("{\"jobSpecDocId\":\"" + jobDescriptionResults[i].id + "\"}"));
+            // }
             selectorResults = result;
             callback(null, result);
           } else {
@@ -793,28 +796,38 @@ RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = 
         })
       },
       searchJobSpecs: function(callback){
-        req.body = selectorResults;
-        couchService.find(req, function(err, body){
-          if(!err){
-            console.log("success searchJobSpecs");
-            _.forEach(body.docs, function(item) {
-              delete item.authorEmail ///remove personal info before returning to client
-            });
-            //console.log(body);
-            var jsonBody = JSON.parse(JSON.stringify(body));
+        async.times(selectorResults.length, function(n, next) {
+          req.body = selectorResults[n];
 
-            func_callback(null, jsonBody.docs);
-          }else{
-            console.log("articleModelAuth error");
-
-            func_callback(err, null);
-          }
+          couchService.find(req, function(err, body){
+            if(!err){
+              console.log("success searchJobSpecs n=" + n);
+              _.forEach(body, function(item) {
+                delete item.authorEmail ///remove personal info before returning to client
+              });
+              if (body.length > 0) {
+                var jsonBody = JSON.parse(JSON.stringify(body));
+                var combined = {};
+                combined.jobSpec = _.find(jobDescriptionResults, {"id": JSON.parse(selectorResults[n]).jobSpecDocId});
+                combined.searchResult = jsonBody;
+                next(null,combined);
+              }else{
+                next();
+              }
+            }else{
+              console.log("articleModelAuth error");
+              callback(err, null);
+            }
+          });
+        }, function(err, searchResultsTotal) {
+          var filteredResults = _.pull(searchResultsTotal,undefined); //remove undefined from array
+          func_callback(err, filteredResults);
         });
       }
     },
     function(err, results) {
-      console.log(results);
-      func_callback(err, "getDevJobRequirementsFromRecruiterJobSpec temp result");
+      //console.log(results);
+      func_callback(err, results.returnSearchResults);
     });
 }
 
