@@ -1,7 +1,8 @@
 'use strict';
 
 var appDir = require('path').dirname(require.main.filename);
-
+var RecruitUnitJobDescriptionModel = require(appDir + '/models/RecruitUnit.JobDescription.js');
+var RecruitUnitComparisonTestModel = require(appDir + '/models/RecruitUnit.ComparisonTest.js');
 var _ = require('lodash');
 
 function RecruitUnitUtilityService(){};
@@ -59,6 +60,130 @@ RecruitUnitUtilityService.prototype.compare = function(sourceJson, comparisonJso
   func_callback(null, results);//do error check
 };
 
+// ********************************************************************************************************************************** //
+//
+// Search Services
+//
+// ********************************************************************************************************************************** //
+
+RecruitUnitUtilityService.prototype.getJobDescriptionSpecDocs = function(userEmail, authCookie, callback){
+  console.log("RecruitUnitUtilityService getJobDescriptionSpecDocs");
+
+  //get recruiters job item documents list
+  var jobItemModelAuth = RecruitUnitJobDescriptionModel(authCookie, {returnAll: true}); //only allow recruiter to retrieve their own documents
+  var jobItemSearchJson = '{"authorEmail": "' + userEmail + '"}';
+  jobItemModelAuth.all({where: JSON.parse(jobItemSearchJson)}, function (err, jobItemDocResults) {
+    if (!err) {
+      console.log("jobItemModelAuth success result. jobItemDocResults:");
+      if (jobItemDocResults.length > 0) {
+        console.log(jobItemDocResults);
+        callback (null, jobItemDocResults)
+      } else {
+        callback ("no results returned", null);
+      }
+    } else {
+      console.log("jobItemModelAuth error");
+      callback(err, null);
+    }
+  });
+}
+
+RecruitUnitUtilityService.prototype.getComparisonTestDocs = function(userEmail, authCookie, callback){
+  console.log("RecruitUnitUtilityService getComparisonTestDocs");
+
+  //get recruiters job item documents list
+  var jobItemModelAuth = RecruitUnitComparisonTestModel(authCookie, {returnAll: true}); //only allow developer to retrieve their own documents
+  var jobItemSearchJson = '{"authorEmail": "' + userEmail + '"}';
+  jobItemModelAuth.all({where: JSON.parse(jobItemSearchJson)}, function (err, jobItemDocResults) {
+    if (!err) {
+      console.log("jobItemModelAuth success result. jobItemDocResults:");
+      if (jobItemDocResults.length > 0) {
+        console.log(jobItemDocResults);
+        var dataCopy = [];
+        _.forEach(jobItemDocResults, function(item) {
+          var jsonItem = JSON.parse(JSON.stringify(item));
+          delete jsonItem.authorEmail ///remove personal info before returning to client
+          //Array.prototype.push.apply(dataCopy,jsonItem);
+          dataCopy.push(jsonItem);
+        });
+
+        callback(null, dataCopy)
+      } else if (jobItemDocResults.length == 0){
+        callback(null, []);
+      } else {
+        callback(err, null);
+      }
+    } else {
+      console.log("jobItemModelAuth error");
+      callback(err, null);
+    }
+  });
+}
+
+RecruitUnitUtilityService.prototype.getMangoSelectorFromJobItem = function(jobItemResults, callback){
+  console.log("RecruitUnitUtilityService getMangoSelectorFromJobItem");
+  var selectorJson = {};
+  if (jobItemResults.length == 0) {
+    callback(null, [])
+  } else if(jobItemResults !== 'undefined' && jobItemResults !== null && (jobItemResults[0].model === "RecruitUnitJobDescription" || jobItemResults[0].model === "RecruitUnitComparisonTest")) {
+    //todo: don't forget to handle multiple job description documents from the recruiter.
+    //doing now.
+    //hacky mchack hack. Basically hardcoding the model types to developer=RecruitUnitJobDescription and recruiter=RecruitUnitComparisonTest
+    var selectorArray = [];
+    for(var i=0; i < jobItemResults.length; i++) {
+      var selector = "";
+      var jsonResult = JSON.parse(JSON.stringify(jobItemResults[i]));
+      //todo: revisit and make this more flexible, if it's ever worth the effort.
+      var selectorModel = jsonResult.model == "RecruitUnitComparisonTest" ? "RecruitUnitJobDescription" : "RecruitUnitComparisonTest";
+      _.forEach(jsonResult, function (itemvalue, itemname) {
+        if (itemvalue.value !== undefined && !itemvalue.disabled) {
+          //add model type to work for both recruiters and developers
+          selectorJson.model = selectorModel;
+          console.log("value type:" + itemvalue.value.constructor.name, "value:" + itemvalue.value);
+          switch (itemvalue.value.constructor.name){
+            case 'Array':
+              console.log("   Array");
+              if (itemname === "roleType") {
+                selectorJson.roleType = JSON.parse('{"value":{"$elemMatch":{"$eq": "' + itemvalue.value[0] + '"}}}');
+              } else if (itemname === "skills") {
+                if (itemvalue.rule == "assertArrayContains") {
+                  var addSkillsCombinationOperatorJson = getCombinationOperatorJson("$or","skills",itemvalue.value);
+                  _.assignIn(selectorJson, addSkillsCombinationOperatorJson);
+                }
+              } else if (itemname === "locationDescription") {
+                var addArray = JSON.parse('{"value":{"$all": []}}');
+                Array.prototype.push.apply(addArray.value.$all,[itemvalue.value[0]]);
+                selectorJson.locationDescription = addArray;
+              }
+              break;
+            case 'String':
+              console.log("   String");
+              break;
+            case 'Number':
+              console.log("   Number");
+              if (itemname === "payBracketLower") {
+                selectorJson.payBracketLower = JSON.parse('{"value":{"$gte":'+ itemvalue.value +'}}');
+              }
+              break;
+            default:
+              console.log("   Not recognised:" + itemvalue.value.constructor.name);
+          }
+        }
+        console.log("key:" + itemname, "value:" + itemvalue);
+      });
+      selector = "{\"jobSpecDocId\":"+ JSON.stringify(jsonResult.id) + ",\"selector\":"+ JSON.stringify(selectorJson) +"}";
+      selectorArray.push(selector);
+    }
+    callback(null, selectorArray)
+  } else {
+    console.log("getMangoSelectorFromJobItem error. Incorrect model");
+    callback("Incorrect model", null)
+  }
+}
+
+RecruitUnitUtilityService.prototype.combineJobSpecsWithSearchResults = function(jobSpecResults, jobSearchResults){
+  console.log("RecruitUnitUtilityService combineJobSpecsWithSearchResults");
+}
 // ********************************************************************************************************************************** //
 //
 // Private Test Functions
@@ -125,6 +250,21 @@ function assertArrayContains(sourceValue, comparisonValue){
   })
   console.log("   returning:" + matchExists);
   return matchExists;
+}
+
+function getCombinationOperatorJson(operator, key, valueArray) {
+  console.log("getCombinationOperatorJson operator["+operator+"], key["+key+"], valueArray["+valueArray+"]");
+  var operatorJson = JSON.parse('{"'+ operator +'": []}');
+
+  for (var i=0; i < valueArray.length; i++) {
+    console.log("   valueArray value["+valueArray[i]+"]");
+    var json = {};
+    json[key] = {"value":{"$all":{}}};
+    json[key].value.$all = [valueArray[i]];
+    Array.prototype.push.apply(operatorJson[operator], [json]);
+  };
+
+  return operatorJson;
 }
 
 exports.Service = new RecruitUnitUtilityService;

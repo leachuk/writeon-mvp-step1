@@ -710,6 +710,45 @@ CouchDBService.prototype.isValidAppKey = function(key, req, func_callback) {
   });
 };
 
+//wrapper for nano find which enables mango query support
+//Note: mango queries may have performance issues with large data sets. Also create map/reduce version.
+CouchDBService.prototype.find = function(req, func_callback){
+  var returnSuccess = null;
+  var dbtable = dbNameArticles;
+  var db = couchnano.use(dbtable);
+
+  var selector = req.body;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnSuccess = result;
+          callback(err, result);
+        });
+      },
+      find: function(callback){
+        //probably need to use admin version
+        var selectorJson = JSON.parse(selector);
+        db.find(_.omit(selectorJson,"jobSpecDocId"), function (err, body) {
+          console.log("in couchnano.find");
+          if (!err) {
+            console.log(body);
+          }else{
+            console.log(err);
+          }
+          callback(err, body);
+        });
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      if (err) {
+        func_callback(err, {}); //return empty
+      } else {
+        func_callback(err, results.find.docs);
+      }
+    });
+};
 
 exports.Service = new CouchDBService;
 

@@ -4,7 +4,7 @@ var config = require(appDir + '/config/environment');
 var Schema = require('jugglingdb').Schema;
 var cookie = "";
 
-console.log("In RecruitUnit.Comparison model");
+console.log("In RecruitUnit.JobDescription model");
 
 var initCookie = function (setcookie, options) {
   // Initialize here
@@ -15,24 +15,23 @@ var initCookie = function (setcookie, options) {
   console.log(options);
 
   var returnModelObj = {
-    id: 					    { type: String },
-    title:       			{ type: String },
-    description: 			{ type: String },
-    model: 					  { type: String }, //auto populated. Doesn't require submitted data
-    roleType:   			{ type: JSON   },
-    locationDescription: { type: JSON   },
-    payBracketLower:  { type: JSON },
-    skills: 	        { type: JSON },
-    authorEmail: 			{ type: String },
-    published:        { type: Boolean },
-    createdDate: 			{ type: Number,  default: Date.now }
+    id: 					       { type: String },
+    model: 					     { type: String }, //auto populated. Doesn't require submitted data
+    roleType:   			   { type: JSON },
+    locationDescription: { type: JSON },
+    description: 	       { type: JSON },
+    payBracketLower:     { type: JSON },
+    skills: 	           { type: JSON },
+    authorEmail: 			   { type: String },
+    published:           { type: Boolean },
+    createdDate: 			   { type: Number, default: Date.now }
   }
 
   console.log("returnModelObj");
   console.log(returnModelObj);
 
-  var ComparisonTest = schema.define('RecruitUnitComparisonTest', returnModelObj);
-  return ComparisonTest;
+  var JobDescription = schema.define('RecruitUnitJobDescription', returnModelObj);
+  return JobDescription;
 };
 //module.exports = Article;
 module.exports = initCookie;

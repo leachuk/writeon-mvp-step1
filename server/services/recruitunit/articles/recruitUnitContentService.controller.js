@@ -93,19 +93,19 @@ RecruitUnitContentService.prototype.getArticle = function(req, modelPath, func_c
 		    });
 	    },
 	    getArticle: function(callback){
-			var docModel = Model(returnSuccess.cookie, {returnAll: getAllData});
+			  var docModel = Model(returnSuccess.cookie, {returnAll: getAllData});
         docModel.find(id, function(err, body){
-				if(!err){
-					console.log("success result");
-					//console.log(body);
-          var jsonBody = JSON.parse(JSON.stringify(body));
+          if(!err){
+            console.log("success result");
+            //console.log(body);
+            var jsonBody = JSON.parse(JSON.stringify(body));
 
-					callback(null, jsonBody);
-				}else{
-					console.log("articleModelAuth error");
-					callback(err, null);
-				}
-			});
+            callback(null, jsonBody);
+          }else{
+            console.log("articleModelAuth error");
+            callback(err, null);
+          }
+        });
 	    }
 	},
 	function(err, results) {
@@ -482,7 +482,7 @@ RecruitUnitContentService.prototype.getUserTestResults = function(req, func_call
 }
 
 RecruitUnitContentService.prototype.createJobSubmission = function(req, func_callback){
-  console.log("in RecruitUnitContentService, createArticle");
+  console.log("in RecruitUnitContentService, createJobSubmission");
   console.log(req.body);
 
   var JobModel = require(appDir + "/models/RecruitUnit.Job.All.js");
@@ -496,28 +496,6 @@ RecruitUnitContentService.prototype.createJobSubmission = function(req, func_cal
           //console.log(result);
           returnSuccess = result;
           callback(err, result);
-        });
-      },
-      checkSubmitToUserExists: function(callback){
-        var UserModel = require(appDir + '/models/RecruitUnit.User.Developer.js');//I'm assuming this function is only called by recruiters who are submitting to developer. Otherwise need logic around this to change the model.
-        var userModel = UserModel(returnSuccess.cookie, {returnAll: true});
-        userModel.all({where: {userGuid: req.body.submitTo}}, function(err, result){
-          if (!err && result != null && result.length > 0) {
-            console.log("checkSubmitToUserExists: success");
-            console.log(result);
-            var returnMessage = { //ensure success param returned to client
-              success: true
-            };
-            callback(null, returnMessage);
-          } else {
-            console.log("checkSubmitToUserExists: error");
-            var returnMessage = {
-              "success": false,
-              "data": err,
-              "message": "UserModel error"
-            }
-            callback(returnMessage, null);
-          }
         });
       },
       createArticle: function(callback){
@@ -582,6 +560,31 @@ RecruitUnitContentService.prototype.toggleDevEmailDisplay = function(req, func_c
     });
 }
 
+//support for couchdb2.0 mango query which was added to nano
+RecruitUnitContentService.prototype.find = function(req, func_callback){
+  console.log("in RecruitUnitContentService find");
+  console.log(req.body);
+
+  var returnSuccess = null;
+
+  //todo: Need to wrap this in an authenticateToken function so only authenticated users can run queries against their own documents
+  //currently this is open to allow anyone to query the whole db!
+  req.body = JSON.stringify(req.body)
+  couchService.find(req, function(err, body){
+    if(!err){
+      console.log("success result");
+      //console.log(body);
+      var jsonBody = JSON.parse(JSON.stringify(body));
+
+      func_callback(null, jsonBody);
+    }else{
+      console.log("articleModelAuth error");
+
+      func_callback(err, null);
+    }
+  });
+};
+
 // ********************************************************************************************************************************** //
 //
 // Comparison Services
@@ -616,7 +619,7 @@ RecruitUnitContentService.prototype.getTestSourceAndComparisonDocuments = functi
         req.params.id = comparisonDocId;
         _this.getArticle(req, comparisonModelPath, function(err, result){
           if (!err){
-            callback(err, result);
+            callback(err, result);//shouldn't these two callbacks be different
           } else {
             callback(err, result);
           }
@@ -671,6 +674,192 @@ RecruitUnitContentService.prototype.createComparison = function(req, jsondata, d
     });
 };
 
+RecruitUnitContentService.prototype.getDevJobRequirementsFromRecruiterJobSpec = function(req, func_callback) {
+  var returnAuthSuccess = null;
+  var jobDescriptionResults = null;
+  var selectorResults = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getJobDescriptionDocResults: function(callback){
+        recruitUnitUtils.getJobDescriptionSpecDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            //console.log(results);
+            jobDescriptionResults = results;
+            callback(null, jobDescriptionResults);
+          } else {
+            console.log(err);
+            callback("getJobDescriptionDocResults error", null);
+          }
+        });
+      },
+      getJobSpecsSearchSelector: function(callback){
+        recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
+          if(!err){
+            console.log(null, result);
+            // for(var i=0; i < result.length; i++){
+            //   console.log(jobDescriptionResults[i].id);
+            //   _.assignIn(result[i], JSON.parse("{\"jobSpecDocId\":\"" + jobDescriptionResults[i].id + "\"}"));
+            // }
+            selectorResults = result;
+            callback(null, result);
+          } else {
+            console.log(err, null);
+            callback(err, null);
+          }
+        })
+      },
+      searchJobSpecs: function(callback){
+        async.times(selectorResults.length, function(n, next) {
+          req.body = selectorResults[n];
+
+          couchService.find(req, function(err, body){
+            if(!err){
+              console.log("success searchJobSpecs n=" + n);
+              _.forEach(body, function(item) {
+                delete item.authorEmail ///remove personal info before returning to client
+              });
+              if (body.length > 0) {
+                var jsonBody = JSON.parse(JSON.stringify(body));
+                var combined = {};
+                combined.jobSpec = _.find(jobDescriptionResults, {"id": JSON.parse(selectorResults[n]).jobSpecDocId});
+                combined.searchResult = jsonBody;
+                next(null,combined);
+              }else{
+                next();
+              }
+            }else{
+              console.log("articleModelAuth error");
+              callback(err, null);
+            }
+          });
+        }, function(err, searchResultsTotal) {
+          var filteredResults = _.pull(searchResultsTotal,undefined); //remove undefined from array
+          func_callback(err, filteredResults);
+        });
+      }
+    },
+    function(err, results) {
+      //console.log(results);
+      func_callback(err, results.returnSearchResults);
+    });
+}
+
+RecruitUnitContentService.prototype.getRecruiterJobSpecFromDevJobRequirements = function(req, func_callback) {
+  var returnAuthSuccess = null;
+  var jobDescriptionResults = null;
+  var selectorResults = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getComparisonDocResults: function(callback){
+        recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            console.log("getRecruiterJobSpecFromDevJobRequirements > getComparisonTestDocs:")
+            console.log(results);
+            jobDescriptionResults = results;
+            if (jobDescriptionResults.length == 0){
+              func_callback(null, []);
+            } else {
+              callback(null, jobDescriptionResults);
+            }
+          } else {
+            console.log(err);
+            callback("getComparisonTestDocs error", null);
+          }
+        });
+      },
+      getJobSpecsSearchSelector: function(callback){
+        recruitUnitUtils.getMangoSelectorFromJobItem(jobDescriptionResults, function(err, result){
+          if(!err){
+            console.log(null, result);
+            // for(var i=0; i < result.length; i++){
+            //   console.log(jobDescriptionResults[i].id);
+            //   _.assignIn(result[i], JSON.parse("{\"jobSpecDocId\":\"" + jobDescriptionResults[i].id + "\"}"));
+            // }
+            selectorResults = result;
+            callback(null, result);
+          } else {
+            console.log(err, null);
+            callback(err, null);
+          }
+        })
+      },
+      searchJobSpecs: function(callback){
+        async.times(selectorResults.length, function(n, next) {
+          req.body = selectorResults[n];
+
+          couchService.find(req, function(err, body){
+            if(!err){
+              console.log("success searchJobSpecs n=" + n);
+              _.forEach(body, function(item) {
+                delete item.authorEmail ///remove personal info before returning to client
+              });
+              if (body.length > 0) {
+                var jsonBody = JSON.parse(JSON.stringify(body));
+                var combined = {};
+                combined.jobSpec = _.find(jobDescriptionResults, {"id": JSON.parse(selectorResults[n]).jobSpecDocId});
+                combined.searchResult = jsonBody;
+                next(null,combined);
+              }else{
+                next();
+              }
+            }else{
+              console.log("articleModelAuth error");
+              callback(err, null);
+            }
+          });
+        }, function(err, searchResultsTotal) {
+          var filteredResults = _.pull(searchResultsTotal,undefined); //remove undefined from array
+          func_callback(err, filteredResults);
+        });
+      }
+    },
+    function(err, results) {
+      //console.log(results);
+      func_callback(err, results.returnSearchResults);
+    });
+}
+
+RecruitUnitContentService.prototype.getDevComparisonTestDocs = function(req, func_callback) {
+  var returnAuthSuccess = null;
+
+  async.series({
+      authToken: function(callback){
+        _authUtils.authenticateToken(req, function(err, result){
+          returnAuthSuccess = result;
+          callback(err, result);
+        });
+      },
+      getComparisonTestDocs: function(callback){
+        recruitUnitUtils.getComparisonTestDocs(returnAuthSuccess.username, returnAuthSuccess.cookie, function(err, results){
+          if(!err){
+            console.log("getDevComparisonTestDocs > getComparisonTestDocs:")
+            console.log(results);
+
+            func_callback(null, results);
+          } else {
+            console.log(err);
+            func_callback("getComparisonTestDocs error", null);
+          }
+        });
+      }
+    },
+    function(err, results) {
+      console.log(results);
+      func_callback(err, "getDevComparisonTestDocs temp result");
+    });
+}
 
 exports.Service = new RecruitUnitContentService;
 

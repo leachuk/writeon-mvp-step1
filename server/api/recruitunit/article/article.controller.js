@@ -73,6 +73,56 @@ exports.getUserTestResults = function(req, res){
   });
 };
 
+exports.find = function(req, res){
+  console.log("Recruitunit controller find");
+
+  appService.find(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
+//return list of developers JobItem documents which match the criteria from the recruiters JobSpecification documents
+exports.getJobItemSpecDocs = function(req, res){
+  console.log("Recruitunit controller getJobItemSpecDocs");
+
+  appService.getDevJobRequirementsFromRecruiterJobSpec(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
+//return list of developers documents which match their criteria in their ComparisonTest documents
+exports.getUserComparisonTests = function(req, res){
+  console.log("Recruitunit controller getUserComparisonTests");
+
+  appService.getRecruiterJobSpecFromDevJobRequirements(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
+
+//return list of developers ComparisonTest documents which defines their search criteria
+exports.getComparisonTestDocs = function(req, res){
+  console.log("Recruitunit controller getComparisonTestDocs");
+
+  appService.getDevComparisonTestDocs(req, function(err, result){
+    if(!err){
+      res.send(result);
+    }else{
+      res.send(err);
+    }
+  });
+};
 
 
 

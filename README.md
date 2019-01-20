@@ -5,18 +5,24 @@ Basic MVP content api server.
 
 Built with nodejs and express. Provides user authentication and authorisation. Json Web Tokens (JWTs) are used for authentication of api calls.
 
+##versions
+Current global version dependencies:
+* node -v `v7.5.0`
+* npm -v `4.1.2`
+
 #Usage 
 
-* Host
-  * http://servername:9000
-* Monitoring available via[https://app.keymetrics.io/](https://app.keymetrics.io/)
-* Docker 
+* Docker Prod
   * build app and dependencies from project root `docker-compose build`
   * run app `docker-compose up`
 * Docker Dev
   * build and run development instance (couchdb and redis dependencies are launched with ports mapped locally)
   * `docker-compose -f docker-compose-dev.yml build`
   * `docker-compose -f docker-compose-dev.yml up`
+* Start local bardly server from root `grunt serve`
+* Host
+  * http://servername:9000
+* Monitoring available via[https://app.keymetrics.io/](https://app.keymetrics.io/)
 
 #Deploy
 
