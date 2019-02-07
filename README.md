@@ -33,3 +33,10 @@ git push prod-deploy-vultr-au master
 git push prod-deploy-vultr-us master
 ```
 
+#Ansible
+
+To auto provision servers from scratch and bring up the docker services run:
+```$bash
+ansible-playbook -i hosts site.yml --ask-vault-pass
+```
+
