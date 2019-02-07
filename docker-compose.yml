@@ -32,8 +32,8 @@ services:
     links:
       - "redisdb:redis"
       - "couchdb:mycouchdb-1"
-#    volumes:
-#      - "./web-volume/web:/app/couchdb"
+    volumes:
+      - "./web-volume/web:/root"
     image: writeon_web
     environment:
       - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
