@@ -16,6 +16,7 @@ RUN mkdir -p /app/server && cp -a /tmp/node_modules /app/
 #copy package.json to app so npm run-script can be called
 ADD /package.json /app/
 ADD /couchdb /app/couchdb
+ADD /couchdb-dev /app/couchdb-dev
 
 #install pm2 globally
 RUN npm install -g pm2
