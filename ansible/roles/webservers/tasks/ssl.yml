@@ -56,6 +56,7 @@
       owner: appadmin
       group: appadmin
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
+    become: true
 
   #If certs issued but not installed, run install
   - name: install ssl certs with docker acme.sh
