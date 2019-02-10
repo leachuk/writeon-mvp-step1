@@ -65,6 +65,11 @@
       state: restarted
     become: true
 
+  - name: docker-compose build for bardly project
+    shell: "docker-compose build"
+    args:
+      chdir: /home/appadmin/projects/bardly
+
   - name: docker-compose up for bardly project
     shell: "docker-compose up &"
     args:
