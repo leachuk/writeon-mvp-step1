@@ -8,7 +8,7 @@ var _utils = require(appDir + '/services/utils/utils.controller').Utils;
 var config = require(appDir + '/config/environment');
 
 var acl = require('acl');
-var redisClient = require('redis').createClient(config.redisPort, config.redisHost, {no_ready_check: true});
+var redisClient = require('redis').createClient("redis://redis:6379", {no_ready_check: true});
 acl = new acl(new acl.redisBackend(redisClient));
 
 //private
