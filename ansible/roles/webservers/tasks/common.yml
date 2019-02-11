@@ -55,14 +55,15 @@
     shell: "docker-compose build"
     args:
       chdir: /home/appadmin/projects/bardly
+    tags:
+      - docker
 
   - name: docker-compose up for bardly project
-    shell: "docker-compose up &"
+    shell: "docker-compose up"
     args:
       chdir: /home/appadmin/projects/bardly
+    async: 1000
+    poll: 0
+    tags:
+      - docker
 
-  #requires pip install docker-py on the server. Try using shell module instead
-#  - name: docker-compose up for bardly project
-#    docker_service:
-#      project_src: /projects/bardly
-#      state: present

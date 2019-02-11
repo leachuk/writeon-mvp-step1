@@ -40,3 +40,8 @@ To auto provision servers from scratch and bring up the docker services run:
 ansible-playbook -i hosts site.yml --ask-vault-pass
 ```
 
+To help debug tasks quicker, limit the executed tasks with the `--tags` option
+```$bash
+ansible-playbook -i hosts site.yml --ask-vault-pass --tags "docker" -vvv
+```
+
