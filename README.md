@@ -7,8 +7,8 @@ Built with nodejs and express. Provides user authentication and authorisation. J
 
 ##versions
 Current global version dependencies:
-* node -v `v7.5.0`
-* npm -v `4.1.2`
+* node -v `v11.8.0`
+* npm -v `6.6.0`
 
 #Usage 
 

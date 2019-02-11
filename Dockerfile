@@ -1,4 +1,3 @@
-#FROM node:7.7.3
 FROM mhart/alpine-node:11.8.0
 
 #Install git for nano-adaptor dependency install. Could change to use a git submodule which might negate this.
