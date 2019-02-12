@@ -336,7 +336,7 @@ RecruitUnitUserService.prototype.updateUser = function(req, username, updateData
             var updatedUserToken = returnTokenSuccess;
             returnTokenSuccess.isComparisonFormEnabled = body.isComparisonFormEnabled;
             // We are encoding the profile inside the token
-            var token = jwt.sign(updatedUserToken, req.app.get('secret'), { expiresInMinutes: 60 * 5 });//recreate the user profile with the updated attributes for sending and saving on the client.
+            var token = jwt.sign(updatedUserToken, req.app.get('secret'), { expiresIn: 60 * 5 });//recreate the user profile with the updated attributes for sending and saving on the client.
 
             var successReturn = { //ensure success param returned to client
               data: body,

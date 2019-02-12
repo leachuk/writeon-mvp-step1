@@ -132,7 +132,7 @@ exports.signin = function(req, res){
             roles: result.roles,
             ip: clientip };
           // We are encoding the profile inside the token
-          var token = jwt.sign(profile, req.app.get('secret'), { expiresInMinutes: 60 * 24 * 30 }); //30 days expiry
+          var token = jwt.sign(profile, req.app.get('secret'), { expiresIn: 60 * 24 * 30 }); //30 days expiry
 
           returnMessage["success"] = true;
           returnMessage["token"] = token;
