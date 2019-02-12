@@ -1,36 +1,41 @@
 ---
-  - name: ufw enabled and set initial deny all
-    ufw:
-      state: enabled
-      policy: deny
-    become: true
-
   - name: ufw allow ssh
     ufw:
       rule: allow
       name: OpenSSH
     become: true
 
-  - name: ufw allow all on bardly ssl port for https
+  # ufw route allow proto tcp from any to any ssl port 443
+  - name: ufw allow container access on bardly ssl port for https
     ufw:
       rule: allow
+      route: yes
+      proto: tcp
       port: 443
     become: true
 
-  - name: ufw allow all on bardly port 80 for http
+  # ufw route allow proto tcp from any to any port 80
+  - name: ufw allow container access on bardly port 80 for http
     ufw:
       rule: allow
+      route: yes
+      proto: tcp
       port: 80
     become: true
 
-  - name: ufw allow all on bardly api app port
-    ufw:
-      rule: allow
-      port: 9000
-    become: true
+#  - name: ufw allow all on bardly api app port
+#    ufw:
+#      rule: allow
+#      port: 9000
+#    become: true
 
 #  - name: ufw open all couchdb port for testing
 #    ufw:
 #      rule: allow
 #      port: 5984
 #    become: true
+
+  - name: ufw reload
+    ufw:
+      state: reloaded
+    become: true
