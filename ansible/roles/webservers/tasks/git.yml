@@ -1,0 +1,8 @@
+---
+# checkout git project. Assumes ssh public key already exists on the server
+
+  - git:
+      repo: git@github.com:leachuk/writeon-mvp-step1.git
+      dest: ~/projects/bardly
+    tags:
+      - git
