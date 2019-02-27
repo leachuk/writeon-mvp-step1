@@ -8,11 +8,17 @@
       path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/"
     register: stat_result
     become: true
+    tags:
+      - docker
 
   - debug: msg="Does the issue directory exist {{ stat_result.stat.exists }}"
+    tags:
+      - docker
 
   - debug: msg="Directory owner {{ stat_result.stat.pw_name }}"
     when: "stat_result.stat.exists"
+    tags:
+      - docker
 
   - name: issue ssl certs with docker acme.sh
     command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
@@ -20,9 +26,14 @@
       chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
     register: docker_result
     when: "not stat_result.stat.exists"
+    become_user: "{{ansible_ssh_user}}"
+    tags:
+      - docker
 
   - debug: msg="Docker result {{ docker_result.stdout }}"
     when: "not stat_result.stat.exists"
+    tags:
+      - docker
 
   - name: wait for docker letsencrypt cert issue to complete if it ran
     wait_for:
@@ -30,12 +41,8 @@
       state: present
       timeout: 125
     when: "not stat_result.stat.exists"
-
-  #docker letsencrypt has run for the first time
-  - name: set permissions of created files to local user
-    command: "chown -R {{ansible_ssh_user}}:{{ansible_ssh_pass}} /home/{{ansible_ssh_user}}/projects/bardly/web-volume"
-    when: "stat_result.stat.exists and 'root' in stat_result.stat.pw_name"
-    become: true #execute as sudo, default become_user=root
+    tags:
+      - docker
 
   #If letsencrypt certs are issued after docker run
   - name: check if certs have been issued
@@ -58,11 +65,21 @@
       owner: "{{ansible_ssh_user}}"
       group: "{{ansible_ssh_user}}"
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
-    become: true
+    become_user: "{{ansible_ssh_user}}"
 
   #If certs issued but not installed, run install
   - name: install ssl certs with docker acme.sh
     command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net/":/acme.sh/bardly.net/installcerts neilpang/acme.sh --install-cert -d bardly.net --key-file /acme.sh/bardly.net/installcerts/privkey.pem --fullchain-file /acme.sh/bardly.net/installcerts/fullchain.pem
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
+    tags:
+      - docker
+
+  #set permissions on files created by multiple docker run outputs
+  - name: set permissions of created files to local user
+    command: "chown -R {{ansible_ssh_user}}:{{ansible_ssh_user}} /home/{{ansible_ssh_user}}/projects/bardly/web-volume"
+    when: "not stat_result.stat.exists"
+    become: true #execute as sudo, default become_user=root
+    tags:
+      - docker
 
   #Finally, run acme renew certs as docker daemon
