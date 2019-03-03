@@ -21,7 +21,7 @@
       - docker
 
   - name: issue ssl certs with docker acme.sh
-    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --staging --force --dns dns_nsone -d bardly.net
     args:
       chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
     register: docker_result
@@ -37,7 +37,7 @@
 
   - name: wait for docker letsencrypt cert issue to complete if it ran
     wait_for:
-      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/bardly.net"
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/bardly.net/fullchain.cer"
       state: present
       timeout: 125
     when: "not stat_result.stat.exists"
@@ -62,10 +62,8 @@
     file:
       path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net"
       state: directory
-      owner: "{{ansible_ssh_user}}"
-      group: "{{ansible_ssh_user}}"
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
-    become_user: "{{ansible_ssh_user}}"
+    become: true
 
   #If certs issued but not installed, run install
   - name: install ssl certs with docker acme.sh
