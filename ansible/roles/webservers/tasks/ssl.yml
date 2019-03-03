@@ -20,18 +20,25 @@
     tags:
       - docker
 
-  - name: issue ssl certs with docker acme.sh
+  - debug: msg="var letsencrypt_staging set to {{ letsencrypt_staging }}"
+
+  - name: issue staging ssl certs with docker acme.sh
     command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --staging --force --dns dns_nsone -d bardly.net
     args:
       chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
     register: docker_result
-    when: "not stat_result.stat.exists"
+    when: "not stat_result.stat.exists and letsencrypt_staging"
     become_user: "{{ansible_ssh_user}}"
     tags:
       - docker
 
-  - debug: msg="Docker result {{ docker_result.stdout }}"
-    when: "not stat_result.stat.exists"
+  - name: issue prod ssl certs with docker acme.sh
+    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+    args:
+      chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
+    register: docker_result
+    when: "not stat_result.stat.exists and not letsencrypt_staging"
+    become_user: "{{ansible_ssh_user}}"
     tags:
       - docker
 
