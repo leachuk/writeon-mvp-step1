@@ -1,0 +1,17 @@
+---
+  # Provision server package dependencies
+
+  - name: gather package facts
+    package_facts:
+      manager: "apt"
+    tags:
+      - apt
+
+  - name: Update apt cache and install git if not present
+    apt:
+      name: git
+      update_cache: yes
+    become: true
+    when: '"git" not in ansible_facts.packages'
+    tags:
+      - apt
