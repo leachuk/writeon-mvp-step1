@@ -1,0 +1,17 @@
+---
+  # Provision users and permissions
+
+  - debug: msg="Current user name is {{ ansible_ssh_user }}"
+    tags:
+      - user
+
+  - name: Adding user "{{ ansible_ssh_user }}" to docker group
+    user:
+      name: "{{ ansible_ssh_user }}"
+      shell: /bin/bash
+      groups: docker
+      append: yes
+    become: true
+    tags:
+      - user
+

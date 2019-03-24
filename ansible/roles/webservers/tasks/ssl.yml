@@ -1,66 +1,90 @@
 ---
 #setup ssl certs to enable https
 
+  - debug: msg="Current SSH user name is {{ansible_ssh_user}}"
+
   - name: check if letsencrypt issue files exist
     stat:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue/
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/"
     register: stat_result
     become: true
+    tags:
+      - docker
 
   - debug: msg="Does the issue directory exist {{ stat_result.stat.exists }}"
+    tags:
+      - docker
 
   - debug: msg="Directory owner {{ stat_result.stat.pw_name }}"
     when: "stat_result.stat.exists"
+    tags:
+      - docker
 
-  - name: issue ssl certs with docker acme.sh
-    command: docker run --rm -d -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+  - debug: msg="var letsencrypt_staging set to {{ letsencrypt_staging }}"
+
+  - name: issue staging ssl certs with docker acme.sh
+    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --staging --force --dns dns_nsone -d bardly.net
     args:
-      chdir: /home/appadmin/projects/bardly
+      chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
     register: docker_result
-    when: "not stat_result.stat.exists"
+    when: "not stat_result.stat.exists and letsencrypt_staging"
+    become_user: "{{ansible_ssh_user}}"
+    tags:
+      - docker
 
-  - debug: msg="Docker result {{ docker_result.stdout }}"
-    when: "not stat_result.stat.exists"
+  - name: issue prod ssl certs with docker acme.sh
+    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -e NS1_Key='ZssT8dCJQnXRcZCl3pyW' neilpang/acme.sh --issue --dns dns_nsone -d bardly.net
+    args:
+      chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
+    register: docker_result
+    when: "not stat_result.stat.exists and not letsencrypt_staging"
+    become_user: "{{ansible_ssh_user}}"
+    tags:
+      - docker
 
   - name: wait for docker letsencrypt cert issue to complete if it ran
     wait_for:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue/bardly.net
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/bardly.net/fullchain.cer"
       state: present
       timeout: 125
     when: "not stat_result.stat.exists"
-
-  #docker letsencrypt has run for the first time
-  - name: set permissions of created files to local user
-    command: chown -R appadmin:appadmin /home/appadmin/projects/bardly/web-volume
-    when: "stat_result.stat.exists and 'root' in stat_result.stat.pw_name"
-    become: true #execute as sudo, default become_user=root
+    tags:
+      - docker
 
   #If letsencrypt certs are issued after docker run
   - name: check if certs have been issued
     stat:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/issue/bardly.net/bardly.net.key
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/bardly.net/bardly.net.key"
     register: cert_issued_result
     become: true
 
   #If letsencrypt certs are installed
   - name: check if certs have been installed
     stat:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net/privkey.pem
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net/privkey.pem"
     register: cert_install_result
     become: true
 
   - name: create directory to install certs to if certs not installed but are issued
     file:
-      path: /home/appadmin/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net
+      path: "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net"
       state: directory
-      owner: appadmin
-      group: appadmin
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
     become: true
 
   #If certs issued but not installed, run install
   - name: install ssl certs with docker acme.sh
-    command: docker run --rm -d -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -v "/home/appadmin/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net/":/acme.sh/bardly.net/installcerts neilpang/acme.sh --install-cert -d bardly.net --key-file /acme.sh/bardly.net/installcerts/privkey.pem --fullchain-file /acme.sh/bardly.net/installcerts/fullchain.pem
+    command: docker run --rm -d -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/issue/":/acme.sh -v "/home/{{ansible_ssh_user}}/projects/bardly/web-volume/letsencrypt/nginx-certs/live/bardly.net/":/acme.sh/bardly.net/installcerts neilpang/acme.sh --install-cert -d bardly.net --key-file /acme.sh/bardly.net/installcerts/privkey.pem --fullchain-file /acme.sh/bardly.net/installcerts/fullchain.pem
     when: "cert_issued_result.stat.exists and not cert_install_result.stat.exists"
+    tags:
+      - docker
+
+  #set permissions on files created by multiple docker run outputs
+  - name: set permissions of created files to local user
+    command: "chown -R {{ansible_ssh_user}}:{{ansible_ssh_user}} /home/{{ansible_ssh_user}}/projects/bardly/web-volume"
+    when: "not stat_result.stat.exists"
+    become: true #execute as sudo, default become_user=root
+    tags:
+      - docker
 
   #Finally, run acme renew certs as docker daemon

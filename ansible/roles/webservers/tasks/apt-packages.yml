@@ -1,0 +1,21 @@
+---
+  # Provision server package dependencies
+
+  - name: gather package facts
+    package_facts:
+      manager: "apt"
+    tags:
+      - apt
+
+  - name: Update apt cache and install packages if not present
+    apt:
+      name: "{{ packages }}"
+      update_cache: yes
+    vars:
+      packages:
+        - git
+        - docker.io
+    become: true
+    when: '"~ packages" not in ansible_facts.packages'
+    tags:
+      - apt

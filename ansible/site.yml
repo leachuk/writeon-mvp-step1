@@ -15,7 +15,7 @@
 
 - name: apply common config to all servers
   #hosts: all
-  hosts: us-webservers
+  hosts: "{{ variable_host | default('us-webservers') }}"
   remote_user: appadmin
 
   roles:

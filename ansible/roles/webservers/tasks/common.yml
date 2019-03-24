@@ -51,19 +51,31 @@
       state: restarted
     become: true
 
+  - name: Install docker-compose
+    get_url:
+      url : https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
+      owner: "{{ansible_ssh_user}}"
+    become: true
+    tags:
+      - docker
+
   - name: docker-compose build for bardly project
     shell: "docker-compose build"
     args:
-      chdir: /home/appadmin/projects/bardly
+      chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
+    become_user: "{{ansible_ssh_user}}"
     tags:
       - docker
 
   - name: docker-compose up for bardly project
     shell: "docker-compose up"
     args:
-      chdir: /home/appadmin/projects/bardly
+      chdir: "/home/{{ansible_ssh_user}}/projects/bardly"
     async: 1000
     poll: 0
+    become_user: "{{ansible_ssh_user}}"
     tags:
       - docker
 

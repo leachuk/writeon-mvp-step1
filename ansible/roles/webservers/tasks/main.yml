@@ -1,4 +1,7 @@
 ---
+- include: user.yml
+- include: apt-packages.yml
+- include: git.yml
 - include: ssl.yml
 - include: ufw-common.yml
 - include: common.yml
