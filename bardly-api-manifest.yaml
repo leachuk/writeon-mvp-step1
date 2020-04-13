@@ -20,7 +20,7 @@ spec:
       containers:
       - image: bardly-api
         name: bardly-api
-	      imagePullPolicy: Never
+        imagePullPolicy: Never
         resources: {}
         ports:
          - containerPort: 9000
