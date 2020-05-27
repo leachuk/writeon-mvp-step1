@@ -16,6 +16,9 @@ services:
     image: mycouchdb-1:latest
     volumes:
       - "./web-volume/couchdb:/usr/local/var/lib/couchdb"
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=-pbkdf2-7ac683f7c830ce579c7d8e11379273c217d001a9,f089da8c612a207145f486ebf3761cd7,10
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5984"]
       interval: 10s
