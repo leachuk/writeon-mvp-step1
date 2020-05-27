@@ -38,7 +38,7 @@ services:
       couchdb:
         condition: service_healthy
     ports:
-#      - "9000:9000" #disable when nginx is enabled
+      - "9000:9000" #disable when nginx is enabled
       - "9615:9615" #expose pm2 --web monitor port
     links:
       - "redisdb:redis"
@@ -47,21 +47,21 @@ services:
       - "./web-volume/web:/root"
     image: writeon_web
     environment:
-      - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
+#      - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
       - COUCH_REPLICATION_SOURCE=${COUCH_REPLICATION_SOURCE}
       - COUCH_REPLICATION_TARGET=${COUCH_REPLICATION_TARGET}
 
-  nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile-nginx
-    volumes:
-      - "./web-volume/letsencrypt/nginx-certs/live/bardly.net:/etc/nginx/certs/live/bardly.net"
-    links:
-        - "web:web"
-    ports:
-        - "80:80"
-        - "443:443"
+#  nginx:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-nginx
+#    volumes:
+#      - "./web-volume/letsencrypt/nginx-certs/live/bardly.net:/etc/nginx/certs/live/bardly.net"
+#    links:
+#        - "web:web"
+#    ports:
+#        - "80:80"
+#        - "443:443"
 
   #datadog integration
 #  datadog:
