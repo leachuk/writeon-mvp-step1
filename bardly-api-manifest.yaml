@@ -24,4 +24,12 @@ spec:
         resources: {}
         ports:
          - containerPort: 9000
+      initContainers:
+      - name: init-couchdb
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup couchdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for couchdb; sleep 2; done"]
+      - name: init-redisdb
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup redisdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for redisdb; sleep 2; done"]
+
 status: {}
