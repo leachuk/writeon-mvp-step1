@@ -5,7 +5,7 @@
 var _couch = {
     "adminusername" : "admin",
     "adminpassword" : "admin",
-    "hostname" : "127.0.0.1",
+    "hostname" : "localhost",
     "port" : 5984
 };
 
@@ -23,7 +23,7 @@ module.exports = {
   seedDB: true,
   dbNameArticles: "article_documents",
   dbNameProjects: "loom_project_files",
-  redisHost: "127.0.0.1",
+  redisHost: "localhost",
   redisPort: "6379"
 };
 
