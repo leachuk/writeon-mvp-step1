@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
     kompose.cmd: kompose -f docker-compose-dev.yml convert
-    kompose.version: 1.21.0 ()
+    kompose.version: 1.21.0
   creationTimestamp: null
   labels:
     io.kompose.service: redisdb
@@ -24,7 +24,7 @@ kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose -f docker-compose-dev.yml convert
-    kompose.version: 1.21.0 ()
+    kompose.version: 1.21.0
   creationTimestamp: null
   labels:
     io.kompose.service: redisdb
@@ -41,7 +41,7 @@ spec:
     metadata:
       annotations:
         kompose.cmd: kompose -f docker-compose-dev.yml convert
-        kompose.version: 1.21.0 ()
+        kompose.version: 1.21.0
       creationTimestamp: null
       labels:
         io.kompose.service: redisdb

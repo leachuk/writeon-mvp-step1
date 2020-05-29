@@ -26,7 +26,9 @@ ADD server /app/server
 
 EXPOSE 9000
 
-ENV NODE_ENV production
+#ENV NODE_ENV production
+#forcing couch and redis hosts to localhost to connect via k8s
+ENV NODE_ENV development
 #CMD ["pm2-docker", "--public", "2a1aiec0svvgtf0", "--secret", "lira4uhnz1iqo21",  "server/app.js", "--web"]
 CMD ["pm2-docker", "server/app.js"]
 
