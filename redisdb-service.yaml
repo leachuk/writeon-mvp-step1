@@ -45,6 +45,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: redisdb
+        app: bardly-api
     spec:
       containers:
         - image: redis

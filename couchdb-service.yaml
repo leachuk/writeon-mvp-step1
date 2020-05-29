@@ -28,6 +28,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: couchdb
+    app: bardly-api
   name: couchdb
 spec:
   replicas: 1
