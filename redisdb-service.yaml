@@ -48,7 +48,7 @@ spec:
         app: bardly-api
     spec:
       containers:
-        - image: redis
+        - image: redis:latest
           imagePullPolicy: ""
           name: redisdb
           ports:
