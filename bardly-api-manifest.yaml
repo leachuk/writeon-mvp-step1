@@ -31,5 +31,21 @@ spec:
       - name: init-redisdb
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup redisdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for redisdb; sleep 2; done"]
-
 status: {}
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: bardly-frontend
+#  labels:
+#    app: bardly-api
+#spec:
+#  # comment or delete the following line if you want to use a LoadBalancer
+#  #type: NodePort
+#  # if your cluster supports it, uncomment the following to automatically create
+#  # an external load-balanced IP for the frontend service.
+#  type: LoadBalancer
+#  ports:
+#    - port: 80
+#  selector:
+#    app: bardly-api
