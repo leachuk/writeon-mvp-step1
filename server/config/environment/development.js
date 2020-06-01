@@ -5,7 +5,7 @@
 var _couch = {
     "adminusername" : "admin",
     "adminpassword" : "admin",
-    "hostname" : "localhost",
+    "hostname" : "couchdb",
     "port" : 5984
 };
 
