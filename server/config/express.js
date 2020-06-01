@@ -100,7 +100,7 @@ module.exports = function(app) {
     app.use(errorHandler()); // Error handler - has to be last
 
     console.log("attempting couchdb development bootstrap");
-    couchdbBootstrap('http://admin:admin@localhost:5984', 'couchdb-dev', function(error, response) {
+    couchdbBootstrap('http://admin:admin@couchdb:5984', 'couchdb-dev', function(error, response) {
       if (error) {
         console.log(error);
       } else {
