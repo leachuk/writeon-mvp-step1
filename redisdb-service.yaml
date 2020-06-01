@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: redisdb
-    app: bardly-api
+    app: bardly-api-redis
   name: redisdb
 spec:
   ports:
@@ -28,7 +28,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: redisdb
-    app: bardly-api
+    app: bardly-api-redis
   name: redisdb
 spec:
   replicas: 1
@@ -45,7 +45,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: redisdb
-        app: bardly-api
+        app: bardly-api-redis
     spec:
       containers:
         - image: myredis:latest
@@ -71,7 +71,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: redisdb-claim0
-    app: bardly-api
+    app: bardly-api-redis
   name: redisdb-claim0
 spec:
   accessModes:

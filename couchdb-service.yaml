@@ -7,7 +7,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: couchdb
-    app: bardly-api
+    app: bardly-api-couch
   name: couchdb
 spec:
   ports:
@@ -28,7 +28,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: couchdb
-    app: bardly-api
+    app: bardly-api-couch
   name: couchdb
 spec:
   replicas: 1
@@ -45,7 +45,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: couchdb
-        app: bardly-api
+        app: bardly-api-couch
     spec:
       containers:
         - env:
@@ -76,7 +76,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: couchdb-claim0
-    app: bardly-api
+    app: bardly-api-couch
   name: couchdb-claim0
 spec:
   accessModes:
