@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: nfs-test-volumeclaim
   namespace: default
+  labels:
+    app: nfs-test-volume
 spec:
   accessModes:
     - ReadWriteMany

@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: nfs-test-volume
   labels:
-    volume: nfs-test-volume
+    app: nfs-test-volume
 spec:
   capacity:
     storage: 8Gi

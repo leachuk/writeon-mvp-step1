@@ -3,14 +3,17 @@ kind: Pod
 metadata:
   name: mypod
   namespace: default
+  labels:
+    app: nfs-test-volume
 spec:
   containers:
     - name: mynginx
       image: nginx
       volumeMounts:
       - mountPath: "/var/www/html"
-        name: mypd
+        subPath: "nginx/html"
+        name: nfs-test
   volumes:
-    - name: mypd
+    - name: nfs-test
       persistentVolumeClaim:
         claimName: nfs-test-volumeclaim
