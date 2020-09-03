@@ -6,9 +6,10 @@ steps:
   - name: docker
     image: plugins/docker
     settings:
+      registry: 'harbor-bitnami:443'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: harbor-bitnami/homelab
+      repo: harbor-bitnami:443/homelab/bardly-api
       dockerfile: Dockerfile
     env:
       PLUGIN_DEBUG: "true"
