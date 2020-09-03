@@ -10,7 +10,7 @@ steps:
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
       repo: harbor-bitnami:443/homelab/bardly-api
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     env:
       PLUGIN_DEBUG: "true"
       PLUGIN_INSECURE: "true"
