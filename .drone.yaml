@@ -8,5 +8,5 @@ steps:
     settings:
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: 192.168.0.199:32443/homelab/bardly-api
+      repo: harbor-bitnami/homelab/bardly-api
       dockerfile: Dockerfile
