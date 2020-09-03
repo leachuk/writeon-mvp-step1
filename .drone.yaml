@@ -13,6 +13,7 @@ steps:
       dockerfile: ./Dockerfile
       debug: true
       launch_debug: true
+      insecure: true
     env:
       PLUGIN_DEBUG: "true"
       PLUGIN_INSECURE: "true"
