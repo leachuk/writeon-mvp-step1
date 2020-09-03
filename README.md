@@ -1,4 +1,4 @@
-writeon-mvp-step1
+bardly-api server
 =================
 
 Basic MVP content api server.  
