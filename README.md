@@ -5,6 +5,8 @@ Basic MVP content api server.
 
 Built with nodejs and express. Provides user authentication and authorisation. Json Web Tokens (JWTs) are used for authentication of api calls.
 
+CI/CD is achieved using Drone.
+
 ##versions
 Current global version dependencies:
 * node -v `v11.8.0`
