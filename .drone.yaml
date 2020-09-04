@@ -1,9 +1,9 @@
 kind: pipeline
 type: kubernetes
-name: default
+name: Build bardly app and dependencies
 
 steps:
-  - name: docker
+  - name: build bardly-api node app
     image: plugins/docker
     settings:
       registry: 'harbor-bitnami.default:443'
@@ -14,6 +14,27 @@ steps:
       debug: true
       launch_debug: true
       insecure: true
-    env:
-      PLUGIN_DEBUG: "true"
-      PLUGIN_INSECURE: "true"
+
+  - name: build couchdb
+    image: plugins/docker
+    settings:
+      registry: 'harbor-bitnami.default:443'
+      username: stewart
+      password: stJ0hnstuHARBOR #todo: replace with secret
+      repo: 'harbor-bitnami.default:443/homelab/couchdb'
+      dockerfile: ./Dockerfile-couchdb
+      debug: true
+      launch_debug: true
+      insecure: true
+
+  - name: build redis
+    image: plugins/docker
+    settings:
+      registry: 'harbor-bitnami.default:443'
+      username: stewart
+      password: stJ0hnstuHARBOR #todo: replace with secret
+      repo: 'harbor-bitnami.default:443/homelab/redis'
+      dockerfile: ./Dockerfile-redis
+      debug: true
+      launch_debug: true
+      insecure: true
