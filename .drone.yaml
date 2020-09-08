@@ -7,13 +7,14 @@ steps:
     image: plugins/docker
     settings:
       registry: 'harbor-bitnami.default'
+      repo: 'harbor-bitnami.default/homelab/bardly-api'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: 'harbor-bitnami.default/homelab/bardly-api'
       dockerfile: ./Dockerfile
       debug: true
       launch_debug: true
       insecure: true
+      use_cache: false
 
   - name: build couchdb
     image: plugins/docker
