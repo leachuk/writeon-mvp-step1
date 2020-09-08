@@ -6,10 +6,10 @@ steps:
   - name: build bardly-api node app
     image: plugins/docker
     settings:
-      registry: 'harbor-bitnami.default:443'
+      registry: 'core.harbor.domain:32443'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: 'harbor-bitnami.default:443/homelab/bardly-api'
+      repo: 'core.harbor.domain.default:32443/homelab/bardly-api'
       dockerfile: ./Dockerfile
       debug: true
       launch_debug: true
