@@ -3,7 +3,7 @@ type: kubernetes
 name: Build bardly app and dependencies
 
 steps:
-  - name: build bardly-api node app
+  - name: build2 bardly-api node app
     image: plugins/docker
     settings:
       registry: 'harbor-bitnami.default'
