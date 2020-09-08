@@ -6,7 +6,7 @@ steps:
   - name: build bardly-api node app
     image: plugins/docker
     settings:
-      registry: 'core.harbor.domain:32443'
+      registry: 'core.harbor.domain.default:32443'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
       repo: 'core.harbor.domain.default:32443/homelab/bardly-api'
