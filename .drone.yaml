@@ -8,8 +8,8 @@ steps:
     settings:
       registry: 'harbor-bitnami.default'
       repo: 'harbor-bitnami.default/homelab/bardly-api'
-      username: test1
-      password: stJ0hnstutest! #todo: replace with secret
+      username: stewart
+      password: stJ0hnstuHARBOR #todo: replace with secret
       dockerfile: ./Dockerfile
       debug: true
       launch_debug: true
