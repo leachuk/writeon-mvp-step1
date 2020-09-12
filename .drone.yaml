@@ -6,8 +6,8 @@ steps:
   - name: build bardly-api node app
     image: plugins/docker
     settings:
-      registry: '192.168.0.199:32443'
-      repo: '192.168.0.199:32443/homelab/bardly-api'
+      registry: 'harbor-bitnami.default'
+      repo: 'harbor-bitnami.default/homelab/bardly-api'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
       dockerfile: ./Dockerfile
@@ -19,10 +19,10 @@ steps:
   - name: build couchdb
     image: plugins/docker
     settings:
-      registry: 'harbor-bitnami.default:443'
+      registry: 'harbor-bitnami.default'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: 'harbor-bitnami.default:443/homelab/couchdb'
+      repo: 'harbor-bitnami.default/homelab/couchdb'
       dockerfile: ./Dockerfile-couchdb
       debug: true
       launch_debug: true
@@ -31,10 +31,10 @@ steps:
   - name: build redis
     image: plugins/docker
     settings:
-      registry: 'harbor-bitnami.default:443'
+      registry: 'harbor-bitnami.default'
       username: stewart
       password: stJ0hnstuHARBOR #todo: replace with secret
-      repo: 'harbor-bitnami.default:443/homelab/redis'
+      repo: 'harbor-bitnami.default/homelab/redis'
       dockerfile: ./Dockerfile-redis
       debug: true
       launch_debug: true
