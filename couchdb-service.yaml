@@ -62,8 +62,8 @@ spec:
           volumeMounts:
             - mountPath: /usr/local/var/lib/couchdb
               name: couchdb-claim0
-          imagePullSecrets:
-            - name: harbor-registry-credentials
+      imagePullSecrets:
+        - name: harbor-registry-credentials
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
