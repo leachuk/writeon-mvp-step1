@@ -52,6 +52,7 @@ steps:
         from_secret: drone_k8s_token
     commands:
         - kubectl create namespace bardly
+        - kubectl get secret harbor-registry-credentials --namespace=default -oyaml | grep -v '^\s*namespace:\s' | kubectl apply --namespace=bardly -f -
 
   - name: deploy all
     image: sinlead/drone-kubectl

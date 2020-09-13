@@ -24,6 +24,8 @@ spec:
         resources: {}
         ports:
          - containerPort: 9000
+      imagePullSecrets:
+        - name: harbor-registry-credentials
       initContainers:
       - name: init-couchdb
         image: busybox:1.28
@@ -31,8 +33,6 @@ spec:
       - name: init-redisdb
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup redisdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for redisdb; sleep 2; done"]
-      imagePullSecrets:
-        - name: harbor-registry-credentials
 status: {}
 ---
 apiVersion: v1
