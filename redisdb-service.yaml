@@ -48,7 +48,7 @@ spec:
         app: bardly-api-redis
     spec:
       containers:
-        - image: myredis:latest
+        - image: 192.168.0.199:32443/homelab/redis:latest
           imagePullPolicy: IfNotPresent
           name: redisdb
           ports:
@@ -63,6 +63,8 @@ spec:
         - name: redisdb-claim0
           persistentVolumeClaim:
             claimName: redisdb-claim0
+      imagePullSecrets:
+        - name: harbor-registry-credentials
 status: {}
 ---
 apiVersion: v1

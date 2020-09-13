@@ -18,7 +18,7 @@ spec:
         app: bardly-api
     spec:
       containers:
-      - image: bardly-api-app
+      - image: 192.168.0.199:32443/homelab/bardly-api:latest
         name: bardly-api
         imagePullPolicy: IfNotPresent
         resources: {}
@@ -31,6 +31,8 @@ spec:
       - name: init-redisdb
         image: busybox:1.28
         command: ['sh', '-c', "until nslookup redisdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for redisdb; sleep 2; done"]
+      imagePullSecrets:
+        - name: harbor-registry-credentials
 status: {}
 ---
 apiVersion: v1

@@ -53,7 +53,7 @@ spec:
               value: -pbkdf2-7ac683f7c830ce579c7d8e11379273c217d001a9,f089da8c612a207145f486ebf3761cd7,10
             - name: COUCHDB_USER
               value: admin
-          image: mycouchdb-1:latest
+          image: 192.168.0.199:32443/homelab/couchdb:latest
           imagePullPolicy: IfNotPresent
           name: couchdb
           ports:
@@ -62,6 +62,8 @@ spec:
           volumeMounts:
             - mountPath: /usr/local/var/lib/couchdb
               name: couchdb-claim0
+          imagePullSecrets:
+            - name: harbor-registry-credentials
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
