@@ -40,6 +40,19 @@ steps:
       launch_debug: true
       insecure: true
 
+  - name: configure namespace
+    image: sinlead/drone-kubectl
+    settings:
+      failure: ignore
+      kubernetes_server:
+        from_secret: drone_k8s_server
+      kubernetes_cert:
+        from_secret: drone_k8s_cert
+      kubernetes_token:
+        from_secret: drone_k8s_token
+    commands:
+        - kubectl create namespace bardly
+
   - name: deploy all
     image: sinlead/drone-kubectl
     settings:
@@ -50,7 +63,6 @@ steps:
       kubernetes_token:
         from_secret: drone_k8s_token
     commands:
-      - kubectl create namespace bardly
       - kubectl apply -f redisdb-service.yaml --namespace=bardly
       - kubectl apply -f couchdb-service.yaml --namespace=bardly
       - kubectl apply -f bardly-api-manifest.yaml --namespace=bardly
