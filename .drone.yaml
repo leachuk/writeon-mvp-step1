@@ -50,6 +50,7 @@ steps:
       kubernetes_token:
         from_secret: drone_k8s_token
     commands:
+      - kubectl create namespace bardly
       - kubectl apply -f redisdb-service.yaml --namespace=bardly
       - kubectl apply -f couchdb-service.yaml --namespace=bardly
       - kubectl apply -f bardly-api-manifest.yaml --namespace=bardly
