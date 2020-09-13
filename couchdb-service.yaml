@@ -54,7 +54,7 @@ spec:
             - name: COUCHDB_USER
               value: admin
           image: mycouchdb-1:latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           name: couchdb
           ports:
             - containerPort: 5984

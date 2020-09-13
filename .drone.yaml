@@ -39,3 +39,17 @@ steps:
       debug: true
       launch_debug: true
       insecure: true
+
+  - name: deploy all
+    image: sinlead/drone-kubectl
+    settings:
+      kubernetes_server:
+        from_secret: drone_k8s_server
+      kubernetes_cert:
+        from_secret: drone_k8s_cert
+      kubernetes_token:
+        from_secret: drone_k8s_token
+    commands:
+      - kubectl apply -f redisdb-service.yaml --namespace=bardly
+      - kubectl apply -f couchdb-service.yaml --namespace=bardly
+      - kubectl apply -f bardly-api-manifest.yaml --namespace=bardly
