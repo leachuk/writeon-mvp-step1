@@ -42,8 +42,8 @@ steps:
 
   - name: configure namespace
     image: sinlead/drone-kubectl
+    failure: ignore
     settings:
-      failure: ignore
       kubernetes_server:
         from_secret: drone_k8s_server
       kubernetes_cert:
