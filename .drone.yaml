@@ -16,29 +16,29 @@ steps:
       insecure: true
       use_cache: false
 
-#  - name: build couchdb
-#    image: plugins/docker
-#    settings:
-#      registry: 'harbor-bitnami.default'
-#      username: stewart
-#      password: stJ0hnstuHARBOR #todo: replace with secret
-#      repo: 'harbor-bitnami.default/homelab/couchdb'
-#      dockerfile: ./Dockerfile-couchdb
-#      debug: true
-#      launch_debug: true
-#      insecure: true
+  - name: build couchdb
+    image: plugins/docker
+    settings:
+      registry: 'harbor-bitnami.default'
+      username: stewart
+      password: stJ0hnstuHARBOR #todo: replace with secret
+      repo: 'harbor-bitnami.default/homelab/couchdb'
+      dockerfile: ./Dockerfile-couchdb
+      debug: true
+      launch_debug: true
+      insecure: true
 
-#  - name: build redis
-#    image: plugins/docker
-#    settings:
-#      registry: 'harbor-bitnami.default'
-#      username: stewart
-#      password: stJ0hnstuHARBOR #todo: replace with secret
-#      repo: 'harbor-bitnami.default/homelab/redis'
-#      dockerfile: ./Dockerfile-redis
-#      debug: true
-#      launch_debug: true
-#      insecure: true
+  - name: build redis
+    image: plugins/docker
+    settings:
+      registry: 'harbor-bitnami.default'
+      username: stewart
+      password: stJ0hnstuHARBOR #todo: replace with secret
+      repo: 'harbor-bitnami.default/homelab/redis'
+      dockerfile: ./Dockerfile-redis
+      debug: true
+      launch_debug: true
+      insecure: true
 
   - name: configure namespace
     image: sinlead/drone-kubectl
@@ -64,6 +64,6 @@ steps:
       kubernetes_token:
         from_secret: drone_k8s_token
     commands:
-#      - kubectl apply -f redisdb-service.yaml --namespace=bardly
-#      - kubectl apply -f couchdb-service.yaml --namespace=bardly
+      - kubectl apply -f redisdb-service.yaml --namespace=bardly
+      - kubectl apply -f couchdb-service.yaml --namespace=bardly
       - kubectl apply -f bardly-api-manifest.yaml --namespace=bardly
