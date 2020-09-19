@@ -23,6 +23,7 @@ module.exports = {
   seedDB: true,
   dbNameArticles: "article_documents",
   dbNameProjects: "loom_project_files",
+  dbNameUsers: "_users",
   redisHost: "redisdb",
   redisPort: "6379"
 };

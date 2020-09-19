@@ -26,6 +26,6 @@ module.exports = {
   dbNameArticles: "article_documents",
   dbNameProjects: "loom_project_files",
   dbNameUsers: "_users",
-  redisHost: "redis",
+  redisHost: "redisdb",
   redisPort: "6379"
 };
