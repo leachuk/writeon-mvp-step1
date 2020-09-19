@@ -26,6 +26,25 @@ Current global version dependencies:
   * http://servername:9000
 * Monitoring available via[https://app.keymetrics.io/](https://app.keymetrics.io/)
 
+##Curl Commands
+Test login with sample user. This fails due to incorrect bootstrapping of user with password
+`curl -X POST -H 'Content-Type: application/json' -d '{ "username": "john.smith@example.com", "password" : "12345678" }' http://192.168.0.199:30859/api/recruitunit/users/signin`
+
+Create new user
+```
+curl -X POST http://192.168.0.199:30859/api/users/signup?modelId=/services/recruitunit/users/recruitUnitUserService.controller.js \
+-H 'Content-Type: application/json' \
+--data-binary @- << EOF
+{ 
+  "email": "john.smith2@example.com",
+  "displayName": "john2",
+  "jobRole": "developer",
+  "password": "12345678",
+  "key": "123456789"
+}
+EOF
+```
+
 #Deploy
 
 Deploy to pre-configured remote repo with: 
