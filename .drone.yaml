@@ -8,8 +8,10 @@ steps:
     settings:
       registry: 'harbor-bitnami.default'
       repo: 'harbor-bitnami.default/homelab/bardly-api'
-      username: stewart
-      password: stJ0hnstuHARBOR #todo: replace with secret
+      username:
+        from_secret: username
+      password:
+        from_secret: password
       dockerfile: ./Dockerfile
       debug: true
       launch_debug: true
@@ -20,8 +22,10 @@ steps:
     image: plugins/docker
     settings:
       registry: 'harbor-bitnami.default'
-      username: stewart
-      password: stJ0hnstuHARBOR #todo: replace with secret
+      username:
+        from_secret: username
+      password:
+        from_secret: password
       repo: 'harbor-bitnami.default/homelab/couchdb'
       dockerfile: ./Dockerfile-couchdb
       debug: true
@@ -32,8 +36,10 @@ steps:
     image: plugins/docker
     settings:
       registry: 'harbor-bitnami.default'
-      username: stewart
-      password: stJ0hnstuHARBOR #todo: replace with secret
+      username:
+        from_secret: username
+      password:
+        from_secret: password
       repo: 'harbor-bitnami.default/homelab/redis'
       dockerfile: ./Dockerfile-redis
       debug: true
@@ -67,3 +73,17 @@ steps:
       - kubectl apply -f redisdb-service.yaml --namespace=bardly
       - kubectl apply -f couchdb-service.yaml --namespace=bardly
       - kubectl apply -f bardly-api-manifest.yaml --namespace=bardly
+
+---
+kind: secret
+name: username
+get:
+  path: secret-stewart-harbor
+  name: username
+
+---
+kind: secret
+name: password
+get:
+  path: secret-stewart-harbor
+  name: password
